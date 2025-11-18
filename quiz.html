@@ -1,839 +1,476 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>Blossom English - 단어 학습</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Pretendard",
-        "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    }
+<!DOCTYPE html>  
+<html lang="ko">  
+<head>  
+  <meta charset="UTF-8" />  
+  <title>Blossom English - 단어 학습</title>  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <style>  
+    * {  
+      box-sizing: border-box;  
+      margin: 0;  
+      padding: 0;  
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Pretendard",  
+        "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;  
+    }  
 
-    body {
-      background: #f3f4f6;
-      color: #111827;
-      min-height: 100vh;
-    }
+    body {  
+      background: #f3f4f6;  
+      color: #111827;  
+      min-height: 100vh;  
+    }  
 
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 32px 16px 48px;
-    }
+    .page {  
+      max-width: 1100px;  
+      margin: 0 auto;  
+      padding: 32px 16px 48px;  
+    }  
 
-    /* 위의 작은 경로는 안 쓸거라 숨김 */
-    .path {
-      display: none;
-    }
+    .path { display: none; }  
 
-    h1.main-title {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 24px;
-    }
+    h1.main-title {  
+      font-size: 28px;  
+      font-weight: 800;  
+      margin-bottom: 24px;  
+    }  
 
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start; /* 오른쪽에 있던 다시듣기 제거 */
-      margin-bottom: 20px;
-    }
+    .top-bar {  
+      display: flex;  
+      align-items: center;  
+      margin-bottom: 20px;  
+    }  
 
-    .mode-tabs {
-      display: flex;
-      gap: 10px;
-    }
+    .mode-tabs {  
+      display: flex;  
+      gap: 10px;  
+    }  
 
-    .mode-tab {
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      background: #f3f4ff;
-      color: #111827;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
+    .mode-tab {  
+      padding: 10px 18px;  
+      border-radius: 999px;  
+      border: none;  
+      background: #f3f4ff;  
+      color: #111827;  
+      font-size: 14px;  
+      display: inline-flex;  
+      align-items: center;  
+      gap: 8px;  
+      cursor: pointer;  
+      transition: all 0.15s ease;  
+    }  
 
-    .mode-tab.active {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
-    }
+    .mode-tab.active {  
+      background: #2563eb;  
+      color: #ffffff;  
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);  
+    }  
 
-    .mode-tab span.icon {
-      font-size: 18px;
-    }
+    .card {  
+      background: #ffffff;  
+      border-radius: 28px;  
+      padding: 40px 60px 34px;  
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);  
+      min-height: 360px;  
+      position: relative;  
+      display: flex;  
+      flex-direction: column;  
+      justify-content: space-between;  
+    }  
 
-    .card {
-      background: #ffffff;
-      border-radius: 28px;
-      padding: 40px 60px 34px;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-      min-height: 360px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative; /* 다시 듣기 절대 위치용 */
-    }
+    .audio-btn {  
+      position: absolute;  
+      top: 18px;  
+      right: 26px;  
+      padding: 9px 18px;  
+      border-radius: 999px;  
+      border: none;  
+      background: #e5edff;  
+      color: #1d4ed8;  
+      font-size: 14px;  
+      cursor: pointer;  
+    }  
 
-    .audio-btn {
-      border-radius: 999px;
-      border: none;
-      padding: 9px 18px;
-      background: #e5edff;
-      color: #1d4ed8;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      position: absolute;
-      top: 18px;
-      right: 26px; /* 카드 안 오른쪽 위 */
-    }
+    .center-area {  
+      flex: 1;  
+      display: flex;  
+      flex-direction: column;  
+      align-items: center;  
+      justify-content: center;  
+      text-align: center;  
+      gap: 12px;  
+    }  
 
-    .audio-btn:hover {
-      filter: brightness(0.97);
-    }
+    .word-big {  
+      font-size: 72px;  
+      font-weight: 800;  
+      color: #b91c1c;  
+    }  
 
-    .audio-btn span.icon {
-      font-size: 18px;
-    }
+    .meaning-big {  
+      font-size: 40px;  
+      font-weight: 700;  
+      color: #111827;  
+    }  
 
-    .center-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 12px;
-    }
+    .example-en { font-size: 18px; color: #4b5563; margin-top: 18px; }  
+    .example-ko { font-size: 16px; color: #6b7280; }  
 
-    .word-big {
-      font-size: 72px;
-      font-weight: 800;
-      color: #b91c1c;
-      letter-spacing: 0.04em;
-    }
+    .question-title { font-size: 34px; font-weight: 800; margin-bottom: 18px; }  
+    .question-sub { font-size: 16px; color: #6b7280; margin-bottom: 10px; }  
 
-    .meaning-big {
-      font-size: 40px;
-      font-weight: 700;
-      color: #111827;
-    }
+    .choices-grid {  
+      display: grid;  
+      grid-template-columns: repeat(2, 1fr);  
+      gap: 20px 28px;  
+      width: 100%;  
+      max-width: 620px;  
+    }  
 
-    .example-en {
-      margin-top: 18px;
-      font-size: 18px;
-      color: #4b5563;
-    }
+    .choice-btn {  
+      width: 100%;  
+      min-height: 62px;  
+      padding: 18px;  
+      border-radius: 18px;  
+      border: 1px solid #e5e7eb;  
+      background: #f9fafb;  
+      font-size: 16px;  
+      cursor: pointer;  
+    }  
 
-    .example-ko {
-      font-size: 16px;
-      color: #6b7280;
-    }
+    .choice-btn.correct {  
+      background: #dcfce7; border-color: #22c55e; color: #166534; font-weight: 600;  
+    }  
 
-    .question-title {
-      font-size: 34px;
-      font-weight: 800;
-      margin-bottom: 18px;
-    }
+    .choice-btn.wrong {  
+      background: #fee2e2; border-color: #f97373; color: #b91c1c;  
+    }  
 
-    .question-sub {
-      font-size: 16px;
-      color: #6b7280;
-      margin-bottom: 10px;
-    }
+    .sentence-en { font-size: 28px; font-weight: 700; margin-bottom: 12px; }  
+    .sentence-ko { font-size: 18px; color: #4b5563; margin-bottom: 24px; }  
 
-    .choices-grid {
-      margin-top: 4px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px 26px;
-      width: 100%;
-      max-width: 620px;
-    }
+    .sentence-input {  
+      flex: 1; padding: 14px 18px; border-radius: 999px; border: 1px solid #d1d5db;  
+    }  
 
-    .choice-btn {
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid #e5e7eb;
-      padding: 16px 18px;
-      font-size: 16px;
-      background: #f9fafb;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.12s ease;
-      min-height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      word-break: keep-all;
-    }
+    .check-btn {  
+      padding: 11px 20px;  
+      border-radius: 999px;  
+      background: #e5edff;  
+      border: none;  
+      color: #1d4ed8;  
+    }  
 
-    .choice-btn:hover {
-      background: #eff6ff;
-      border-color: #bfdbfe;
-    }
+    .bottom-bar {  
+      display: flex;  
+      justify-content: space-between;  
+      margin-top: 24px;  
+    }  
 
-    .choice-btn.correct {
-      background: #dcfce7;
-      border-color: #22c55e;
-      color: #166534;
-      font-weight: 600;
-    }
+    .nav-btn {  
+      padding: 11px 22px;  
+      border-radius: 999px;  
+      border: none;  
+      font-size: 15px;  
+      cursor: pointer;  
+    }  
 
-    .choice-btn.wrong {
-      background: #fee2e2;
-      border-color: #f97373;
-      color: #b91c1c;
-    }
+    .nav-btn.prev { background: #e5e7eb; color: #4b5563; }  
+    .nav-btn.next { background: #2563eb; color: #ffffff; }  
+    .nav-btn.study-back { background: #fb923c; color: #fff; }  
+  </style>  
+</head>  
+<body>  
+<div class="page">  
+  <h1 class="main-title" id="mainTitle">단어 학습 1-1</h1>  
 
-    .sentence-en {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
+  <div class="top-bar">  
+    <div class="mode-tabs">  
+      <button class="mode-tab active" data-mode="study">📚 어휘 학습</button>  
+      <button class="mode-tab" data-mode="meaning">✅ 뜻 찾기</button>  
+      <button class="mode-tab" data-mode="english">🔤 영어 찾기</button>  
+      <button class="mode-tab" data-mode="listening">🎧 듣고 찾기</button>  
+      <button class="mode-tab" data-mode="sentence">✏️ 문장 빈칸</button>  
+    </div>  
+  </div>  
 
-    .sentence-ko {
-      font-size: 18px;
-      color: #4b5563;
-      margin-bottom: 24px;
-    }
+  <div class="card">  
+    <button class="audio-btn" id="replayBtn">🔊 다시 듣기</button>  
+    <div class="center-area" id="centerArea"></div>  
 
-    .input-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .sentence-input {
-      flex: 1;
-      padding: 14px 18px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      font-size: 16px;
-      outline: none;
-    }
-
-    .sentence-input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18);
-    }
-
-    .check-btn {
-      padding: 11px 20px;
-      border-radius: 999px;
-      border: none;
-      background: #e5edff;
-      color: #1d4ed8;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.12s ease;
-    }
-
-    .check-btn:hover {
-      filter: brightness(0.97);
-    }
-
-    .helper-text {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-top: 8px;
-    }
-
-    .bottom-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 24px;
-    }
-
-    .progress {
-      font-size: 14px;
-      color: #6b7280;
-    }
-
-    .bottom-buttons {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .nav-btn {
-      padding: 11px 22px;
-      border-radius: 999px;
-      border: none;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .nav-btn.prev {
-      background: #e5e7eb;
-      color: #4b5563;
-    }
-
-    .nav-btn.next {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.38);
-    }
-
-    .nav-btn.study-back {
-      background: #fb923c;
-      color: #ffffff;
-      box-shadow: 0 12px 25px rgba(249, 115, 22, 0.35);
-    }
-
-    .nav-btn:disabled {
-      opacity: 0.5;
-      cursor: default;
-      box-shadow: none;
-    }
-
-    .score-message {
-      margin-top: 18px;
-      font-size: 15px;
-      color: #16a34a;
-      font-weight: 600;
-    }
-
-    @media (max-width: 900px) {
-      .card {
-        padding: 26px 18px 22px;
-        min-height: 360px;
-      }
-
-      .audio-btn {
-        top: 14px;
-        right: 16px;
-      }
-
-      .word-big {
-        font-size: 54px;
-      }
-
-      .meaning-big {
-        font-size: 30px;
-      }
-
-      .question-title {
-        font-size: 26px;
-      }
-
-      .sentence-en {
-        font-size: 22px;
-      }
-
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      .bottom-bar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-
-      .bottom-buttons {
-        justify-content: flex-end;
-      }
-    }
-  </style>
-</head>
-<body>
-<div class="page">
-  <div class="path" id="topPath"></div>
-  <h1 class="main-title" id="mainTitle">단어 학습 1-1</h1>
-
-  <div class="top-bar">
-    <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="study">
-        <span class="icon">📚</span> 어휘 학습
-      </button>
-      <button class="mode-tab" data-mode="meaning">
-        <span class="icon">✅</span> 뜻 찾기
-      </button>
-      <button class="mode-tab" data-mode="english">
-        <span class="icon">🔤</span> 영어 찾기
-      </button>
-      <button class="mode-tab" data-mode="listening">
-        <span class="icon">🎧</span> 듣고 찾기
-      </button>
-      <button class="mode-tab" data-mode="sentence">
-        <span class="icon">✏️</span> 문장 빈칸
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <!-- 다시 듣기 버튼을 카드 안 오른쪽 위로 이동 -->
-    <button class="audio-btn" id="replayBtn">
-      <span class="icon">🔊</span> 다시 듣기
-    </button>
-
-    <div class="center-area" id="centerArea">
-      <!-- 내용은 JS로 채움 -->
-    </div>
-
-    <div class="bottom-bar">
-      <div class="progress" id="progressText">1 / 1</div>
-      <div class="bottom-buttons">
-        <button class="nav-btn prev" id="prevBtn">이전</button>
-        <button class="nav-btn next" id="nextBtn">다음</button>
-        <button class="nav-btn study-back" id="studyBtn">어휘 학습</button>
-      </div>
-    </div>
-  </div>
-</div>
+    <div class="bottom-bar">  
+      <div id="progressText">1 / 1</div>  
+      <div class="bottom-buttons">  
+        <button class="nav-btn prev" id="prevBtn">이전</button>  
+        <button class="nav-btn next" id="nextBtn">다음</button>  
+        <button class="nav-btn study-back" id="studyBtn">어휘 학습</button>  
+      </div>  
+    </div>  
+  </div>  
+</div>  
 
 <script>
-  /**********************
-   *  단어 데이터 (예시)
-   **********************/
-  const WORD_SETS = {
-    "1-1": [
-      {
-        word: "at",
-        meaning: "~에",
-        exampleEn: "I get up at 7 o'clock.",
-        exampleKo: "나는 7시 정각에 일어나.",
-      },
-      {
-        word: "bat",
-        meaning: "야구방망이, 박쥐",
-        exampleEn: "I have a bat.",
-        exampleKo: "나는 야구 방망이를 가지고 있어.",
-      },
-      {
-        word: "fat",
-        meaning: "뚱뚱한, 살찐",
-        exampleEn: "a fat cat",
-        exampleKo: "뚱뚱한 고양이",
-      },
-      {
-        word: "hat",
-        meaning: "모자",
-        exampleEn: "a yellow hat",
-        exampleKo: "노란색 모자",
-      },
-      {
-        word: "chat",
-        meaning: "이야기하다, 수다 떨다",
-        exampleEn: "I like to chat.",
-        exampleKo: "나는 이야기하는 것을 좋아해.",
-      },
-      {
-        word: "act",
-        meaning: "행동하다, 연기하다",
-        exampleEn: "act like a kid",
-        exampleKo: "아이처럼 행동하다",
-      },
-      {
-        word: "fact",
-        meaning: "사실",
-        exampleEn: "a clear fact",
-        exampleKo: "분명한 사실",
-      },
-      {
-        word: "fan",
-        meaning: "팬, 선풍기",
-        exampleEn: "a big fan",
-        exampleKo: "큰 선풍기",
-      },
-      {
-        word: "man",
-        meaning: "남자, 사람",
-        exampleEn: "an old man",
-        exampleKo: "나이 든 남자",
-      },
-      {
-        word: "pants",
-        meaning: "바지",
-        exampleEn: "blue pants",
-        exampleKo: "파란색 바지",
-      },
-    ],
+/* -------------------------------
+      ① URL → unitKey 보정
+-------------------------------- */
+const params = new URLSearchParams(window.location.search);
+let stage = params.get("stage") || "1";
+let unitKey = params.get("unit") || "1-1";
+
+/* 숫자만 들어오는 오류 방지 → "1" → "1-1" 자동 변환 */
+if (/^\d+$/.test(unitKey)) {
+  unitKey = `${unitKey}-1`;
+}
+
+/* -------------------------------
+      ② 단어 데이터
+-------------------------------- */
+const WORD_SETS = {
+  "1-1": [
+    { word: "at", meaning: "~에", exampleEn: "I get up at 7 o'clock.", exampleKo: "나는 7시 정각에 일어나." },
+    { word: "bat", meaning: "야구방망이, 박쥐", exampleEn: "I have a bat.", exampleKo: "나는 야구 방망이를 가지고 있어." },
+    { word: "fat", meaning: "뚱뚱한, 살찐", exampleEn: "a fat cat", exampleKo: "뚱뚱한 고양이" },
+    { word: "hat", meaning: "모자", exampleEn: "a yellow hat", exampleKo: "노란색 모자" },
+    { word: "chat", meaning: "이야기하다, 수다 떨다", exampleEn: "I like to chat.", exampleKo: "나는 이야기하는 것을 좋아해." },
+    { word: "act", meaning: "행동하다, 연기하다", exampleEn: "act like a kid", exampleKo: "아이처럼 행동하다" },
+    { word: "fact", meaning: "사실", exampleEn: "a clear fact", exampleKo: "분명한 사실" },
+    { word: "fan", meaning: "팬, 선풍기", exampleEn: "a big fan", exampleKo: "큰 선풍기" },
+    { word: "man", meaning: "남자, 사람", exampleEn: "an old man", exampleKo: "나이 든 남자" },
+    { word: "pants", meaning: "바지", exampleEn: "blue pants", exampleKo: "파란색 바지" }
+  ]
+};
+
+const words = WORD_SETS[unitKey];
+const wordCount = words.length;
+
+/* -------------------------------
+      ③ DOM 연결
+-------------------------------- */
+document.getElementById("mainTitle").textContent = `단어 학습 ${unitKey}`;
+
+const centerArea = document.getElementById("centerArea");
+const progressText = document.getElementById("progressText");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const studyBtn = document.getElementById("studyBtn");
+const replayBtn = document.getElementById("replayBtn");
+const modeTabs = document.querySelectorAll(".mode-tab");
+
+let currentMode = "study";
+let currentIndex = 0;
+
+/* 정답 저장 */
+const solved = {
+  meaning: Array(wordCount).fill(false),
+  english: Array(wordCount).fill(false),
+  listening: Array(wordCount).fill(false),
+  sentence: Array(wordCount).fill(false),
+};
+
+/* -------------------------------
+      ④ 공통 함수
+-------------------------------- */
+function speakWordTwice(word) {
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  const u1 = new SpeechSynthesisUtterance(word);
+  const u2 = new SpeechSynthesisUtterance(word);
+  u1.lang = "en-US";
+  u2.lang = "en-US";
+
+  u1.onend = () => {
+    setTimeout(() => synth.speak(u2), 1500);
   };
+  synth.speak(u1);
+}
 
-  const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage") || "1";
-  const unitKey = params.get("unit") || "1-1";
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-  const words = WORD_SETS[unitKey] || WORD_SETS["1-1"];
-  const wordCount = words.length;
+function makeChoices(correctIndex) {
+  const others = [...Array(wordCount).keys()].filter(i => i !== correctIndex);
+  return shuffle([correctIndex, ...shuffle(others).slice(0, 3)]);
+}
 
-  const topPathText = document.getElementById("topPath");
-  const mainTitle = document.getElementById("mainTitle");
-  topPathText.textContent = ""; // 안씀
-  mainTitle.textContent = `단어 학습 ${unitKey}`;
+function updateProgress() {
+  progressText.textContent = `${currentIndex + 1} / ${wordCount}`;
+}
 
-  const centerArea = document.getElementById("centerArea");
-  const progressText = document.getElementById("progressText");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const studyBtn = document.getElementById("studyBtn");
-  const replayBtn = document.getElementById("replayBtn");
-  const modeTabs = document.querySelectorAll(".mode-tab");
+/* -------------------------------
+      ⑤ 모드 렌더링
+-------------------------------- */
+function renderStudy() {
+  const item = words[currentIndex];
+  centerArea.innerHTML = `
+      <div class="word-big">${item.word}</div>
+      <div class="meaning-big">${item.meaning}</div>
+      <div class="example-en">${item.exampleEn}</div>
+      <div class="example-ko">${item.exampleKo}</div>
+  `;
+  updateProgress();
+  speakWordTwice(item.word);
+}
 
-  let currentMode = "study";
-  let currentIndex = 0;
+function renderMeaningQuiz() {
+  const item = words[currentIndex];
+  centerArea.innerHTML = `
+      <div class="question-title">${item.word}</div>
+      <div class="question-sub">영어를 보고 알맞은 한글 뜻을 골라요.</div>
+  `;
+  const grid = document.createElement("div");
+  grid.className = "choices-grid";
 
-  const solved = {
-    meaning: Array(wordCount).fill(false),
-    english: Array(wordCount).fill(false),
-    listening: Array(wordCount).fill(false),
-    sentence: Array(wordCount).fill(false),
-  };
-
-  let currentChoices = [];
-  let locked = false;
-
-  function speakWordTwice(word) {
-    if (!("speechSynthesis" in window)) return;
-
-    const synth = window.speechSynthesis;
-    synth.cancel();
-
-    const u1 = new SpeechSynthesisUtterance(word);
-    const u2 = new SpeechSynthesisUtterance(word);
-    u1.lang = "en-US";
-    u2.lang = "en-US";
-
-    u1.onend = () => {
-      setTimeout(() => synth.speak(u2), 1500);
+  makeChoices(currentIndex).forEach(idx => {
+    const ch = words[idx];
+    const btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.textContent = ch.meaning;
+    btn.onclick = () => {
+      if (idx === currentIndex) btn.classList.add("correct");
+      else btn.classList.add("wrong");
     };
+    grid.appendChild(btn);
+  });
 
-    synth.speak(u1);
-  }
+  centerArea.appendChild(grid);
+  updateProgress();
+}
 
-  function shuffle(array) {
-    const arr = array.slice();
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
+function renderEnglishQuiz() {
+  const item = words[currentIndex];
+  centerArea.innerHTML = `
+      <div class="question-title">${item.meaning}</div>
+      <div class="question-sub">한글 뜻을 보고 알맞은 영어를 골라요.</div>
+  `;
 
-  function makeChoices(correctIndex) {
-    const indices = [...Array(wordCount).keys()].filter(i => i !== correctIndex);
-    const picked = shuffle(indices).slice(0, 3);
-    const all = [correctIndex, ...picked];
-    return shuffle(all);
-  }
+  const grid = document.createElement("div");
+  grid.className = "choices-grid";
 
-  function updateProgress() {
-    progressText.textContent = `${currentIndex + 1} / ${wordCount}`;
-  }
+  makeChoices(currentIndex).forEach(idx => {
+    const ch = words[idx];
+    const btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.textContent = ch.word;
+    btn.onclick = () => {
+      if (idx === currentIndex) btn.classList.add("correct");
+      else btn.classList.add("wrong");
+    };
+    grid.appendChild(btn);
+  });
 
-  function updateScoreMessage(mode, container) {
-    if (!["meaning", "english", "listening", "sentence"].includes(mode)) return;
-    let allSolved = solved[mode].every(v => v === true);
+  centerArea.appendChild(grid);
+  updateProgress();
+}
 
-    let msg = container.querySelector(".score-message");
-    if (!msg) {
-      msg = document.createElement("div");
-      msg.className = "score-message";
-      container.appendChild(msg);
-    }
+function renderListeningQuiz() {
+  const item = words[currentIndex];
 
-    if (allSolved) {
-      msg.textContent = "모든 문제를 다 맞혔어요! 점수는 100점 🎉";
+  centerArea.innerHTML = `
+      <div class="question-title">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
+      <div class="question-sub"></div>
+  `;
+
+  const grid = document.createElement("div");
+  grid.className = "choices-grid";
+
+  makeChoices(currentIndex).forEach(idx => {
+    const ch = words[idx];
+    const btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.textContent = ch.meaning;
+    btn.onclick = () => {
+      if (idx === currentIndex) btn.classList.add("correct");
+      else btn.classList.add("wrong");
+    };
+    grid.appendChild(btn);
+  });
+
+  centerArea.appendChild(grid);
+  updateProgress();
+  speakWordTwice(item.word);
+}
+
+function renderSentenceQuiz() {
+  const item = words[currentIndex];
+  const blank = item.exampleEn.replace(new RegExp(item.word, "i"), "____");
+
+  centerArea.innerHTML = `
+      <div class="sentence-en">${blank}</div>
+      <div class="sentence-ko">${item.exampleKo}</div>
+  `;
+
+  const input = document.createElement("input");
+  input.className = "sentence-input";
+
+  const checkBtn = document.createElement("button");
+  checkBtn.className = "check-btn";
+  checkBtn.textContent = "확인";
+
+  checkBtn.onclick = () => {
+    const v = input.value.trim().toLowerCase();
+    if (v === item.word.toLowerCase()) {
+      input.style.background = "#f0fdf4";
+      input.style.borderColor = "#22c55e";
     } else {
-      msg.textContent = "";
+      input.style.background = "#fef2f2";
+      input.style.borderColor = "#f97373";
     }
-  }
+  };
 
-  function renderStudy() {
-    const item = words[currentIndex];
-    centerArea.innerHTML = "";
+  const row = document.createElement("div");
+  row.style.display = "flex";
+  row.style.gap = "10px";
+  row.appendChild(input);
+  row.appendChild(checkBtn);
 
-    const wordDiv = document.createElement("div");
-    wordDiv.className = "word-big";
-    wordDiv.textContent = item.word;
+  centerArea.appendChild(row);
+  updateProgress();
+}
 
-    const meaningDiv = document.createElement("div");
-    meaningDiv.className = "meaning-big";
-    meaningDiv.textContent = item.meaning;
+/* -------------------------------
+      ⑥ 모드/버튼 이동
+-------------------------------- */
+function render() {
+  modeTabs.forEach(t => t.classList.toggle("active", t.dataset.mode === currentMode));
 
-    const exEn = document.createElement("div");
-    exEn.className = "example-en";
-    exEn.textContent = item.exampleEn;
+  if (currentMode === "study") renderStudy();
+  if (currentMode === "meaning") renderMeaningQuiz();
+  if (currentMode === "english") renderEnglishQuiz();
+  if (currentMode === "listening") renderListeningQuiz();
+  if (currentMode === "sentence") renderSentenceQuiz();
+}
 
-    const exKo = document.createElement("div");
-    exKo.className = "example-ko";
-    exKo.textContent = item.exampleKo;
-
-    centerArea.appendChild(wordDiv);
-    centerArea.appendChild(meaningDiv);
-    centerArea.appendChild(exEn);
-    centerArea.appendChild(exKo);
-
-    updateProgress();
-    speakWordTwice(item.word);
-  }
-
-  function renderMeaningQuiz() {
-    const item = words[currentIndex];
-    locked = false;
-    centerArea.innerHTML = "";
-
-    const title = document.createElement("div");
-    title.className = "question-title";
-    title.textContent = item.word;
-
-    const sub = document.createElement("div");
-    sub.className = "question-sub";
-    sub.textContent = "영어를 보고 알맞은 한글 뜻을 골라요.";
-
-    const grid = document.createElement("div");
-    grid.className = "choices-grid";
-
-    const choiceIndices = makeChoices(currentIndex);
-    currentChoices = [];
-
-    choiceIndices.forEach(idx => {
-      const chItem = words[idx];
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = chItem.meaning;
-      btn.addEventListener("click", () => {
-        if (locked) return;
-        if (idx === currentIndex) {
-          btn.classList.remove("wrong");
-          btn.classList.add("correct");
-          solved.meaning[currentIndex] = true;
-        } else {
-          btn.classList.add("wrong");
-        }
-        locked = true;
-        updateScoreMessage("meaning", centerArea);
-      });
-      grid.appendChild(btn);
-      currentChoices.push(btn);
-    });
-
-    centerArea.appendChild(title);
-    centerArea.appendChild(sub);
-    centerArea.appendChild(grid);
-
-    updateProgress();
-  }
-
-  function renderEnglishQuiz() {
-    const item = words[currentIndex];
-    locked = false;
-    centerArea.innerHTML = "";
-
-    const title = document.createElement("div");
-    title.className = "question-title";
-    title.textContent = item.meaning;
-
-    const sub = document.createElement("div");
-    sub.className = "question-sub";
-    sub.textContent = "한글 뜻을 보고 알맞은 영어를 골라요.";
-
-    const grid = document.createElement("div");
-    grid.className = "choices-grid";
-
-    const choiceIndices = makeChoices(currentIndex);
-    currentChoices = [];
-
-    choiceIndices.forEach(idx => {
-      const chItem = words[idx];
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = chItem.word;
-      btn.addEventListener("click", () => {
-        if (locked) return;
-        if (idx === currentIndex) {
-          btn.classList.remove("wrong");
-          btn.classList.add("correct");
-          solved.english[currentIndex] = true;
-        } else {
-          btn.classList.add("wrong");
-        }
-        locked = true;
-        updateScoreMessage("english", centerArea);
-      });
-      grid.appendChild(btn);
-      currentChoices.push(btn);
-    });
-
-    centerArea.appendChild(title);
-    centerArea.appendChild(sub);
-    centerArea.appendChild(grid);
-
-    updateProgress();
-  }
-
-  function renderListeningQuiz() {
-    const item = words[currentIndex];
-    locked = false;
-    centerArea.innerHTML = "";
-
-    const title = document.createElement("div");
-    title.className = "question-title";
-    title.textContent = "발음을 듣고 어떤 단어인지 맞혀 보아요.";
-
-    const sub = document.createElement("div");
-    sub.className = "question-sub";
-    sub.textContent = "";
-
-    const grid = document.createElement("div");
-    grid.className = "choices-grid";
-
-    const choiceIndices = makeChoices(currentIndex);
-    currentChoices = [];
-
-    choiceIndices.forEach(idx => {
-      const chItem = words[idx];
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = chItem.meaning;
-      btn.addEventListener("click", () => {
-        if (locked) return;
-        if (idx === currentIndex) {
-          btn.classList.remove("wrong");
-          btn.classList.add("correct");
-          solved.listening[currentIndex] = true;
-        } else {
-          btn.classList.add("wrong");
-        }
-        locked = true;
-        updateScoreMessage("listening", centerArea);
-      });
-      grid.appendChild(btn);
-      currentChoices.push(btn);
-    });
-
-    centerArea.appendChild(title);
-    centerArea.appendChild(sub);
-    centerArea.appendChild(grid);
-
-    updateProgress();
-    speakWordTwice(item.word);
-  }
-
-  function renderSentenceQuiz() {
-    const item = words[currentIndex];
-    locked = false;
-    centerArea.innerHTML = "";
-
-    const sentenceEn = document.createElement("div");
-    sentenceEn.className = "sentence-en";
-    const blanked = item.exampleEn.replace(new RegExp(item.word, "i"), "____");
-    sentenceEn.textContent = blanked;
-
-    const sentenceKo = document.createElement("div");
-    sentenceKo.className = "sentence-ko";
-    sentenceKo.textContent = item.exampleKo;
-
-    const inputRow = document.createElement("div");
-    inputRow.className = "input-row";
-
-    const input = document.createElement("input");
-    input.className = "sentence-input";
-    input.placeholder = "정답 단어를 써 보세요";
-
-    const checkBtn = document.createElement("button");
-    checkBtn.className = "check-btn";
-    checkBtn.textContent = "확인";
-
-    const helper = document.createElement("div");
-    helper.className = "helper-text";
-    helper.textContent = "정답을 쓰고 Enter 또는 스페이스를 눌러도 돼요.";
-
-    function checkAnswer() {
-      if (locked) return;
-      const val = input.value.trim().toLowerCase();
-      if (!val) return;
-      if (val === item.word.toLowerCase()) {
-        input.style.borderColor = "#22c55e";
-        input.style.background = "#f0fdf4";
-        solved.sentence[currentIndex] = true;
-      } else {
-        input.style.borderColor = "#f97373";
-        input.style.background = "#fef2f2";
-      }
-      locked = true;
-      updateScoreMessage("sentence", centerArea);
-    }
-
-    checkBtn.addEventListener("click", checkAnswer);
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        checkAnswer();
-      }
-    });
-
-    inputRow.appendChild(input);
-    inputRow.appendChild(checkBtn);
-
-    centerArea.appendChild(sentenceEn);
-    centerArea.appendChild(sentenceKo);
-    centerArea.appendChild(inputRow);
-    centerArea.appendChild(helper);
-
-    updateProgress();
-  }
-
-  function render() {
-    modeTabs.forEach(tab => {
-      tab.classList.toggle("active", tab.dataset.mode === currentMode);
-    });
-
-    if (currentMode === "study") renderStudy();
-    else if (currentMode === "meaning") renderMeaningQuiz();
-    else if (currentMode === "english") renderEnglishQuiz();
-    else if (currentMode === "listening") renderListeningQuiz();
-    else if (currentMode === "sentence") renderSentenceQuiz();
-  }
-
-  modeTabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      currentMode = tab.dataset.mode;
-      render();
-    });
-  });
-
-  prevBtn.addEventListener("click", () => {
-    currentIndex = (currentIndex - 1 + wordCount) % wordCount;
+modeTabs.forEach(tab => {
+  tab.onclick = () => {
+    currentMode = tab.dataset.mode;
     render();
-  });
+  };
+});
 
-  nextBtn.addEventListener("click", () => {
-    currentIndex = (currentIndex + 1) % wordCount;
-    render();
-  });
-
-  studyBtn.addEventListener("click", () => {
-    currentMode = "study";
-    render();
-  });
-
-  replayBtn.addEventListener("click", () => {
-    const item = words[currentIndex];
-    speakWordTwice(item.word);
-  });
-
+prevBtn.onclick = () => {
+  currentIndex = (currentIndex - 1 + wordCount) % wordCount;
   render();
+};
+nextBtn.onclick = () => {
+  currentIndex = (currentIndex + 1) % wordCount;
+  render();
+};
+studyBtn.onclick = () => {
+  currentMode = "study";
+  render();
+};
+
+replayBtn.onclick = () => speakWordTwice(words[currentIndex].word);
+
+/* -------------------------------
+      최초 실행
+-------------------------------- */
+render();
 </script>
-</body>
+
+</body>  
 </html>
