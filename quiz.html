@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>1단계 - 1-1 유닛</title>
+<title>학습 선택</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
 
 <style>
@@ -14,65 +14,66 @@
   }
 
   .container {
-    max-width: 1100px;
+    max-width: 900px;
     margin: 40px auto;
     padding: 0 20px;
   }
 
-  h1 {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 6px;
-  }
-
   .subtitle {
-    font-size: 17px;
+    font-size: 16px;
     color: #666;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
   }
 
-  /* 카드 디자인 */
   .menu-card {
     background: #ffffff;
-    border-radius: 22px;
-    padding: 22px;
-    box-shadow: 0px 6px 16px rgba(0,0,0,0.05);
-    margin-bottom: 22px;
-    cursor: pointer;
-    transition: 0.15s;
+    border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     gap: 18px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: 0.15s ease;
   }
 
   .menu-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0px 12px 26px rgba(0,0,0,0.10);
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.12);
   }
 
   .menu-icon {
     font-size: 32px;
+    width: 40px;
+    text-align: center;
   }
 
   .menu-title {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
   }
 
   .menu-desc {
-    font-size: 15px;
-    color: #666;
-    margin-top: 3px;
+    font-size: 14px;
+    color: #777;
   }
-</style>
-</head>
 
+</style>
+
+</head>
 <body>
+
 <div class="container">
-  <h1 id="title">1-1 학습</h1>
+  
+  <!-- 작은 파란 네비게이션 (원하면 삭제 가능) -->
+  <div id="navText" style="color:#4b7bff; font-size:15px; margin-bottom:6px;"></div>
+
+  <!-- 큰 제목은 삭제됨 -->
+
   <div class="subtitle">어떤 방식으로 연습할지 골라 보세요.</div>
 
-  <!-- 1. 어휘 학습 -->
+  <!-- 메뉴 카드들 -->
   <div class="menu-card" onclick="alert('어휘 학습 실행 예정')">
     <div class="menu-icon">📚</div>
     <div>
@@ -81,16 +82,14 @@
     </div>
   </div>
 
-  <!-- 2. 뜻 찾기 -->
   <div class="menu-card" onclick="alert('뜻 찾기 실행 예정')">
-    <div class="menu-icon">✔️</div>  <!-- 여기 수정됨 -->
+    <div class="menu-icon">✔️</div> <!-- 물음표 → 체크 아이콘 -->
     <div>
       <div class="menu-title">2. 뜻 찾기</div>
       <div class="menu-desc">한국어 뜻을 보고 알맞은 영어 단어를 골라요.</div>
     </div>
   </div>
 
-  <!-- 3. 영어 찾기 -->
   <div class="menu-card" onclick="alert('영어 찾기 실행 예정')">
     <div class="menu-icon">🔤</div>
     <div>
@@ -99,7 +98,6 @@
     </div>
   </div>
 
-  <!-- 4. 듣고 찾기 -->
   <div class="menu-card" onclick="alert('듣고 찾기 실행 예정')">
     <div class="menu-icon">🎧</div>
     <div>
@@ -108,8 +106,7 @@
     </div>
   </div>
 
-  <!-- 5. 문장에서 빈칸 받아쓰기 -->
-  <div class="menu-card" onclick="alert('문장에서 빈칸 받아쓰기 실행 예정')">
+  <div class="menu-card" onclick="alert('받아쓰기 실행 예정')">
     <div class="menu-icon">✏️</div>
     <div>
       <div class="menu-title">5. 문장에서 빈칸 받아쓰기</div>
@@ -117,8 +114,16 @@
     </div>
   </div>
 
-  <!-- 🔥 여기 있던 불필요한 설명 박스는 삭제됨 -->
 </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const stage = params.get("stage");
+  const unit = params.get("unit");
+
+  // 상단 작은 네비 텍스트만 표시
+  document.getElementById("navText").innerText = `${stage}단계 · ${stage}-${unit} 유닛`;
+</script>
 
 </body>
 </html>
