@@ -1,273 +1,124 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>단계별 학습</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
+<meta charset="UTF-8">
+<title>1단계 - 1-1 유닛</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
 
-  <style>
-    body {
-      font-family: "Pretendard Variable", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f7f8fc;
-      color: #111827;
-    }
+<style>
+  body {
+    font-family: "Pretendard Variable", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f7f8fc;
+  }
 
-    .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 0 20px 40px;
-    }
+  .container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
 
-    /* 상단 제목 영역 */
-    .header {
-      margin-bottom: 30px;
-    }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
 
-    .stage-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: #4b7bff;
-      margin-bottom: 6px;
-    }
+  .subtitle {
+    font-size: 17px;
+    color: #666;
+    margin-bottom: 30px;
+  }
 
-    h1 {
-      font-size: 30px;
-      font-weight: 800;
-      margin: 0 0 6px;
-    }
+  /* 카드 디자인 */
+  .menu-card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0px 6px 16px rgba(0,0,0,0.05);
+    margin-bottom: 22px;
+    cursor: pointer;
+    transition: 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
 
-    .subtitle {
-      font-size: 16px;
-      color: #666;
-      margin: 0;
-    }
+  .menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 12px 26px rgba(0,0,0,0.10);
+  }
 
-    /* 모드 카드 리스트 (세로 직사각형 5개) */
-    .mode-list {
-      margin-top: 34px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+  .menu-icon {
+    font-size: 32px;
+  }
 
-    .mode-card {
-      display: flex;
-      align-items: center;
-      padding: 18px 22px;
-      border-radius: 18px;
-      background: #ffffff;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: 0.18s ease;
-    }
+  .menu-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
 
-    .mode-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 26px rgba(0,0,0,0.12);
-    }
-
-    .mode-icon {
-      font-size: 26px;
-      margin-right: 16px;
-      flex-shrink: 0;
-    }
-
-    .mode-text-main {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .mode-text-sub {
-      font-size: 14px;
-      color: #777;
-    }
-
-    /* 선택된 모드 표시 */
-    .mode-card.active {
-      border: 2px solid #4b7bff;
-      box-shadow: 0 10px 28px rgba(75,123,255,0.28);
-    }
-
-    /* 아래 실제 학습 영역 (일단 템플릿만) */
-    .learning-panel {
-      margin-top: 28px;
-      padding: 24px 22px;
-      border-radius: 20px;
-      background: linear-gradient(145deg,#ffffff,#f3f5ff);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-      min-height: 140px;
-    }
-
-    .panel-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .panel-desc {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    .panel-placeholder {
-      font-size: 14px;
-      color: #999;
-    }
-
-    @media (max-width: 600px) {
-      .mode-card {
-        padding: 16px 16px;
-      }
-    }
-  </style>
+  .menu-desc {
+    font-size: 15px;
+    color: #666;
+    margin-top: 3px;
+  }
+</style>
 </head>
+
 <body>
-
 <div class="container">
-  <!-- 상단 정보 -->
-  <div class="header">
-    <div class="stage-label" id="stageLabel"></div>
-    <h1 id="title">단계 학습</h1>
-    <p class="subtitle" id="subTitle">학습할 방식을 선택하세요.</p>
-  </div>
+  <h1 id="title">1-1 학습</h1>
+  <div class="subtitle">어떤 방식으로 연습할지 골라 보세요.</div>
 
-  <!-- 5가지 모드 카드 -->
-  <div class="mode-list">
-    <div class="mode-card active" data-mode="vocab">
-      <div class="mode-icon">📚</div>
-      <div>
-        <div class="mode-text-main">1. 어휘 학습</div>
-        <div class="mode-text-sub">영어 + 뜻을 함께 보고, 영어 발음을 두 번 들어요.</div>
-      </div>
-    </div>
-
-    <div class="mode-card" data-mode="meaning">
-      <div class="mode-icon">❓</div>
-      <div>
-        <div class="mode-text-main">2. 뜻 찾기</div>
-        <div class="mode-text-sub">한국어 뜻을 보고 알맞은 영어 단어를 골라요.</div>
-      </div>
-    </div>
-
-    <div class="mode-card" data-mode="spelling">
-      <div class="mode-icon">🔤</div>
-      <div>
-        <div class="mode-text-main">3. 영어 찾기</div>
-        <div class="mode-text-sub">영어 철자를 직접 써 보면서 익혀요.</div>
-      </div>
-    </div>
-
-    <div class="mode-card" data-mode="listening">
-      <div class="mode-icon">🎧</div>
-      <div>
-        <div class="mode-text-main">4. 듣고 찾기</div>
-        <div class="mode-text-sub">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
-      </div>
-    </div>
-
-    <div class="mode-card" data-mode="dictation">
-      <div class="mode-icon">✏️</div>
-      <div>
-        <div class="mode-text-main">5. 문장에서 빈칸 받아쓰기</div>
-        <div class="mode-text-sub">짧은 문장을 듣고 빈칸에 알맞은 단어를 써요.</div>
-      </div>
+  <!-- 1. 어휘 학습 -->
+  <div class="menu-card" onclick="alert('어휘 학습 실행 예정')">
+    <div class="menu-icon">📚</div>
+    <div>
+      <div class="menu-title">1. 어휘 학습</div>
+      <div class="menu-desc">영어 + 뜻을 함께 보고, 영어 발음을 두 번 들어요.</div>
     </div>
   </div>
 
-  <!-- 아래 실제 학습 패널(지금은 템플릿/설명만) -->
-  <div class="learning-panel" id="learningPanel">
-    <div class="panel-title" id="panelTitle">어휘 학습 (준비 화면)</div>
-    <div class="panel-desc" id="panelDesc">
-      이 단계에서는 단어를 영어와 한글 뜻을 함께 보면서,  
-      영어 발음을 자동으로 두 번 들을 수 있게 만들 예정이에요.
-    </div>
-    <div class="panel-placeholder">
-      👉 지금은 구조만 먼저 만들었어요.<br>
-      다음 단계에서 1-1, 1-2마다 단어 데이터를 넣고,<br>
-      스피커 아이콘 없이 자동으로 발음이 재생되도록 기능을 추가하면 돼요.
+  <!-- 2. 뜻 찾기 -->
+  <div class="menu-card" onclick="alert('뜻 찾기 실행 예정')">
+    <div class="menu-icon">✔️</div>  <!-- 여기 수정됨 -->
+    <div>
+      <div class="menu-title">2. 뜻 찾기</div>
+      <div class="menu-desc">한국어 뜻을 보고 알맞은 영어 단어를 골라요.</div>
     </div>
   </div>
+
+  <!-- 3. 영어 찾기 -->
+  <div class="menu-card" onclick="alert('영어 찾기 실행 예정')">
+    <div class="menu-icon">🔤</div>
+    <div>
+      <div class="menu-title">3. 영어 찾기</div>
+      <div class="menu-desc">영어 철자를 직접 써 보면서 익혀요.</div>
+    </div>
+  </div>
+
+  <!-- 4. 듣고 찾기 -->
+  <div class="menu-card" onclick="alert('듣고 찾기 실행 예정')">
+    <div class="menu-icon">🎧</div>
+    <div>
+      <div class="menu-title">4. 듣고 찾기</div>
+      <div class="menu-desc">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
+    </div>
+  </div>
+
+  <!-- 5. 문장에서 빈칸 받아쓰기 -->
+  <div class="menu-card" onclick="alert('문장에서 빈칸 받아쓰기 실행 예정')">
+    <div class="menu-icon">✏️</div>
+    <div>
+      <div class="menu-title">5. 문장에서 빈칸 받아쓰기</div>
+      <div class="menu-desc">짧은 문장을 듣고 빈칸에 알맞은 단어를 써요.</div>
+    </div>
+  </div>
+
+  <!-- 🔥 여기 있던 불필요한 설명 박스는 삭제됨 -->
 </div>
-
-<script>
-  // URL 파라미터(stage, unit) 읽기
-  const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage") || "1";
-  const unit = params.get("unit") || "1";
-
-  // 상단 문구 업데이트
-  const stageLabel = document.getElementById("stageLabel");
-  const title = document.getElementById("title");
-  const subTitle = document.getElementById("subTitle");
-
-  stageLabel.innerText = `${stage}단계 · ${stage}-${unit} 유닛`;
-  title.innerText = `${stage}-${unit} 학습`;
-  subTitle.innerText = "어떤 방식으로 연습할지 골라 보세요.";
-
-  const learningPanel = document.getElementById("learningPanel");
-  const panelTitle = document.getElementById("panelTitle");
-  const panelDesc = document.getElementById("panelDesc");
-  const placeholder = document.querySelector(".panel-placeholder");
-
-  // 모드 카드 클릭 시 UI만 바꿔주는 부분 (실제 기능은 다음 단계에서 채우기)
-  const modeCards = document.querySelectorAll(".mode-card");
-
-  modeCards.forEach(card => {
-    card.addEventListener("click", () => {
-      const mode = card.getAttribute("data-mode");
-
-      // active 클래스 이동
-      modeCards.forEach(c => c.classList.remove("active"));
-      card.classList.add("active");
-
-      switch (mode) {
-        case "vocab":
-          panelTitle.innerText = "어휘 학습";
-          panelDesc.innerText =
-            "영어 단어와 한국어 뜻을 함께 보고, 영어 발음을 자동으로 두 번 들을 수 있게 만들 거예요.";
-          placeholder.innerHTML =
-            "지금은 템플릿 단계예요 😊<br>나중에 이 자리에 단어 카드와 자동 발음 기능이 들어가요.";
-          break;
-
-        case "meaning":
-          panelTitle.innerText = "뜻 찾기";
-          panelDesc.innerText =
-            "한국어 뜻을 보고, 여러 보기 중에서 알맞은 영어 단어를 고르는 게임으로 만들 수 있어요.";
-          placeholder.innerHTML =
-            "여기엔 객관식 버튼(보기)들이 들어갈 예정이에요.<br>아이가 클릭하면 정답/오답 피드백을 줄 수 있어요.";
-          break;
-
-        case "spelling":
-          panelTitle.innerText = "영어 찾기";
-          panelDesc.innerText =
-            "단어의 뜻이나 그림을 보고, 영어 철자를 직접 입력해 보도록 만들 수 있어요.";
-          placeholder.innerHTML =
-            "여기엔 입력창과 '정답 확인' 버튼이 들어갈 예정이에요.";
-          break;
-
-        case "listening":
-          panelTitle.innerText = "듣고 찾기";
-          panelDesc.innerText =
-            "발음을 먼저 들려주고, 아이가 어떤 단어인지 맞히는 활동을 넣을 수 있어요.";
-          placeholder.innerHTML =
-            "SpeechSynthesis(음성 읽기)를 이용해서 자동 재생하도록 만들 수 있어요.";
-          break;
-
-        case "dictation":
-          panelTitle.innerText = "문장에서 빈칸 받아쓰기";
-          panelDesc.innerText =
-            "짧은 문장 속에서 특정 단어만 빈칸으로 가리고, 들으면서 써 보는 활동이에요.";
-          placeholder.innerHTML =
-            "문장 텍스트 + 빈칸 입력칸 + 정답 확인 기능이 들어갈 자리에요.";
-          break;
-      }
-    });
-  });
-</script>
 
 </body>
 </html>
