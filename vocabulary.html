@@ -31,16 +31,15 @@
     margin-bottom: 30px;
   }
 
-  /* 1~50 번호 카드 컨테이너 */
+  /* 번호 카드 컨테이너 */
   .number-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 26px;
   }
 
-  /* 카드 스타일 (메인 화면과 완전히 동일) */
+  /* 카드 스타일 (메인 카드 스타일과 동일) */
   .menu-card {
-    background: #ffffff;
     border-radius: 28px;
     box-shadow: 0px 6px 20px rgba(0,0,0,0.07);
     height: 140px;
@@ -79,22 +78,37 @@
   <h1>어휘 학습</h1>
   <div class="subtitle">학습할 단계를 선택하세요.</div>
 
-  <!-- 번호 카드를 넣을 공간 -->
   <div class="number-grid"></div>
 </div>
 
 <script>
-  // 1~50 숫자 카드 생성
   const grid = document.querySelector(".number-grid");
+
+  // 번호 구간별 색상
+  function getColor(num) {
+    if (num <= 5) return "#DCEAFE";      // 파랑
+    if (num <= 10) return "#E6F5D6";     // 연두
+    if (num <= 15) return "#FFE4E1";     // 핑크
+    if (num <= 20) return "#FFF7CC";     // 옐로우
+    if (num <= 25) return "#EFE6FF";     // 라벤더
+    if (num <= 30) return "#DFF8F2";     // 민트
+    if (num <= 35) return "#E0F3FF";     // 스카이블루
+    if (num <= 40) return "#EBF3FF";     // 연한 블루
+    if (num <= 45) return "#F3E8FF";     // 연보라
+    return "#FFEDE3";                    // 코랄 베이지
+  }
 
   for (let i = 1; i <= 50; i++) {
     const card = document.createElement("div");
     card.className = "menu-card";
     card.innerText = i;
 
-    // 클릭하면 단어 문제 페이지로 이동시키기 (나중에 만들 페이지)
+    // 배경색만 변경
+    card.style.background = getColor(i);
+
+    // 클릭 시 다음 페이지 이동
     card.onclick = () => {
-      window.location.href = `quiz.html?number=${i}`;
+      window.location.href = `levels.html?number=${i}`;
     };
 
     grid.appendChild(card);
