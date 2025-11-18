@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>어휘 학습</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
+
+<style>
+  body {
+    font-family: "Pretendard Variable", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fb;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+  }
+
+  /* 1~50 번호 카드 컨테이너 */
+  .number-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 26px;
+  }
+
+  /* 카드 스타일 (메인 화면과 완전히 동일) */
+  .menu-card {
+    background: #ffffff;
+    border-radius: 28px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.07);
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 38px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s ease;
+  }
+
+  .menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 24px rgba(0,0,0,0.12);
+  }
+
+  @media(max-width: 900px) {
+    .number-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media(max-width: 600px) {
+    .number-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+  <h1>어휘 학습</h1>
+  <div class="subtitle">공부할 번호를 선택하세요.</div>
+
+  <!-- 번호 카드를 넣을 공간 -->
+  <div class="number-grid"></div>
+</div>
+
+<script>
+  // 1~50 숫자 카드 생성
+  const grid = document.querySelector(".number-grid");
+
+  for (let i = 1; i <= 50; i++) {
+    const card = document.createElement("div");
+    card.className = "menu-card";
+    card.innerText = i;
+
+    // 클릭하면 단어 문제 페이지로 이동시키기 (나중에 만들 페이지)
+    card.onclick = () => {
+      window.location.href = `quiz.html?number=${i}`;
+    };
+
+    grid.appendChild(card);
+  }
+</script>
+
+</body>
+</html>
