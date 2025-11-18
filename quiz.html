@@ -19,111 +19,91 @@
     padding: 0 20px;
   }
 
-  .subtitle {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 24px;
-  }
-
+  /* 메뉴 카드 */
   .menu-card {
     background: #ffffff;
     border-radius: 18px;
-    padding: 18px 22px;
-    margin-bottom: 14px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.06);
+    padding: 22px;
     display: flex;
     align-items: center;
-    gap: 18px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+    gap: 16px;
+    margin-bottom: 14px;
     cursor: pointer;
     transition: 0.15s ease;
   }
 
   .menu-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.12);
+    transform: translateY(-4px);
+    box-shadow: 0px 10px 28px rgba(0,0,0,0.12);
   }
 
   .menu-icon {
-    font-size: 32px;
-    width: 40px;
-    text-align: center;
+    width: 38px;
+    height: 38px;
   }
 
   .menu-title {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 700;
   }
 
   .menu-desc {
-    font-size: 14px;
-    color: #777;
+    font-size: 15px;
+    color: #666;
+    margin-top: 4px;
   }
-
 </style>
-
 </head>
+
 <body>
-
 <div class="container">
-  
-  <!-- 작은 파란 네비게이션 (원하면 삭제 가능) -->
-  <div id="navText" style="color:#4b7bff; font-size:15px; margin-bottom:6px;"></div>
 
-  <!-- 큰 제목은 삭제됨 -->
-
-  <div class="subtitle">어떤 방식으로 연습할지 골라 보세요.</div>
-
-  <!-- 메뉴 카드들 -->
-  <div class="menu-card" onclick="alert('어휘 학습 실행 예정')">
-    <div class="menu-icon">📚</div>
+  <!-- 메뉴 1 -->
+  <div class="menu-card">
+    <img class="menu-icon" src="https://img.icons8.com/emoji/48/books-emoji.png" />
     <div>
       <div class="menu-title">1. 어휘 학습</div>
       <div class="menu-desc">영어 + 뜻을 함께 보고, 영어 발음을 두 번 들어요.</div>
     </div>
   </div>
 
-  <div class="menu-card" onclick="alert('뜻 찾기 실행 예정')">
-    <div class="menu-icon">✔️</div> <!-- 물음표 → 체크 아이콘 -->
+  <!-- 메뉴 2 -->
+  <div class="menu-card">
+    <img class="menu-icon" src="https://img.icons8.com/color/48/checked-checkbox.png" />
     <div>
       <div class="menu-title">2. 뜻 찾기</div>
-      <div class="menu-desc">한국어 뜻을 보고 알맞은 영어 단어를 골라요.</div>
+      <div class="menu-desc">영어를 보고 알맞은 한글 뜻을 골라요.</div>
     </div>
   </div>
 
-  <div class="menu-card" onclick="alert('영어 찾기 실행 예정')">
-    <div class="menu-icon">🔤</div>
+  <!-- 메뉴 3 -->
+  <div class="menu-card">
+    <img class="menu-icon" src="https://img.icons8.com/color/48/abc.png" />
     <div>
       <div class="menu-title">3. 영어 찾기</div>
-      <div class="menu-desc">영어 철자를 직접 써 보면서 익혀요.</div>
+      <div class="menu-desc">한글 뜻을 보고 알맞은 영어를 골라요.</div>
     </div>
   </div>
 
-  <div class="menu-card" onclick="alert('듣고 찾기 실행 예정')">
-    <div class="menu-icon">🎧</div>
+  <!-- 메뉴 4 -->
+  <div class="menu-card">
+    <img class="menu-icon" src="https://img.icons8.com/color/48/headphones.png" />
     <div>
       <div class="menu-title">4. 듣고 찾기</div>
-      <div class="menu-desc">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
+      <div class="menu-desc">발음을 듣고 영어 단어를 골라요.</div>
     </div>
   </div>
 
-  <div class="menu-card" onclick="alert('받아쓰기 실행 예정')">
-    <div class="menu-icon">✏️</div>
+  <!-- 메뉴 5 -->
+  <div class="menu-card">
+    <img class="menu-icon" src="https://img.icons8.com/color/48/pencil.png" />
     <div>
       <div class="menu-title">5. 문장에서 빈칸 받아쓰기</div>
-      <div class="menu-desc">짧은 문장을 듣고 빈칸에 알맞은 단어를 써요.</div>
+      <div class="menu-desc">배운 단어를 문장에서 활용해요.</div>
     </div>
   </div>
 
 </div>
-
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage");
-  const unit = params.get("unit");
-
-  // 상단 작은 네비 텍스트만 표시
-  document.getElementById("navText").innerText = `${stage}단계 · ${stage}-${unit} 유닛`;
-</script>
-
 </body>
 </html>
