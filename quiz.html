@@ -65,23 +65,6 @@
       box-shadow: 0 8px 22px rgba(37, 99, 235, 0.4);
     }
 
-    .repeat-btn {
-      margin-left: auto;
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: none;
-      background: #e5ecff;
-      color: #1f2937;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .repeat-btn span.icon {
-      font-size: 16px;
-    }
-
     .card {
       margin-top: 12px;
       background: #ffffff;
@@ -94,8 +77,10 @@
       justify-content: center;
       align-items: center;
       text-align: center;
+      position: relative; /* 다시 듣기 버튼 위치 기준 */
     }
 
+    /* 어휘/퀴즈 공통 큰 글자 */
     .word-big {
       font-size: 60px;
       font-weight: 800;
@@ -106,8 +91,17 @@
       font-size: 36px;
       font-weight: 700;
       margin-bottom: 16px;
-      color: #b91c1c; /* 어두운 빨강 */
+      color: #111827;
     }
+
+    /* 어휘 학습 전용 색상 */
+    #studyWord {
+      color: #b91c1c;   /* 어두운 빨강 */
+    }
+    #studyMeaning {
+      color: #111827;   /* 검정 */
+    }
+
     .example-en {
       font-size: 22px;
       color: #111827;
@@ -257,6 +251,27 @@
       margin-top: 32px;
     }
 
+    /* 다시 듣기 버튼: 카드 안 오른쪽 상단 */
+    .repeat-btn {
+      position: absolute;
+      top: 20px;
+      right: 26px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: none;
+      background: #e5ecff;
+      color: #1f2937;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+    }
+    .repeat-btn span.icon {
+      font-size: 15px;
+    }
+
     @media (max-width: 768px) {
       .card {
         padding: 28px 20px 24px;
@@ -273,6 +288,10 @@
       .choices-grid {
         grid-template-columns: 1fr;
       }
+      .repeat-btn {
+        top: 16px;
+        right: 18px;
+      }
     }
   </style>
 </head>
@@ -282,64 +301,62 @@
     <h1 id="mainTitle">1 단어 학습</h1>
     <div class="subtitle">단어 학습 모드를 선택해 보세요.</div>
 
-    <div style="display:flex; align-items:center; gap:10px;">
-      <div class="mode-tabs">
-        <button class="mode-btn active" data-mode="study">
-          <span class="icon">📚</span>
-          <span>어휘 학습</span>
-        </button>
-        <button class="mode-btn" data-mode="meaning">
-          <span class="icon">✅</span>
-          <span>뜻 찾기</span>
-        </button>
-        <button class="mode-btn" data-mode="english">
-          <span class="icon">🔤</span>
-          <span>영어 찾기</span>
-        </button>
-        <button class="mode-btn" data-mode="listen">
-          <span class="icon">🎧</span>
-          <span>듣고 찾기</span>
-        </button>
-        <button class="mode-btn" data-mode="sentence">
-          <span class="icon">✏️</span>
-          <span>문장 빈칸</span>
-        </button>
-      </div>
-
-      <button id="repeatBtn" class="repeat-btn">
-        <span class="icon">🔊</span>
-        <span>다시 듣기</span>
+    <div class="mode-tabs">
+      <button class="mode-btn active" data-mode="study">
+        <span class="icon">📚</span>
+        <span>어휘 학습</span>
+      </button>
+      <button class="mode-btn" data-mode="meaning">
+        <span class="icon">✅</span>
+        <span>뜻 찾기</span>
+      </button>
+      <button class="mode-btn" data-mode="english">
+        <span class="icon">🔤</span>
+        <span>영어 찾기</span>
+      </button>
+      <button class="mode-btn" data-mode="listen">
+        <span class="icon">🎧</span>
+        <span>듣고 찾기</span>
+      </button>
+      <button class="mode-btn" data-mode="sentence">
+        <span class="icon">✏️</span>
+        <span>문장 빈칸</span>
       </button>
     </div>
 
     <div class="card">
+      <!-- 다시 듣기 버튼: 카드 안 -->
+      <button id="repeatBtn" class="repeat-btn">
+        <span class="icon">🔊</span>
+        <span>다시 듣기</span>
+      </button>
+
       <!-- STUDY MODE -->
       <div id="panel-study">
         <div class="word-big" id="studyWord">at</div>
         <div class="meaning-big" id="studyMeaning">~에</div>
         <div class="example-en" id="studyExampleEn">at 7 o'clock</div>
         <div class="example-ko" id="studyExampleKo">7시 정각에</div>
-        <div class="helper-text">단어와 뜻, 예문을 보면서 발음을 들어 보세요.</div>
+        <!-- 안내 문구 삭제됨 -->
       </div>
 
       <!-- MEANING MODE (영어 → 한글 뜻 고르기) -->
       <div id="panel-meaning" class="hidden">
         <div class="word-big" id="meaningQuestion">at</div>
-        <div class="helper-text">영어를 보고 알맞은 한글 뜻을 골라요.</div>
+        <!-- 안내 문구 삭제됨 -->
         <div class="choices-grid" id="meaningChoices"></div>
       </div>
 
       <!-- ENGLISH MODE (한글 → 영어 고르기) -->
       <div id="panel-english" class="hidden">
         <div class="word-big" id="englishQuestion">~에</div>
-        <div class="helper-text">한글 뜻을 보고 알맞은 영어를 골라요.</div>
+        <!-- 안내 문구 삭제됨 -->
         <div class="choices-grid" id="englishChoices"></div>
       </div>
 
       <!-- LISTEN MODE (발음 듣고 영어 고르기) -->
       <div id="panel-listen" class="hidden">
-        <div class="helper-text" style="margin-bottom:4px;">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
-        <div class="helper-text" style="margin-bottom:20px;">위에 있는 <b>다시 듣기</b> 버튼을 눌러도 돼요.</div>
+        <!-- 안내 문구 삭제됨 -->
         <div class="choices-grid" id="listenChoices"></div>
       </div>
 
@@ -459,8 +476,32 @@
     const sentenceKoEl = document.getElementById("sentenceKo");
 
     // -----------------------------
-    // 3. 유틸리티
+    // 3. 유틸리티 (발음 1번 / 2번)
     // -----------------------------
+    function speakText(text) {
+      if (!("speechSynthesis" in window) || !text) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+
+    // 어휘 학습용: 2초 간격으로 2번 읽기
+    function speakWordTwice(word) {
+      if (!("speechSynthesis" in window) || !word) return;
+
+      window.speechSynthesis.cancel();
+
+      const speakOnce = () => {
+        const utter = new SpeechSynthesisUtterance(word);
+        utter.lang = "en-US";
+        window.speechSynthesis.speak(utter);
+      };
+
+      speakOnce();
+      setTimeout(speakOnce, 2000);
+    }
+
     function shuffle(array) {
       const arr = array.slice();
       for (let i = arr.length - 1; i > 0; i--) {
@@ -470,20 +511,26 @@
       return arr;
     }
 
-    function speakText(text) {
-      if (!("speechSynthesis" in window) || !text) return;
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "en-US";
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utter);
-    }
-
     function hideAllPanels() {
       panelStudy.classList.add("hidden");
       panelMeaning.classList.add("hidden");
       panelEnglish.classList.add("hidden");
       panelListen.classList.add("hidden");
       panelSentence.classList.add("hidden");
+    }
+
+    function getCurrentWord() {
+      if (currentPool.length === 0) return null;
+      return currentPool[currentIndex];
+    }
+
+    function updateProgress() {
+      const w = getCurrentWord();
+      if (!w) {
+        progressText.textContent = `0 / ${allWords.length}`;
+      } else {
+        progressText.textContent = `${w.id + 1} / ${allWords.length}`;
+      }
     }
 
     function setMode(mode) {
@@ -505,27 +552,13 @@
 
       hideAllPanels();
 
-      if (mode === "study") panelStudy.classList.remove("hidden");
-      if (mode === "meaning") panelMeaning.classList.remove("hidden");
-      if (mode === "english") panelEnglish.classList.remove("hidden");
-      if (mode === "listen") panelListen.classList.remove("hidden");
+      if (mode === "study")    panelStudy.classList.remove("hidden");
+      if (mode === "meaning")  panelMeaning.classList.remove("hidden");
+      if (mode === "english")  panelEnglish.classList.remove("hidden");
+      if (mode === "listen")   panelListen.classList.remove("hidden");
       if (mode === "sentence") panelSentence.classList.remove("hidden");
 
       renderCurrentQuestion();
-    }
-
-    function getCurrentWord() {
-      if (currentPool.length === 0) return null;
-      return currentPool[currentIndex];
-    }
-
-    function updateProgress() {
-      const w = getCurrentWord();
-      if (!w) {
-        progressText.textContent = `0 / ${allWords.length}`;
-      } else {
-        progressText.textContent = `${w.id + 1} / ${allWords.length}`;
-      }
     }
 
     // -----------------------------
@@ -538,11 +571,10 @@
       studyMeaning.textContent   = w.meaning;
       studyExampleEn.textContent = w.sentenceEn;
       studyExampleKo.textContent = w.sentenceKo;
-      speakText(w.word);
+      speakWordTwice(w.word); // 2번 읽기
     }
 
     function buildChoicesFor(w, type) {
-      // type: "ko" 또는 "en"
       const correctValue = type === "ko" ? w.meaning : w.word;
       const others = shuffle(allWords.filter(x => x.id !== w.id));
       const opts = [correctValue];
@@ -600,7 +632,7 @@
       if (!w) return;
 
       listenChoices.innerHTML = "";
-      const opts = buildChoicesFor(w, "en"); // 영어 단어 보기
+      const opts = buildChoicesFor(w, "en");
       currentAnswer = w.word;
 
       opts.forEach(text => {
@@ -650,15 +682,12 @@
 
       currentIndex++;
       if (currentIndex >= currentPool.length) {
-        // 한 바퀴 끝
         if (wrongPool.length > 0) {
-          // 틀린 문제만 다시 한 번
           currentPool = [...wrongPool];
           wrongPool = [];
           currentIndex = 0;
           renderCurrentQuestion();
         } else {
-          // 더 이상 틀린 문제 없음 → 100점!
           finished = true;
           resultMessage.classList.remove("hidden");
         }
@@ -733,12 +762,13 @@
     repeatBtn.addEventListener("click", () => {
       const w = getCurrentWord();
       if (!w) return;
-      if (currentMode === "listen" || currentMode === "study") {
-        speakText(w.word);
+
+      if (currentMode === "study") {
+        speakWordTwice(w.word);     // 어휘학습: 2번
       } else if (currentMode === "sentence") {
-        speakText(w.sentenceEn);
+        speakText(w.sentenceEn);    // 문장 전체
       } else {
-        speakText(w.word);
+        speakText(w.word);          // 나머지 모드: 1번
       }
     });
 
@@ -756,7 +786,6 @@
 
     nextBtn.addEventListener("click", () => {
       if (currentMode === "sentence") {
-        // 문장 모드에서는 "다음" 눌러도 현재 답 확인 후 넘어가도록
         checkSentenceAnswer();
       } else {
         moveToNextQuestion();
