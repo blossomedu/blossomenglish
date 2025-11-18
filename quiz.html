@@ -1,478 +1,273 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<title>Blossom 영어 학습</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
-<style>
-  body {
-    font-family: "Pretendard Variable", sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f5f7fb;
-  }
-  .container {
-    max-width: 960px;
-    margin: 40px auto;
-    padding: 0 20px 60px;
-  }
-  .title {
-    font-size: 26px;
-    font-weight: 800;
-    margin-bottom: 4px;
-  }
-  .subtitle {
-    font-size: 15px;
-    color: #666;
-    margin-bottom: 18px;
-  }
+  <meta charset="UTF-8">
+  <title>단계별 학습</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
 
-  /* 모드 탭 5개 */
-  .mode-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  .mode-tab {
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid #d1d6ea;
-    background: #ffffff;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .mode-tab.active {
-    background: #4b7bff;
-    border-color: #4b7bff;
-    color: #fff;
-    font-weight: 600;
-  }
+  <style>
+    body {
+      font-family: "Pretendard Variable", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f7f8fc;
+      color: #111827;
+    }
 
-  .card {
-    background: #ffffff;
-    border-radius: 22px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    padding: 20px 22px;
-  }
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+    }
 
-  .word-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 6px;
-  }
-  .word-table th, .word-table td {
-    padding: 8px 10px;
-    font-size: 15px;
-    border-bottom: 1px solid #f0f1f7;
-  }
-  .word-table th {
-    background: #f3f5ff;
-    text-align: left;
-    font-weight: 600;
-  }
-  .word-table tr:nth-child(even) td {
-    background: #fafbff;
-  }
+    /* 상단 제목 영역 */
+    .header {
+      margin-bottom: 30px;
+    }
 
-  .row {
-    margin-top: 8px;
-    font-size: 16px;
-  }
-  .question {
-    margin-bottom: 10px;
-    font-size: 17px;
-    font-weight: 600;
-  }
-  .choices {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 6px;
-  }
-  .choice-btn {
-    padding: 8px 10px;
-    border-radius: 10px;
-    border: 1px solid #d1d6ea;
-    background: #ffffff;
-    cursor: pointer;
-    text-align: left;
-    font-size: 15px;
-  }
-  .choice-btn.correct {
-    background: #e3f7e6;
-    border-color: #51b36c;
-  }
-  .choice-btn.wrong {
-    background: #ffe5e5;
-    border-color: #f08484;
-  }
+    .stage-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4b7bff;
+      margin-bottom: 6px;
+    }
 
-  .input-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-  .text-input {
-    flex: 1;
-    min-width: 180px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    border: 1px solid #cfd3e6;
-    font-size: 15px;
-  }
-  .btn {
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  .btn-primary {
-    background: #4b7bff;
-    color: #fff;
-  }
-  .btn-secondary {
-    background: #edf0ff;
-    color: #3a4d9b;
-  }
-  .feedback {
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  .feedback.ok {
-    color: #2f8f4e;
-  }
-  .feedback.no {
-    color: #d83939;
-  }
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0 0 6px;
+    }
 
-  .tag {
-    display: inline-block;
-    margin-top: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    background: #e4ecff;
-    color: #3554c9;
-  }
-</style>
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      margin: 0;
+    }
+
+    /* 모드 카드 리스트 (세로 직사각형 5개) */
+    .mode-list {
+      margin-top: 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mode-card {
+      display: flex;
+      align-items: center;
+      padding: 18px 22px;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+    }
+
+    .mode-icon {
+      font-size: 26px;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+
+    .mode-text-main {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .mode-text-sub {
+      font-size: 14px;
+      color: #777;
+    }
+
+    /* 선택된 모드 표시 */
+    .mode-card.active {
+      border: 2px solid #4b7bff;
+      box-shadow: 0 10px 28px rgba(75,123,255,0.28);
+    }
+
+    /* 아래 실제 학습 영역 (일단 템플릿만) */
+    .learning-panel {
+      margin-top: 28px;
+      padding: 24px 22px;
+      border-radius: 20px;
+      background: linear-gradient(145deg,#ffffff,#f3f5ff);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      min-height: 140px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .panel-desc {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .panel-placeholder {
+      font-size: 14px;
+      color: #999;
+    }
+
+    @media (max-width: 600px) {
+      .mode-card {
+        padding: 16px 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="title" id="titleText">Blossom 영어 학습</div>
-  <div class="subtitle" id="subtitleText"></div>
 
-  <!-- 5개 모드 탭 -->
-  <div class="mode-tabs">
-    <button class="mode-tab active" data-mode="view">① 어휘 학습</button>
-    <button class="mode-tab" data-mode="meaning">② 뜻 찾기</button>
-    <button class="mode-tab" data-mode="english">③ 영어 찾기</button>
-    <button class="mode-tab" data-mode="listen">④ 듣고 찾기</button>
-    <button class="mode-tab" data-mode="sentence">⑤ 문장 빈칸 받아쓰기</button>
+<div class="container">
+  <!-- 상단 정보 -->
+  <div class="header">
+    <div class="stage-label" id="stageLabel"></div>
+    <h1 id="title">단계 학습</h1>
+    <p class="subtitle" id="subTitle">학습할 방식을 선택하세요.</p>
   </div>
 
-  <!-- 메인 카드 -->
-  <div class="card" id="cardArea"></div>
+  <!-- 5가지 모드 카드 -->
+  <div class="mode-list">
+    <div class="mode-card active" data-mode="vocab">
+      <div class="mode-icon">📚</div>
+      <div>
+        <div class="mode-text-main">1. 어휘 학습</div>
+        <div class="mode-text-sub">영어 + 뜻을 함께 보고, 영어 발음을 두 번 들어요.</div>
+      </div>
+    </div>
+
+    <div class="mode-card" data-mode="meaning">
+      <div class="mode-icon">❓</div>
+      <div>
+        <div class="mode-text-main">2. 뜻 찾기</div>
+        <div class="mode-text-sub">한국어 뜻을 보고 알맞은 영어 단어를 골라요.</div>
+      </div>
+    </div>
+
+    <div class="mode-card" data-mode="spelling">
+      <div class="mode-icon">🔤</div>
+      <div>
+        <div class="mode-text-main">3. 영어 찾기</div>
+        <div class="mode-text-sub">영어 철자를 직접 써 보면서 익혀요.</div>
+      </div>
+    </div>
+
+    <div class="mode-card" data-mode="listening">
+      <div class="mode-icon">🎧</div>
+      <div>
+        <div class="mode-text-main">4. 듣고 찾기</div>
+        <div class="mode-text-sub">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
+      </div>
+    </div>
+
+    <div class="mode-card" data-mode="dictation">
+      <div class="mode-icon">✏️</div>
+      <div>
+        <div class="mode-text-main">5. 문장에서 빈칸 받아쓰기</div>
+        <div class="mode-text-sub">짧은 문장을 듣고 빈칸에 알맞은 단어를 써요.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 아래 실제 학습 패널(지금은 템플릿/설명만) -->
+  <div class="learning-panel" id="learningPanel">
+    <div class="panel-title" id="panelTitle">어휘 학습 (준비 화면)</div>
+    <div class="panel-desc" id="panelDesc">
+      이 단계에서는 단어를 영어와 한글 뜻을 함께 보면서,  
+      영어 발음을 자동으로 두 번 들을 수 있게 만들 예정이에요.
+    </div>
+    <div class="panel-placeholder">
+      👉 지금은 구조만 먼저 만들었어요.<br>
+      다음 단계에서 1-1, 1-2마다 단어 데이터를 넣고,<br>
+      스피커 아이콘 없이 자동으로 발음이 재생되도록 기능을 추가하면 돼요.
+    </div>
+  </div>
 </div>
 
 <script>
-  // ======= 0. URL에서 단계/유닛 읽기 =======
-  const params = new URLSearchParams(location.search);
+  // URL 파라미터(stage, unit) 읽기
+  const params = new URLSearchParams(window.location.search);
   const stage = params.get("stage") || "1";
   const unit = params.get("unit") || "1";
 
-  document.getElementById("titleText").innerText = `${stage}단계 ${unit}유닛 학습`;
-  document.getElementById("subtitleText").innerText = "원하는 모드를 골라서 연습해보세요.";
+  // 상단 문구 업데이트
+  const stageLabel = document.getElementById("stageLabel");
+  const title = document.getElementById("title");
+  const subTitle = document.getElementById("subTitle");
 
-  // ======= 1. 예시 단어 리스트 (나중에 교체 가능) =======
-  // 일단 기능 테스트용으로 6개만 사용
-  const WORDS = [
-    {
-      en: "at",
-      ko: "~에",
-      sentence: "I will meet you ___ the park."
-    },
-    {
-      en: "bat",
-      ko: "야구방망이, 박쥐",
-      sentence: "He swings the ___ very well."
-    },
-    {
-      en: "hat",
-      ko: "모자",
-      sentence: "She is wearing a red ___."
-    },
-    {
-      en: "run",
-      ko: "달리다",
-      sentence: "They ___ to school every morning."
-    },
-    {
-      en: "bag",
-      ko: "가방",
-      sentence: "Put the books in your ___."
-    },
-    {
-      en: "pig",
-      ko: "돼지",
-      sentence: "The ___ is very cute."
-    }
-  ];
+  stageLabel.innerText = `${stage}단계 · ${stage}-${unit} 유닛`;
+  title.innerText = `${stage}-${unit} 학습`;
+  subTitle.innerText = "어떤 방식으로 연습할지 골라 보세요.";
 
-  // 유닛 번호에 따라 나중에 slice로 다른 구간 사용 가능
-  const words = WORDS; // 지금은 전체 사용
+  const learningPanel = document.getElementById("learningPanel");
+  const panelTitle = document.getElementById("panelTitle");
+  const panelDesc = document.getElementById("panelDesc");
+  const placeholder = document.querySelector(".panel-placeholder");
 
-  // ======= 2. 모드 상태 =======
-  let currentMode = "view";
-  let currentIndex = 0;
+  // 모드 카드 클릭 시 UI만 바꿔주는 부분 (실제 기능은 다음 단계에서 채우기)
+  const modeCards = document.querySelectorAll(".mode-card");
 
-  const cardArea = document.getElementById("cardArea");
-  const modeTabs = document.querySelectorAll(".mode-tab");
+  modeCards.forEach(card => {
+    card.addEventListener("click", () => {
+      const mode = card.getAttribute("data-mode");
 
-  modeTabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      modeTabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      currentMode = tab.dataset.mode;
-      currentIndex = 0;
-      renderMode();
+      // active 클래스 이동
+      modeCards.forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+
+      switch (mode) {
+        case "vocab":
+          panelTitle.innerText = "어휘 학습";
+          panelDesc.innerText =
+            "영어 단어와 한국어 뜻을 함께 보고, 영어 발음을 자동으로 두 번 들을 수 있게 만들 거예요.";
+          placeholder.innerHTML =
+            "지금은 템플릿 단계예요 😊<br>나중에 이 자리에 단어 카드와 자동 발음 기능이 들어가요.";
+          break;
+
+        case "meaning":
+          panelTitle.innerText = "뜻 찾기";
+          panelDesc.innerText =
+            "한국어 뜻을 보고, 여러 보기 중에서 알맞은 영어 단어를 고르는 게임으로 만들 수 있어요.";
+          placeholder.innerHTML =
+            "여기엔 객관식 버튼(보기)들이 들어갈 예정이에요.<br>아이가 클릭하면 정답/오답 피드백을 줄 수 있어요.";
+          break;
+
+        case "spelling":
+          panelTitle.innerText = "영어 찾기";
+          panelDesc.innerText =
+            "단어의 뜻이나 그림을 보고, 영어 철자를 직접 입력해 보도록 만들 수 있어요.";
+          placeholder.innerHTML =
+            "여기엔 입력창과 '정답 확인' 버튼이 들어갈 예정이에요.";
+          break;
+
+        case "listening":
+          panelTitle.innerText = "듣고 찾기";
+          panelDesc.innerText =
+            "발음을 먼저 들려주고, 아이가 어떤 단어인지 맞히는 활동을 넣을 수 있어요.";
+          placeholder.innerHTML =
+            "SpeechSynthesis(음성 읽기)를 이용해서 자동 재생하도록 만들 수 있어요.";
+          break;
+
+        case "dictation":
+          panelTitle.innerText = "문장에서 빈칸 받아쓰기";
+          panelDesc.innerText =
+            "짧은 문장 속에서 특정 단어만 빈칸으로 가리고, 들으면서 써 보는 활동이에요.";
+          placeholder.innerHTML =
+            "문장 텍스트 + 빈칸 입력칸 + 정답 확인 기능이 들어갈 자리에요.";
+          break;
+      }
     });
   });
-
-  // ======= 3. 공통 TTS 함수 =======
-  function speak(text, repeat = 1) {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    let count = 0;
-    function speakOnce() {
-      if (count >= repeat) return;
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-US";
-      u.rate = 0.9;
-      u.onend = () => {
-        count++;
-        speakOnce();
-      };
-      window.speechSynthesis.speak(u);
-    }
-    speakOnce();
-  }
-
-  // ======= 4. 모드별 렌더 =======
-  function renderMode() {
-    if (currentMode === "view") {
-      renderViewMode();
-    } else if (currentMode === "meaning") {
-      renderMeaningMode();
-    } else if (currentMode === "english") {
-      renderEnglishMode();
-    } else if (currentMode === "listen") {
-      renderListenMode();
-    } else if (currentMode === "sentence") {
-      renderSentenceMode();
-    }
-  }
-
-  // ① 어휘 학습: 영어+뜻 전체 보기 + 자동 재생
-  function renderViewMode() {
-    let html = `
-      <div class="row">
-        <strong>① 어휘 학습</strong><br>
-        영어 단어와 뜻을 먼저 눈으로 보고, 발음을 들어볼게요.
-      </div>
-      <div class="row">
-        <button class="btn btn-secondary" id="btnPlayAll">전체 다시 듣기</button>
-        <span class="tag">페이지를 열면 자동으로 단어가 순서대로 2번씩 재생돼요.</span>
-      </div>
-      <table class="word-table">
-        <tr><th>영어</th><th>뜻</th></tr>
-    `;
-    words.forEach(w => {
-      html += `<tr><td>${w.en}</td><td>${w.ko}</td></tr>`;
-    });
-    html += `</table>`;
-    cardArea.innerHTML = html;
-
-    // 자동 재생
-    playAllWordsTwice();
-
-    // 다시 듣기 버튼
-    document.getElementById("btnPlayAll").onclick = playAllWordsTwice;
-  }
-
-  function playAllWordsTwice() {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-
-    let i = 0;
-    function speakNext() {
-      if (i >= words.length) return;
-      const word = words[i].en;
-      const u1 = new SpeechSynthesisUtterance(word);
-      const u2 = new SpeechSynthesisUtterance(word);
-      u1.lang = "en-US";
-      u2.lang = "en-US";
-      u1.onend = () => window.speechSynthesis.speak(u2);
-      u2.onend = () => {
-        i++;
-        speakNext();
-      };
-      window.speechSynthesis.speak(u1);
-    }
-    speakNext();
-  }
-
-  // ② 뜻 찾기: 영어 → 뜻 보기 / 선택 (간단 버전: 입력은 안채점, 보기로 정답 안내)
-  function renderMeaningMode() {
-    const w = words[currentIndex];
-    let html = `
-      <div class="question">② 뜻 찾기</div>
-      <div class="row">영어 단어의 뜻을 맞혀보세요.</div>
-      <div class="row"><strong>단어: ${w.en}</strong></div>
-
-      <div class="input-row">
-        <button class="btn btn-secondary" id="btnShowKo">뜻 보기</button>
-        <button class="btn btn-primary" id="btnNext">다음 단어</button>
-      </div>
-      <div class="feedback" id="fbMeaning"></div>
-    `;
-    cardArea.innerHTML = html;
-
-    document.getElementById("btnShowKo").onclick = () => {
-      document.getElementById("fbMeaning").innerHTML =
-        `<span class="ok">정답: ${w.ko}</span>`;
-    };
-    document.getElementById("btnNext").onclick = () => {
-      currentIndex = (currentIndex + 1) % words.length;
-      renderMeaningMode();
-    };
-  }
-
-  // ③ 영어 찾기: 뜻 → 영어 입력, 채점
-  function renderEnglishMode() {
-    const w = words[currentIndex];
-    let html = `
-      <div class="question">③ 영어 찾기</div>
-      <div class="row">뜻을 보고 알맞은 영어 단어를 써보세요.</div>
-      <div class="row"><strong>뜻: ${w.ko}</strong></div>
-
-      <div class="input-row">
-        <input type="text" class="text-input" id="inputEn" placeholder="영어 단어 입력">
-        <button class="btn btn-primary" id="btnCheck">정답 확인</button>
-        <button class="btn btn-secondary" id="btnNext">다음</button>
-      </div>
-      <div class="feedback" id="fbEn"></div>
-    `;
-    cardArea.innerHTML = html;
-
-    document.getElementById("btnCheck").onclick = () => {
-      const value = (document.getElementById("inputEn").value || "").trim().toLowerCase();
-      const answer = w.en.toLowerCase();
-      const fb = document.getElementById("fbEn");
-      if (value === answer) {
-        fb.className = "feedback ok";
-        fb.innerText = "정답이에요! 😊";
-      } else {
-        fb.className = "feedback no";
-        fb.innerText = `아쉬워요 😥 정답은 "${w.en}" 입니다.`;
-      }
-    };
-    document.getElementById("btnNext").onclick = () => {
-      currentIndex = (currentIndex + 1) % words.length;
-      renderEnglishMode();
-    };
-  }
-
-  // ④ 듣고 찾기: 발음 듣고 영어 쓰기
-  function renderListenMode() {
-    const w = words[currentIndex];
-    let html = `
-      <div class="question">④ 듣고 찾기</div>
-      <div class="row">발음을 듣고 어떤 단어인지 맞혀보세요.</div>
-
-      <div class="input-row">
-        <button class="btn btn-secondary" id="btnPlay">🔊 발음 듣기</button>
-        <input type="text" class="text-input" id="inputListen" placeholder="영어 단어 입력">
-        <button class="btn btn-primary" id="btnCheck">정답 확인</button>
-        <button class="btn btn-secondary" id="btnNext">다음</button>
-      </div>
-      <div class="feedback" id="fbListen"></div>
-    `;
-    cardArea.innerHTML = html;
-
-    document.getElementById("btnPlay").onclick = () => speak(w.en, 2);
-    document.getElementById("btnCheck").onclick = () => {
-      const value = (document.getElementById("inputListen").value || "").trim().toLowerCase();
-      const answer = w.en.toLowerCase();
-      const fb = document.getElementById("fbListen");
-      if (value === answer) {
-        fb.className = "feedback ok";
-        fb.innerText = "정답! 귀가 아주 좋아요 👂✨";
-      } else {
-        fb.className = "feedback no";
-        fb.innerText = `정답은 "${w.en}" 입니다.`;
-      }
-    };
-    document.getElementById("btnNext").onclick = () => {
-      currentIndex = (currentIndex + 1) % words.length;
-      renderListenMode();
-    };
-
-    // 페이지 들어오면 자동으로 한 번 재생
-    speak(w.en, 2);
-  }
-
-  // ⑤ 문장 빈칸 받아쓰기
-  function renderSentenceMode() {
-    const w = words[currentIndex];
-    // 문장 안의 단어를 ___ 로 가려주기
-    const original = w.sentence;
-    const blankSentence = original.replace(w.en, "___");
-
-    let html = `
-      <div class="question">⑤ 문장 빈칸 받아쓰기</div>
-      <div class="row">문장을 듣고 빈칸에 들어갈 단어를 써보세요.</div>
-
-      <div class="row"><strong>${blankSentence}</strong></div>
-
-      <div class="input-row">
-        <button class="btn btn-secondary" id="btnPlaySentence">🔊 문장 듣기</button>
-        <input type="text" class="text-input" id="inputSentence" placeholder="빈칸에 들어갈 영어 단어">
-        <button class="btn btn-primary" id="btnCheck">정답 확인</button>
-        <button class="btn btn-secondary" id="btnNext">다음</button>
-      </div>
-      <div class="feedback" id="fbSentence"></div>
-    `;
-    cardArea.innerHTML = html;
-
-    document.getElementById("btnPlaySentence").onclick = () => {
-      speak(original, 1);
-    };
-    document.getElementById("btnCheck").onclick = () => {
-      const value = (document.getElementById("inputSentence").value || "").trim().toLowerCase();
-      const answer = w.en.toLowerCase();
-      const fb = document.getElementById("fbSentence");
-      if (value === answer) {
-        fb.className = "feedback ok";
-        fb.innerText = "정답이에요! 멋지게 들으셨네요 👏";
-      } else {
-        fb.className = "feedback no";
-        fb.innerText = `정답은 "${w.en}" 이고, 전체 문장은 "${original}" 이에요.`;
-      }
-    };
-    document.getElementById("btnNext").onclick = () => {
-      currentIndex = (currentIndex + 1) % words.length;
-      renderSentenceMode();
-    };
-
-    // 들어오면 자동으로 문장 한 번 재생
-    speak(original, 1);
-  }
-
-  // 첫 진입은 어휘 학습 모드
-  renderMode();
 </script>
+
 </body>
 </html>
