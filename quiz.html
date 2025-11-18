@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>유닛 학습</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard Variable", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 24px 60px;
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 28px;
+    }
+
+    .mode-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 20px 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+    }
+
+    .mode-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .mode-icon.bg1 { background: #e0ecff; }
+    .mode-icon.bg2 { background: #e4f7e9; }
+    .mode-icon.bg3 { background: #ffe9e3; }
+    .mode-icon.bg4 { background: #e9f4ff; }
+    .mode-icon.bg5 { background: #fff3d4; }
+
+    .mode-text-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .mode-text-desc {
+      font-size: 14px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb" id="breadcrumb">
+      1단계 · 1-1 유닛
+    </div>
+    <h1 id="pageTitle">1-1 학습</h1>
+    <div class="subtitle">어떤 방식으로 연습할지 골라 보세요.</div>
+
+    <!-- 1. 어휘 학습 -->
+    <div class="mode-card" onclick="goMode('vocab')">
+      <div class="mode-icon bg1">📚</div>
+      <div>
+        <div class="mode-text-title">1. 어휘 학습</div>
+        <div class="mode-text-desc">영어 + 뜻을 함께 보고, 영어 발음을 두 번 들어요.</div>
+      </div>
+    </div>
+
+    <!-- 2. 뜻 찾기 -->
+    <div class="mode-card" onclick="goMode('meaning')">
+      <div class="mode-icon bg2">✅</div>
+      <div>
+        <div class="mode-text-title">2. 뜻 찾기</div>
+        <div class="mode-text-desc">영어를 보고 알맞은 한글 뜻을 골라요.</div>
+      </div>
+    </div>
+
+    <!-- 3. 영어 찾기 -->
+    <div class="mode-card" onclick="goMode('english')">
+      <div class="mode-icon bg3">🔤</div>
+      <div>
+        <div class="mode-text-title">3. 영어 찾기</div>
+        <div class="mode-text-desc">한글 뜻을 보고 알맞은 영어를 골라요.</div>
+      </div>
+    </div>
+
+    <!-- 4. 듣고 찾기 -->
+    <div class="mode-card" onclick="goMode('listening')">
+      <div class="mode-icon bg4">🎧</div>
+      <div>
+        <div class="mode-text-title">4. 듣고 찾기</div>
+        <div class="mode-text-desc">발음을 듣고 영어 단어를 골라요.</div>
+      </div>
+    </div>
+
+    <!-- 5. 문장에서 빈칸 받아쓰기 -->
+    <div class="mode-card" onclick="goMode('sentence')">
+      <div class="mode-icon bg5">✏️</div>
+      <div>
+        <div class="mode-text-title">5. 문장에서 빈칸 받아쓰기</div>
+        <div class="mode-text-desc">배운 단어를 문장에서 활용해요.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // URL에서 단계/유닛 읽어서 제목에 반영
+    const params = new URLSearchParams(window.location.search);
+    const stage = params.get("stage") || "1";
+    const unit  = params.get("unit")  || "1";
+
+    const breadcrumb = document.getElementById("breadcrumb");
+    const pageTitle  = document.getElementById("pageTitle");
+
+    breadcrumb.textContent = `${stage}단계 · ${stage}-${unit} 유닛`;
+    pageTitle.textContent  = `${stage}-${unit} 학습`;
+
+    // 각 모드 클릭 시 일단 알림만 (나중에 각각 페이지 만들 때 여기서 링크 연결)
+    function goMode(mode) {
+      alert(`${stage}-${unit}의 "${mode}" 모드로 이동하는 자리를 나중에 연결할 거예요 😊`);
+      // 예: window.location.href = `study-${mode}.html?stage=${stage}&unit=${unit}`;
+    }
+  </script>
+</body>
+</html>
