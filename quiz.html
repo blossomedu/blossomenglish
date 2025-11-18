@@ -1,57 +1,807 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>학습 선택</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
+  <meta charset="UTF-8" />
+  <title>블라썸 단어 학습</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard Variable", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+    .page {
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+    }
+    .top-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
 
-<style>
-  body {
-    font-family: "Pretendard Variable", sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f7f8fc;
+    .mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .mode-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #374151;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mode-btn.active {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 26px;
+      box-shadow: 0 12px 32px rgba(15,23,42,0.12);
+      padding: 28px 26px 24px;
+      min-height: 260px;
+    }
+
+    .quiz-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .quiz-sub {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
+
+    /* --- 어휘 학습 카드 --- */
+    .center-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .word-en {
+      font-size: 52px;
+      font-weight: 800;
+      margin: 36px 0 18px;
+    }
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #e5e7eb;
+      margin-bottom: 22px;
+    }
+    .meaning-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .meaning-ko {
+      font-size: 30px;
+      font-weight: 600;
+      padding: 0 8px;
+    }
+    .cover {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: #22c55e;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.18s ease;
+    }
+    .cover small {
+      margin-top: 3px;
+      opacity: 0.9;
+      font-size: 13px;
+    }
+    .cover.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .helper-text {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .progress {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .icon-btn {
+      border: none;
+      background: none;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    /* 옵션 공통 */
+    .question-main {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .question-big {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 10px;
+    }
+    .opt-btn {
+      border-radius: 999px;
+      padding: 9px 14px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+      font-size: 15px;
+      text-align: left;
+      transition: all 0.14s ease;
+    }
+    .opt-btn:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+    .opt-btn.correct {
+      background: #dcfce7;
+      border-color: #16a34a;
+      color: #166534;
+    }
+    .opt-btn.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+    }
+    .feedback {
+      font-size: 14px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+    .feedback.good { color: #15803d; }
+    .feedback.bad { color: #b91c1c; }
+    .status {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    /* 문장 빈칸 */
+    .sentence-en {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .sentence-kr {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+    .blank-input {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 8px 12px;
+      font-size: 15px;
+      outline: none;
+      min-width: 180px;
+    }
+    .blank-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+    }
+
+    @media (max-width: 640px) {
+      .word-en { font-size: 40px; }
+      .meaning-ko { font-size: 24px; }
+      .question-big { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="top-line">
+    <div>
+      <div class="breadcrumb" id="breadcrumb">단계 · 유닛</div>
+      <h1 id="title">단어 학습</h1>
+      <div class="subtitle" id="subtitle">단어 학습 모드를 선택해 보세요.</div>
+    </div>
+    <button class="icon-btn" id="soundBtn" title="현재 단어 발음 다시 듣기">🔊</button>
+  </div>
+
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="vocab">📚 어휘 학습</button>
+    <button class="mode-btn" data-mode="meaning">✅ 뜻 찾기</button>
+    <button class="mode-btn" data-mode="english">🔤 영어 찾기</button>
+    <button class="mode-btn" data-mode="listen">🎧 듣고 찾기</button>
+    <button class="mode-btn" data-mode="sentence">✏️ 문장 빈칸</button>
+  </div>
+
+  <div class="card" id="cardArea">
+    <!-- JS로 내용이 채워짐 -->
+    로딩 중입니다...
+  </div>
+</div>
+
+<!-- 엑셀 읽기 라이브러리 -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+  /************* 공통: URL 파라미터 *************/
+  const params = new URLSearchParams(location.search);
+  const unitParam = params.get("unit") || "1-1";  // 예: 1-1
+  const stageParam = unitParam.split("-")[0] || "1";
+
+  document.getElementById("breadcrumb").innerText = `${stageParam}단계 · ${unitParam} 유닛`;
+  document.getElementById("title").innerText = `${unitParam} 단어 학습`;
+
+  /************* 엑셀에서 데이터 읽기 *************/
+  async function loadWordsForUnit(unitCode) {
+    const res = await fetch("words.xlsx");   // 같은 폴더에 있어야 함
+    const buf = await res.arrayBuffer();
+    const wb = XLSX.read(buf);
+    const sheetName = wb.SheetNames[0];      // 첫 번째 시트 사용
+    const sheet = wb.Sheets[sheetName];
+
+    // header:1 → 2차원 배열 형태로 읽기
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+    // 0번 행은 헤더 (번호, 영어, 한글, 예문, 한글(예문해석))
+    const dataRows = rows.slice(1);
+
+    const filtered = dataRows
+      .filter(r => (r[0] + "").trim() === unitCode)  // r[0] = 번호
+      .map(r => ({
+        unit:  (r[0] + "").trim(),
+        eng:   (r[1] + "").trim(),
+        kor:   (r[2] + "").trim(),
+        ex_en: (r[3] + "").trim(),
+        ex_kr: (r[4] + "").trim(),
+      }))
+      .filter(row => row.eng);  // 영어가 비어 있으면 제외
+
+    return filtered;
   }
 
-  .container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 20px;
+  /************* 음성 재생 *************/
+  function speak(text, repeat = 1, rate = 0.9) {
+    if (!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = rate;
+    let count = 0;
+    u.onend = () => {
+      count++;
+      if (count < repeat) speechSynthesis.speak(u);
+    };
+    speechSynthesis.speak(u);
   }
 
-  /* 상단 제목 */
-  #title {
-    font-size: 34px;
-    font-weight: 800;
-    margin-bottom: 28px;
-    color: #000;
+  let WORDS = [];
+  let currentMode = "vocab";
+  let currentIndex = 0;
+
+  const cardArea = document.getElementById("cardArea");
+  const soundBtn = document.getElementById("soundBtn");
+
+  /************* 1. 어휘 학습 (스페이스/클릭으로 뜻 보기) *************/
+  function renderVocabMode() {
+    currentMode = "vocab";
+    cardArea.innerHTML = "";
+
+    if (!WORDS.length) {
+      cardArea.textContent = "이 유닛에 단어가 없어요.";
+      return;
+    }
+
+    currentIndex = 0;
+    let isRevealed = false;
+
+    const title = document.createElement("div");
+    title.className = "quiz-title";
+    title.textContent = "어휘 학습";
+
+    const sub = document.createElement("div");
+    sub.className = "quiz-sub";
+    sub.textContent = "단어 발음을 자동으로 두 번 듣고, 클릭 또는 스페이스바로 뜻을 확인해요.";
+
+    const box = document.createElement("div");
+    box.className = "center-box";
+
+    const wordEnEl = document.createElement("div");
+    wordEnEl.className = "word-en";
+
+    const divider = document.createElement("div");
+    divider.className = "divider";
+
+    const meaningWrap = document.createElement("div");
+    meaningWrap.className = "meaning-wrap";
+
+    const meaningKoEl = document.createElement("div");
+    meaningKoEl.className = "meaning-ko";
+
+    const cover = document.createElement("div");
+    cover.className = "cover";
+    cover.innerHTML = `클릭해서 뜻을 확인하세요.<small>(또는 스페이스바)</small>`;
+
+    const helper = document.createElement("div");
+    helper.className = "helper-text";
+    helper.innerHTML = "뜻을 본 뒤 다시 클릭하거나 스페이스바를 누르면 다음 단어로 넘어가요.";
+
+    const progress = document.createElement("div");
+    progress.className = "progress";
+
+    meaningWrap.appendChild(meaningKoEl);
+    meaningWrap.appendChild(cover);
+
+    box.appendChild(wordEnEl);
+    box.appendChild(divider);
+    box.appendChild(meaningWrap);
+    box.appendChild(helper);
+    box.appendChild(progress);
+
+    cardArea.appendChild(title);
+    cardArea.appendChild(sub);
+    cardArea.appendChild(box);
+
+    function showWord() {
+      const w = WORDS[currentIndex];
+      wordEnEl.textContent = w.eng;
+      meaningKoEl.textContent = w.kor;
+      cover.classList.remove("hidden");
+      isRevealed = false;
+      progress.textContent = `${currentIndex + 1} / ${WORDS.length} 단어`;
+      speak(w.eng, 2, 0.9);  // 두 번 자동 재생
+    }
+
+    function handleAction() {
+      if (!isRevealed) {
+        cover.classList.add("hidden");
+        isRevealed = true;
+      } else {
+        currentIndex++;
+        if (currentIndex < WORDS.length) {
+          showWord();
+        } else {
+          progress.textContent = "모든 단어 학습을 완료했어요! 🎉";
+        }
+      }
+    }
+
+    cover.addEventListener("click", handleAction);
+    document.onkeydown = (e) => {
+      if (currentMode !== "vocab") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        handleAction();
+      }
+    };
+
+    soundBtn.onclick = () => {
+      if (!WORDS.length) return;
+      const w = WORDS[currentIndex];
+      speak(w.eng, 1, 0.9);
+    };
+
+    showWord();
   }
 
-  /* 메뉴 카드 */
-  .menu-box {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 24px;
-    margin-bottom: 18px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0px 6px 20px rgba(0,0,0,0.06);
-    cursor: pointer;
-    transition: 0.15s ease;
+  /************* 공통: 객관식 퀴즈 UI 생성 *************/
+  function createChoiceQuiz({ titleText, description, getQuestionText, getBigText, getOptionText, checkCorrect, withSound }) {
+    cardArea.innerHTML = "";
+
+    if (!WORDS.length) {
+      cardArea.textContent = "이 유닛에 단어가 없어요.";
+      return;
+    }
+
+    let order = shuffle(WORDS);
+    let idx = 0;
+    let score = 0;
+
+    const title = document.createElement("div");
+    title.className = "quiz-title";
+    title.textContent = titleText;
+
+    const sub = document.createElement("div");
+    sub.className = "quiz-sub";
+    sub.textContent = description;
+
+    const qMain = document.createElement("div");
+    qMain.className = "question-main";
+
+    const qBig = document.createElement("div");
+    qBig.className = "question-big";
+
+    const optionsWrap = document.createElement("div");
+    optionsWrap.className = "options";
+
+    const feedback = document.createElement("div");
+    feedback.className = "feedback";
+
+    const status = document.createElement("div");
+    status.className = "status";
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "btn-row";
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "btn secondary";
+    nextBtn.textContent = "다음";
+    nextBtn.disabled = true;
+
+    const replayBtn = document.createElement("button");
+    replayBtn.className = "btn secondary";
+    replayBtn.textContent = "다시 듣기";
+    if (!withSound) replayBtn.style.display = "none";
+
+    btnRow.appendChild(nextBtn);
+    btnRow.appendChild(replayBtn);
+
+    cardArea.appendChild(title);
+    cardArea.appendChild(sub);
+    cardArea.appendChild(qMain);
+    cardArea.appendChild(qBig);
+    cardArea.appendChild(optionsWrap);
+    cardArea.appendChild(feedback);
+    cardArea.appendChild(status);
+    cardArea.appendChild(btnRow);
+
+    function renderQuestion() {
+      feedback.textContent = "";
+      feedback.className = "feedback";
+      nextBtn.disabled = true;
+      optionsWrap.innerHTML = "";
+
+      if (idx >= order.length) {
+        qMain.textContent = "수고했어요!";
+        qBig.textContent = "";
+        status.textContent = `총 ${order.length}문제 중 ${score}문제를 맞혔어요.`;
+        nextBtn.textContent = "다시 하기";
+        nextBtn.disabled = false;
+        replayBtn.style.display = "none";
+
+        nextBtn.onclick = () => {
+          order = shuffle(WORDS);
+          idx = 0;
+          score = 0;
+          nextBtn.textContent = "다음";
+          replayBtn.style.display = withSound ? "inline-flex" : "none";
+          renderQuestion();
+        };
+        return;
+      }
+
+      const word = order[idx];
+      qMain.textContent = getQuestionText(word);
+      qBig.textContent = getBigText(word);
+
+      let wrongs = shuffle(WORDS.filter(w => w !== word)).slice(0, Math.min(3, WORDS.length - 1));
+      const choices = shuffle([word, ...wrongs]);
+
+      let locked = false;
+      choices.forEach(ch => {
+        const btn = document.createElement("button");
+        btn.className = "opt-btn";
+        btn.textContent = getOptionText(ch);
+        btn.onclick = () => {
+          if (locked) return;
+          locked = true;
+          const ok = checkCorrect(word, ch);
+          if (오케이) {
+            btn.classList.add("correct");
+            feedback.classList.add("good");
+            feedback.textContent = "정답이에요! 😊";
+            score++;
+          } else {
+            btn.classList.add("wrong");
+            feedback.classList.add("bad");
+            feedback.textContent = `아쉬워요. 정답은 "${getOptionText(word)}"였어요.`;
+          }
+          nextBtn.disabled = false;
+          status.textContent = `${idx + 1} / ${order.length} 문제`;
+        };
+        optionsWrap.appendChild(btn);
+      });
+
+      if (withSound) {
+        speak(word.eng, 2, 0.95);
+        replayBtn.onclick = () => speak(word.eng, 2, 0.95);
+      }
+
+      nextBtn.onclick = () => {
+        idx++;
+        renderQuestion();
+      };
+
+      status.textContent = `${idx + 1} / ${order.length} 문제`;
+    }
+
+    renderQuestion();
   }
 
-  .menu-box:hover {
-    transform: translateY(-4px);
-    box-shadow: 0px 12px 28px rgba(0,0,0,0.12);
+  /************* 2. 뜻 찾기 (영어 → 한글) *************/
+  function renderMeaningMode() {
+    currentMode = "meaning";
+    document.onkeydown = null;
+    soundBtn.onclick = null;
+    createChoiceQuiz({
+      titleText: "뜻 찾기",
+      description: "영어 단어를 보고 알맞은 한글 뜻을 골라요.",
+      getQuestionText: (w) => `"${w.eng}" 의 뜻은 무엇일까요?`,
+      getBigText: (w) => w.eng,
+      getOptionText: (w) => w.kor,
+      checkCorrect: (answer, picked) => answer === picked,
+      withSound: false
+    });
   }
 
-  .menu-icon {
-    font-size: 32px;
-    width: 40px;
-    text-align: center;
+  /************* 3. 영어 찾기 (한글 → 영어) *************/
+  function renderEnglishMode() {
+    currentMode = "english";
+    document.onkeydown = null;
+    soundBtn.onclick = null;
+    createChoiceQuiz({
+      titleText: "영어 찾기",
+      description: "한글 뜻을 보고 알맞은 영어 단어를 골라요.",
+      getQuestionText: (w) => `"${w.kor}" 에 알맞은 영어 단어는 무엇일까요?`,
+      getBigText: (w) => w.kor,
+      getOptionText: (w) => w.eng,
+      checkCorrect: (answer, picked) => answer === picked,
+      withSound: false
+    });
   }
 
-  .menu-title {
-    font-size: 20px;
-    font-weight:
+  /************* 4. 듣고 찾기 (발음 → 영어) *************/
+  function renderListenMode() {
+    currentMode = "listen";
+    document.onkeydown = null;
+    soundBtn.onclick = null;
+    createChoiceQuiz({
+      titleText: "듣고 찾기",
+      description: "발음을 듣고 알맞은 영어 단어를 골라요.",
+      getQuestionText: () => "잘 듣고 어떤 단어인지 맞춰 보세요.",
+      getBigText: () => "🔊",
+      getOptionText: (w) => w.eng,
+      checkCorrect: (answer, picked) => answer === picked,
+      withSound: true
+    });
+  }
+
+  /************* 5. 문장 빈칸 *************/
+  function renderSentenceMode() {
+    currentMode = "sentence";
+    document.onkeydown = null;
+    soundBtn.onclick = null;
+    cardArea.innerHTML = "";
+
+    const wordsWithSentence = WORDS.filter(w => w.ex_en);
+    if (!wordsWithSentence.length) {
+      cardArea.textContent = "예문이 있는 단어가 없어요.";
+      return;
+    }
+
+    let order = shuffle(wordsWithSentence);
+    let idx = 0;
+    let score = 0;
+
+    const title = document.createElement("div");
+    title.className = "quiz-title";
+    title.textContent = "문장에서 빈칸 받아쓰기";
+
+    const sub = document.createElement("div");
+    sub.className = "quiz-sub";
+    sub.textContent = "문장을 보고, 빈칸에 들어갈 영어 단어를 써 보세요.";
+
+    const sEn = document.createElement("div");
+    sEn.className = "sentence-en";
+
+    const sKr = document.createElement("div");
+    sKr.className = "sentence-kr";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "blank-input";
+
+    const checkBtn = document.createElement("button");
+    checkBtn.className = "btn";
+    checkBtn.textContent = "정답 확인";
+
+    const feedback = document.createElement("div");
+    feedback.className = "feedback";
+
+    const status = document.createElement("div");
+    status.className = "status";
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "btn secondary";
+    nextBtn.textContent = "다음 문장";
+    nextBtn.disabled = true;
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "btn-row";
+    btnRow.appendChild(checkBtn);
+    btnRow.appendChild(nextBtn);
+
+    cardArea.appendChild(title);
+    cardArea.appendChild(sub);
+    cardArea.appendChild(sEn);
+    cardArea.appendChild(sKr);
+    cardArea.appendChild(input);
+    cardArea.appendChild(feedback);
+    cardArea.appendChild(status);
+    cardArea.appendChild(btnRow);
+
+    function makeBlank(sentence, word) {
+      const re = new RegExp(word.eng, "gi");
+      return sentence.replace(re, "_____");
+    }
+
+    function showSentence() {
+      feedback.textContent = "";
+      feedback.className = "feedback";
+      checkBtn.disabled = false;
+      nextBtn.disabled = true;
+      input.value = "";
+      input.focus();
+
+      if (idx >= order.length) {
+        sEn.textContent = "모든 문장을 다 풀었어요!";
+        sKr.textContent = "";
+        input.style.display = "none";
+        checkBtn.style.display = "none";
+        nextBtn.disabled = false;
+        nextBtn.textContent = "다시 하기";
+        status.textContent = `총 ${order.length}문장 중 ${score}문제를 맞혔어요.`;
+
+        nextBtn.onclick = () => {
+          order = shuffle(wordsWithSentence);
+          idx = 0;
+          score = 0;
+          input.style.display = "inline-block";
+          checkBtn.style.display = "inline-block";
+          nextBtn.textContent = "다음 문장";
+          showSentence();
+        };
+        return;
+      }
+
+      const w = order[idx];
+      sEn.textContent = makeBlank(w.ex_en, w);
+      sKr.textContent = w.ex_kr || "";
+      status.textContent = `${idx + 1} / ${order.length} 문장`;
+
+      checkBtn.onclick = () => {
+        const user = input.value.trim().toLowerCase();
+        if (!user) return;
+        const answer = w.eng.toLowerCase();
+        if (user === answer) {
+          feedback.classList.add("good");
+          feedback.textContent = "정답이에요! 😊";
+          score++;
+        } else {
+          feedback.classList.add("bad");
+          feedback.textContent = `아쉬워요. 정답은 "${w.eng}"였어요.`;
+        }
+        checkBtn.disabled = true;
+        nextBtn.disabled = true;
+        setTimeout(() => {
+          nextBtn.disabled = false;
+        }, 300);
+      };
+
+      nextBtn.onclick = () => {
+        idx++;
+        showSentence();
+      };
+    }
+
+    showSentence();
+  }
+
+  /************* 유틸: 배열 섞기 *************/
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /************* 모드 전환 *************/
+  function setMode(mode) {
+    document.querySelectorAll(".mode-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+    if (mode === "vocab")      renderVocabMode();
+    else if (mode === "meaning")  renderMeaningMode();
+    else if (mode === "english")  renderEnglishMode();
+    else if (mode === "listen")   renderListenMode();
+    else if (mode === "sentence") renderSentenceMode();
+  }
+
+  document.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      setMode(btn.dataset.mode);
+    });
+  });
+
+  /************* 시작: 엑셀 로드 후 모드 실행 *************/
+  (async () => {
+    try {
+      WORDS = await loadWordsForUnit(unitParam);
+      if (!WORDS.length) {
+        cardArea.textContent = `${unitParam} 유닛에 해당하는 단어를 찾을 수 없어요. (엑셀의 '번호' 열을 확인해 주세요)`;
+        return;
+      }
+      setMode("vocab");
+    } catch (e) {
+      console.error(e);
+      cardArea.textContent = "단어 파일(words.xlsx)을 불러오는 중 오류가 발생했어요.";
+    }
+  })();
+</script>
+</body>
+</html>
