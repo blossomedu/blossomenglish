@@ -37,12 +37,14 @@
     margin-bottom: 26px;
   }
 
+  /* 1~60 카드 배치 */
   .unit-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 22px;
   }
 
+  /* 카드 디자인 */
   .unit-card {
     background: linear-gradient(145deg, #ffffff, #f3f5ff);
     border-radius: 22px;
@@ -62,10 +64,12 @@
     box-shadow: 0px 12px 28px rgba(0,0,0,0.13);
   }
 
+  /* 이미 학습한 유닛 */
   .unit-card.done {
     opacity: 0.5;
   }
 
+  /* 현재 학습 중인 유닛 강조 */
   .unit-card.current {
     border: 2px solid #4b7bff;
     box-shadow: 0px 12px 30px rgba(75,123,255,0.35);
@@ -91,20 +95,49 @@
   <h1 id="title">단계 학습</h1>
   <div class="subtitle">학습할 유닛을 선택하세요.</div>
   <div class="progress-text" id="progressText"></div>
+
   <div class="unit-grid"></div>
 </div>
 
 <script>
+  /* 현재 단계 번호 가져오기 */
   const params = new URLSearchParams(window.location.search);
   const stageNumber = params.get("number") || "1";
 
+  /* 상단 제목 변경 */
   document.getElementById("title").innerText = `${stageNumber}단계 학습`;
 
   const grid = document.querySelector(".unit-grid");
   const progressText = document.getElementById("progressText");
 
+  /* 이전에 학습했던 마지막 유닛 불러오기 */
   const storageKey = `stage_${stageNumber}_currentUnit`;
   const storedCurrent = parseInt(localStorage.getItem(storageKey) || "0", 10);
 
   if (storedCurrent > 0) {
-    progressText.innerText = `지금까지 ${stageNumber}-${
+    progressText.innerText = `지금까지 ${stageNumber}-${storedCurrent}까지 공부했어요.`;
+  } else {
+    progressText.innerText = `아직 시작 전이에요. ${stageNumber}-1부터 시작해볼까요?`;
+  }
+
+  /* 1~60 유닛 생성 */
+  for (let i = 1; i <= 60; i++) {
+    const card = document.createElement("div");
+    card.className = "unit-card";
+    card.innerText = `${stageNumber}-${i}`;
+
+    if (i < storedCurrent) card.classList.add("done");
+    else if (i === storedCurrent) card.classList.add("current");
+
+    /* ⭐ quiz.html로 바로 이동 ⭐ */
+    card.onclick = () => {
+      localStorage.setItem(storageKey, i.toString());
+      window.location.href = `quiz.html?stage=${stageNumber}&unit=${i}`;
+    };
+
+    grid.appendChild(card);
+  }
+</script>
+
+</body>
+</html>
