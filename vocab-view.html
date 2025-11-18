@@ -1,221 +1,420 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>어휘 학습 (보기 모드)</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
+<meta charset="UTF-8">
+<title>어휘 학습</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
 
-  <style>
-    body {
-      font-family: "Pretendard Variable", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f7fb;
-    }
+<style>
+  body {
+    font-family: "Pretendard Variable", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f7f8fc;
+  }
 
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px 60px;
-    }
+  .container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
+  .title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
 
-    .subtitle {
-      font-size: 16px;
-      color: #666;
-      margin-bottom: 20px;
-    }
+  .subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+  }
 
-    .info {
-      font-size: 13px;
-      color: #999;
-      margin-bottom: 20px;
-    }
+  .mode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 26px;
+  }
 
-    .word-list {
-      display: flex;
+  .mode-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
+    transition: 0.16s ease;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 9px 22px rgba(0,0,0,0.12);
+  }
+
+  .mode-card.active {
+    border: 2px solid #4b7bff;
+    box-shadow: 0px 9px 26px rgba(75,123,255,0.25);
+  }
+
+  .mode-main {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .mode-sub {
+    font-size: 14px;
+    color: #777;
+    margin-top: 2px;
+  }
+
+  .mode-right {
+    font-size: 14px;
+    color: #999;
+  }
+
+  .words-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .words-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .replay-btn {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: none;
+    background: #4b7bff;
+    color: white;
+    cursor: pointer;
+  }
+
+  .replay-btn:hover {
+    background: #345fe0;
+  }
+
+  table.word-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.06);
+  }
+
+  table.word-table th,
+  table.word-table td {
+    padding: 10px 14px;
+    font-size: 16px;
+  }
+
+  table.word-table th {
+    background: #f0f3ff;
+    text-align: left;
+    font-weight: 700;
+  }
+
+  table.word-table tr:nth-child(even) td {
+    background: #fafbff;
+  }
+
+  .empty-msg {
+    margin-top: 12px;
+    font-size: 15px;
+    color: #888;
+  }
+
+  @media(max-width: 700px) {
+    .mode-card {
       flex-direction: column;
-      gap: 10px;
-    }
-
-    .word-card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 12px 16px;
-      box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .word-texts {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .word-en {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .word-kr {
-      font-size: 14px;
-      color: #666;
-    }
-
-    .play-btn {
-      border: none;
-      background: #edf2ff;
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 4px;
     }
 
-    .play-btn:hover {
-      background: #dbe4ff;
+    .mode-right {
+      align-self: flex-end;
     }
-
-    .status {
-      font-size: 13px;
-      color: #555;
-      margin-top: 10px;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
 <div class="container">
-  <h1 id="title">어휘 학습</h1>
-  <div class="subtitle" id="subtitle">영어와 뜻을 함께 보면서 들어보세요.</div>
-  <div class="info">페이지를 열면 위에서부터 순서대로 단어 발음이 자동으로 두 번씩 재생돼요.</div>
+  <div id="stageTitle" class="title">어휘 학습</div>
+  <div id="unitSubtitle" class="subtitle"></div>
 
-  <div class="word-list" id="wordList"></div>
+  <!-- 모드 선택 5개 -->
+  <div class="mode-list">
+    <div class="mode-card active" data-mode="view">
+      <div>
+        <div class="mode-main">① 어휘 학습</div>
+        <div class="mode-sub">영어 + 뜻을 함께 보고, 영어 발음을 두 번씩 들어요.</div>
+      </div>
+      <div class="mode-right">자동 재생</div>
+    </div>
 
-  <div class="status" id="statusText"></div>
+    <div class="mode-card" data-mode="meaning">
+      <div>
+        <div class="mode-main">② 뜻 찾기</div>
+        <div class="mode-sub">영어 단어를 보고 알맞은 뜻을 고르는 퀴즈 (준비 중).</div>
+      </div>
+      <div class="mode-right">COMING SOON</div>
+    </div>
+
+    <div class="mode-card" data-mode="english">
+      <div>
+        <div class="mode-main">③ 영어 찾기</div>
+        <div class="mode-sub">뜻을 보고 알맞은 영어 단어를 고르는 퀴즈 (준비 중).</div>
+      </div>
+      <div class="mode-right">COMING SOON</div>
+    </div>
+
+    <div class="mode-card" data-mode="listen">
+      <div>
+        <div class="mode-main">④ 듣고 찾기</div>
+        <div class="mode-sub">발음을 듣고 단어를 맞추는 듣기 퀴즈 (준비 중).</div>
+      </div>
+      <div class="mode-right">COMING SOON</div>
+    </div>
+
+    <div class="mode-card" data-mode="dictation">
+      <div>
+        <div class="mode-main">⑤ 문장에서 빈칸 받아쓰기</div>
+        <div class="mode-sub">짧은 문장을 듣고 빈칸을 채우는 연습 (준비 중).</div>
+      </div>
+      <div class="mode-right">COMING SOON</div>
+    </div>
+  </div>
+
+  <!-- 어휘 리스트 영역 -->
+  <div class="words-header">
+    <div class="words-title">어휘 목록</div>
+    <button class="replay-btn" id="replayBtn">다시 듣기</button>
+  </div>
+
+  <div id="wordsArea"></div>
 </div>
 
 <script>
-  // 1) unit 번호 가져오기 (?unit=1)
-  const params = new URLSearchParams(location.search);
-  const unit = params.get("unit") || "1";
-  document.getElementById("title").innerText = `어휘 학습 - ${unit}번 세트`;
+  // ===== 1. URL에서 단계, 유닛 읽기 =====
+  const params = new URLSearchParams(window.location.search);
+  const stage = parseInt(params.get("stage") || "1", 10);
+  const unit  = parseInt(params.get("unit")  || "1", 10);
 
-  // 2) 단어 데이터 (예시)
-  // 실제로는 선생님이 여기 단어만 바꾸면 됨.
-  const vocabData = {
-    "1": [
-      { en: "apple", kr: "사과" },
-      { en: "banana", kr: "바나나" },
-      { en: "park", kr: "공원" },
-      { en: "school", kr: "학교" },
-      { en: "friend", kr: "친구" }
-    ],
-    "2": [
-      { en: "dog", kr: "개" },
-      { en: "cat", kr: "고양이" },
-      { en: "river", kr: "강" },
-      { en: "mountain", kr: "산" },
-      { en: "flower", kr: "꽃" }
-    ]
-    // 3,4,... unit 도 이런 식으로 추가 가능
-  };
+  document.getElementById("stageTitle").innerText = `${stage}단계 어휘 학습`;
+  document.getElementById("unitSubtitle").innerText = `${stage}-${unit}에서 외울 단어들이에요.`;
 
-  const words = vocabData[unit] || [];
+  // ===== 2. 단어 데이터 (순서 그대로) =====
+  const vocabList = [
+    { en: "at",      ko: "〜에" },
+    { en: "bat",     ko: "야구방망이, 박쥐" },
+    { en: "fat",     ko: "뚱뚱한, 살찐" },
+    { en: "hat",     ko: "모자" },
+    { en: "chat",    ko: "이야기하다, 수다 떨다" },
+    { en: "act",     ko: "행동하다, 연기하다" },
+    { en: "fact",    ko: "사실" },
+    { en: "fan",     ko: "팬, 선풍기" },
+    { en: "man",     ko: "남자, 사람" },
+    { en: "pants",   ko: "바지" },
+    { en: "map",     ko: "지도" },
+    { en: "cap",     ko: "모자" },
+    { en: "fun",     ko: "재미, 재밌는" },
+    { en: "run",     ko: "달리다" },
+    { en: "sad",     ko: "슬픈" },
+    { en: "mad",     ko: "화난" },
+    { en: "glad",    ko: "기쁜, 반가운" },
+    { en: "bag",     ko: "가방" },
+    { en: "pig",     ko: "돼지" },
+    { en: "leg",     ko: "다리" },
+    { en: "get",     ko: "얻다, 사다, (잠에서) 일어나다" },
+    { en: "net",     ko: "그물" },
+    { en: "set",     ko: "두다, 설정하다" },
+    { en: "pet",     ko: "반려동물" },
+    { en: "wet",     ko: "젖은" },
+    { en: "let's",   ko: "〜하자" },
+    { en: "upset",   ko: "속상한, 짜증 난" },
+    { en: "pen",     ko: "펜" },
+    { en: "bed",     ko: "침대" },
+    { en: "bedroom", ko: "침실" },
+    { en: "bell",    ko: "벨, 종" },
+    { en: "sell",    ko: "팔다" },
+    { en: "tell",    ko: "말하다" },
+    { en: "well",    ko: "잘, 건강한, 우물" },
+    { en: "cello",   ko: "(악기) 첼로" },
+    { en: "hello",   ko: "안녕" },
+    { en: "in",      ko: "〜안에" },
+    { en: "pin",     ko: "핀" },
+    { en: "win",     ko: "이기다" },
+    { en: "twin",    ko: "쌍둥이" },
+    { en: "ill",     ko: "아픈" },
+    { en: "bill",    ko: "지폐, 청구서" },
+    { en: "hill",    ko: "언덕" },
+    { en: "kill",    ko: "죽이다" },
+    { en: "fill",    ko: "채우다" },
+    { en: "film",    ko: "영화" },
+    { en: "hit",     ko: "때리다" },
+    { en: "sit",     ko: "앉다" },
+    { en: "up",      ko: "위로" },
+    { en: "cup",     ko: "컵" },
+    { en: "but",     ko: "그러나" },
+    { en: "cut",     ko: "자르다" },
+    { en: "shut",    ko: "닫다" },
+    { en: "bug",     ko: "벌레" },
+    { en: "plan",    ko: "계획, 계획하다" },
+    { en: "plant",   ko: "식물, 심다" },
+    { en: "dish",    ko: "접시, 요리, 반찬" },
+    { en: "wish",    ko: "바라다, 소원" },
+    { en: "cash",    ko: "현금" },
+    { en: "gas",     ko: "가스, 기체" },
+    { en: "and",     ko: "그리고, 〜와" },
+    { en: "band",    ko: "밴드, 악단" },
+    { en: "hand",    ko: "손" },
+    { en: "sand",    ko: "모래" },
+    { en: "land",    ko: "땅, 육지" },
+    { en: "gum",     ko: "껌" },
+    { en: "album",   ko: "앨범" },
+    { en: "drum",    ko: "드럼" },
+    { en: "camp",    ko: "캠프(지), 캠핑하다" },
+    { en: "lamp",    ko: "램프" },
+    { en: "back",    ko: "등, 뒤로, 제자리로" },
+    { en: "black",   ko: "검은(색)" },
+    { en: "rock",    ko: "바위" },
+    { en: "lock",    ko: "잠그다, 자물쇠" },
+    { en: "block",   ko: "막다, 블록" },
+    { en: "clock",   ko: "벽시계" },
+    { en: "o'clock", ko: "〜시" },
+    { en: "luck",    ko: "행운" },
+    { en: "kick",    ko: "차다" },
+    { en: "sick",    ko: "아픈" },
+    { en: "pick",    ko: "고르다, 줍다" },
+    { en: "thick",   ko: "두꺼운" },
+    { en: "truck",   ko: "트럭" },
+    { en: "track",   ko: "선로, 자국" },
+    { en: "neck",    ko: "목" },
+    { en: "check",   ko: "확인하다" },
+    { en: "quick",   ko: "빠른" },
+    { en: "quiz",    ko: "퀴즈" },
+    { en: "fast",    ko: "빠른, 빨리" },
+    { en: "last",    ko: "지난, 마지막의" },
+    { en: "bank",    ko: "은행" },
+    { en: "sink",    ko: "싱크대, 가라앉다" },
+    { en: "pink",    ko: "분홍색(의)" },
+    { en: "milk",    ko: "우유" },
+    { en: "wing",    ko: "날개" },
+    { en: "swing",   ko: "그네, 흔들리다" },
+    { en: "swim",    ko: "수영하다" },
+    { en: "gift",    ko: "선물" },
+    { en: "left",    ko: "왼쪽(의)" },
+    { en: "soft",    ko: "부드러운" }
+  ];
 
-  const listEl = document.getElementById("wordList");
-  const statusText = document.getElementById("statusText");
+  // ==== 3. 유닛별로 몇 개씩 배분할지 ====
+  const WORDS_PER_UNIT = 8;  // 한 유닛당 8단어 (원하면 숫자만 바꾸면 됨)
 
-  // 3) 화면에 단어 목록 뿌리기
-  words.forEach((item, index) => {
-    const card = document.createElement("div");
-    card.className = "word-card";
+  const unitIndex = (unit - 1);  // 지금은 stage는 무시하고, unit 번호만 사용
+  const startIndex = unitIndex * WORDS_PER_UNIT;
+  const words = vocabList.slice(startIndex, startIndex + WORDS_PER_UNIT);
 
-    const texts = document.createElement("div");
-    texts.className = "word-texts";
+  const wordsArea = document.getElementById("wordsArea");
 
-    const en = document.createElement("div");
-    en.className = "word-en";
-    en.innerText = item.en;
+  function renderWordTable() {
+    if (words.length === 0) {
+      wordsArea.innerHTML = `<div class="empty-msg">아직 ${stage}-${unit} 유닛에 등록된 단어가 없어요.</div>`;
+      return;
+    }
 
-    const kr = document.createElement("div");
-    kr.className = "word-kr";
-    kr.innerText = item.kr;
+    let html = '<table class="word-table">';
+    html += '<tr><th>영어 단어</th><th>뜻</th></tr>';
 
-    texts.appendChild(en);
-    texts.appendChild(kr);
+    words.forEach(w => {
+      html += `<tr><td>${w.en}</td><td>${w.ko}</td></tr>`;
+    });
 
-    const btn = document.createElement("button");
-    btn.className = "play-btn";
-    btn.innerHTML = "🔊 다시 듣기";
-    btn.onclick = () => speakWordTwice(item.en);
+    html += '</table>';
+    wordsArea.innerHTML = html;
+  }
 
-    card.appendChild(texts);
-    card.appendChild(btn);
+  renderWordTable();
 
-    listEl.appendChild(card);
+  // ===== 4. TTS: 영어 단어를 두 번씩 읽기 =====
+  function speakWordTwice(word, baseDelayMs) {
+    const utter1 = new SpeechSynthesisUtterance(word);
+    utter1.lang = "en-US";
+    const utter2 = new SpeechSynthesisUtterance(word);
+    utter2.lang = "en-US";
+
+    // speechSynthesis는 큐 방식이라 순서대로 쌓이면 자동으로 이어서 재생됨
+    setTimeout(() => {
+      window.speechSynthesis.speak(utter1);
+      setTimeout(() => {
+        window.speechSynthesis.speak(utter2);
+      }, 600); // 첫 번째 발음과 두 번째 발음 사이 간격
+    }, baseDelayMs);
+  }
+
+  function playAllWords() {
+    // 브라우저 정책 때문에 전에 말하던 음성 남아 있으면 지우기
+    window.speechSynthesis.cancel();
+
+    let delay = 0;
+    const gapBetweenWords = 1400; // 단어 사이 간격
+
+    words.forEach(w => {
+      speakWordTwice(w.en, delay);
+      delay += gapBetweenWords;
+    });
+  }
+
+  // 페이지 열리면 자동 재생 (어휘 학습 모드일 때만)
+  window.addEventListener("load", () => {
+    if (words.length > 0) {
+      playAllWords();
+    }
   });
 
-  // 4) 단어 발음 함수 (2번씩 재생)
-  function speakWordTwice(word) {
-    if (!("speechSynthesis" in window)) {
-      alert("이 브라우저에서는 음성 재생을 지원하지 않아요 😢");
-      return;
+  // "다시 듣기" 버튼
+  document.getElementById("replayBtn").addEventListener("click", () => {
+    if (words.length > 0) {
+      playAllWords();
     }
+  });
 
-    const speakOnce = () => {
-      const u = new SpeechSynthesisUtterance(word);
-      u.lang = "en-US";
-      u.rate = 0.9;
-      window.speechSynthesis.speak(u);
-    };
+  // ===== 5. 모드 카드 클릭 이벤트 =====
+  const modeCards = document.querySelectorAll(".mode-card");
+  let currentMode = "view";
 
-    window.speechSynthesis.cancel();
-    speakOnce();
-    setTimeout(speakOnce, 800); // 0.8초 뒤 한 번 더
-  }
+  modeCards.forEach(card => {
+    card.addEventListener("click", () => {
+      const mode = card.getAttribute("data-mode");
 
-  // 5) 위에서부터 순서대로 자동 재생
-  async function playAllWordsAuto() {
-    if (words.length === 0) {
-      statusText.innerText = "등록된 단어가 없어요.";
-      return;
-    }
+      // active 스타일 변경
+      modeCards.forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      currentMode = mode;
 
-    statusText.innerText = "자동 재생 중...";
-
-    // 브라우저에서 voice 목록 로딩을 기다려주는 편이 좋음
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-
-    for (let i = 0; i < words.length; i++) {
-      const w = words[i].en;
-      statusText.innerText = `자동 재생: ${i + 1} / ${words.length} (${w})`;
-      speakWordTwice(w);
-      // 단어 하나(2번 읽기) 끝날 시간 + 여유 시간
-      await sleep(2200);
-    }
-
-    statusText.innerText = "자동 재생이 끝났어요. 다시 듣고 싶으면 🔊 버튼을 눌러요.";
-  }
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  // 페이지 로드 후 자동 재생 시작
-  window.addEventListener("load", () => {
-    playAllWordsAuto();
+      if (mode === "view") {
+        // 어휘 학습 모드
+        renderWordTable();
+        if (words.length > 0) playAllWords();
+      } else {
+        // 아직 구현 안 된 모드들
+        wordsArea.innerHTML =
+          `<div class="empty-msg">
+             아직 <b>${card.querySelector(".mode-main").innerText}</b> 기능 준비 중이에요.  
+             지금은 ① 어휘 학습으로 발음과 뜻을 먼저 익혀볼까요?
+           </div>`;
+        window.speechSynthesis.cancel();
+      }
+    });
   });
 </script>
 
