@@ -16,13 +16,15 @@
   .container {
     max-width: 1100px;
     margin: 40px auto;
-    padding: 0 20px;
+    padding: 20px;
   }
 
-  h1 {
-    font-size: 32px;
+  /* 상단 제목 */
+  #title {
+    font-size: 34px;
     font-weight: 800;
-    margin-bottom: 20px;
+    margin-bottom: 28px;
+    color: #000;
   }
 
   /* 메뉴 카드 */
@@ -44,84 +46,12 @@
     box-shadow: 0px 12px 28px rgba(0,0,0,0.12);
   }
 
-  .menu-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .menu-desc {
-    font-size: 15px;
-    color: #777;
-  }
-
   .menu-icon {
     font-size: 32px;
-    width: 38px;
+    width: 40px;
+    text-align: center;
   }
-</style>
-</head>
 
-<body>
-<div class="container">
-
-  <h1 id="title">1-1 학습</h1>
-
-  <!-- 1. 어휘 학습 -->
-  <div class="menu-box">
-    <div class="menu-icon">📚</div>
-    <div>
-      <div class="menu-title">1. 어휘 학습</div>
-      <div class="menu-desc">영어 + 뜻을 함께 보고, 영어 발음을 두 번 들어요.</div>
-    </div>
-  </div>
-
-  <!-- 2. 뜻 찾기 -->
-  <div class="menu-box">
-    <div class="menu-icon">✔️</div>
-    <div>
-      <div class="menu-title">2. 뜻 찾기</div>
-      <div class="menu-desc">영어를 보고 알맞은 한글 뜻을 골라요.</div>
-    </div>
-  </div>
-
-  <!-- 3. 영어 찾기 -->
-  <div class="menu-box">
-    <div class="menu-icon">🔤</div>
-    <div>
-      <div class="menu-title">3. 영어 찾기</div>
-      <div class="menu-desc">한글 뜻을 보고 알맞은 영어를 골라요.</div>
-    </div>
-  </div>
-
-  <!-- 4. 듣고 찾기 -->
-  <div class="menu-box">
-    <div class="menu-icon">🎧</div>
-    <div>
-      <div class="menu-title">4. 듣고 찾기</div>
-      <div class="menu-desc">발음을 듣고 영어 단어를 골라요.</div>
-    </div>
-  </div>
-
-  <!-- 5. 문장에서 빈칸 받아쓰기 -->
-  <div class="menu-box">
-    <div class="menu-icon">✏️</div>
-    <div>
-      <div class="menu-title">5. 문장에서 빈칸 받아쓰기</div>
-      <div class="menu-desc">배운 단어를 문장에서 활용해요.</div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-  // 제목 자동 표시: "1단계 · 1-1 유닛"
-  const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage") || "1";
-  const unit = params.get("unit") || "1";
-
-  document.getElementById("title").innerText = `${stage}-${unit} 학습`;
-</script>
-
-</body>
-</html>
+  .menu-title {
+    font-size: 20px;
+    font-weight:
