@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>어휘 학습 (보기 모드)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css">
+
+  <style>
+    body {
+      font-family: "Pretendard Variable", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f7fb;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 20px;
+    }
+
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .word-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 12px 16px;
+      box-shadow: 0px 4px 14px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .word-texts {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .word-en {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .word-kr {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .play-btn {
+      border: none;
+      background: #edf2ff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .play-btn:hover {
+      background: #dbe4ff;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="title">어휘 학습</h1>
+  <div class="subtitle" id="subtitle">영어와 뜻을 함께 보면서 들어보세요.</div>
+  <div class="info">페이지를 열면 위에서부터 순서대로 단어 발음이 자동으로 두 번씩 재생돼요.</div>
+
+  <div class="word-list" id="wordList"></div>
+
+  <div class="status" id="statusText"></div>
+</div>
+
+<script>
+  // 1) unit 번호 가져오기 (?unit=1)
+  const params = new URLSearchParams(location.search);
+  const unit = params.get("unit") || "1";
+  document.getElementById("title").innerText = `어휘 학습 - ${unit}번 세트`;
+
+  // 2) 단어 데이터 (예시)
+  // 실제로는 선생님이 여기 단어만 바꾸면 됨.
+  const vocabData = {
+    "1": [
+      { en: "apple", kr: "사과" },
+      { en: "banana", kr: "바나나" },
+      { en: "park", kr: "공원" },
+      { en: "school", kr: "학교" },
+      { en: "friend", kr: "친구" }
+    ],
+    "2": [
+      { en: "dog", kr: "개" },
+      { en: "cat", kr: "고양이" },
+      { en: "river", kr: "강" },
+      { en: "mountain", kr: "산" },
+      { en: "flower", kr: "꽃" }
+    ]
+    // 3,4,... unit 도 이런 식으로 추가 가능
+  };
+
+  const words = vocabData[unit] || [];
+
+  const listEl = document.getElementById("wordList");
+  const statusText = document.getElementById("statusText");
+
+  // 3) 화면에 단어 목록 뿌리기
+  words.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "word-card";
+
+    const texts = document.createElement("div");
+    texts.className = "word-texts";
+
+    const en = document.createElement("div");
+    en.className = "word-en";
+    en.innerText = item.en;
+
+    const kr = document.createElement("div");
+    kr.className = "word-kr";
+    kr.innerText = item.kr;
+
+    texts.appendChild(en);
+    texts.appendChild(kr);
+
+    const btn = document.createElement("button");
+    btn.className = "play-btn";
+    btn.innerHTML = "🔊 다시 듣기";
+    btn.onclick = () => speakWordTwice(item.en);
+
+    card.appendChild(texts);
+    card.appendChild(btn);
+
+    listEl.appendChild(card);
+  });
+
+  // 4) 단어 발음 함수 (2번씩 재생)
+  function speakWordTwice(word) {
+    if (!("speechSynthesis" in window)) {
+      alert("이 브라우저에서는 음성 재생을 지원하지 않아요 😢");
+      return;
+    }
+
+    const speakOnce = () => {
+      const u = new SpeechSynthesisUtterance(word);
+      u.lang = "en-US";
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    };
+
+    window.speechSynthesis.cancel();
+    speakOnce();
+    setTimeout(speakOnce, 800); // 0.8초 뒤 한 번 더
+  }
+
+  // 5) 위에서부터 순서대로 자동 재생
+  async function playAllWordsAuto() {
+    if (words.length === 0) {
+      statusText.innerText = "등록된 단어가 없어요.";
+      return;
+    }
+
+    statusText.innerText = "자동 재생 중...";
+
+    // 브라우저에서 voice 목록 로딩을 기다려주는 편이 좋음
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i].en;
+      statusText.innerText = `자동 재생: ${i + 1} / ${words.length} (${w})`;
+      speakWordTwice(w);
+      // 단어 하나(2번 읽기) 끝날 시간 + 여유 시간
+      await sleep(2200);
+    }
+
+    statusText.innerText = "자동 재생이 끝났어요. 다시 듣고 싶으면 🔊 버튼을 눌러요.";
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // 페이지 로드 후 자동 재생 시작
+  window.addEventListener("load", () => {
+    playAllWordsAuto();
+  });
+</script>
+
+</body>
+</html>
