@@ -73,7 +73,7 @@
       border-radius: 28px;
       box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
       padding: 36px 40px 30px;
-      min-height: 340px; /* 모든 모드에서 높이 유지 */
+      min-height: 380px; /* 모든 모드에서 최소 높이 유지 (듣고 찾기 작아지지 않게) */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -82,7 +82,6 @@
       position: relative; /* 다시 듣기 버튼 기준 */
     }
 
-    /* 큰 글씨 – 어휘/퀴즈 공통 */
     .word-big {
       font-size: 60px;
       font-weight: 800;
@@ -368,7 +367,6 @@
 
       <!-- 듣고 찾기 (발음 → 한글 뜻) -->
       <div id="panel-listen" class="hidden">
-        <!-- 텍스트 안내는 없고, 카드 크기는 위 모드와 동일 유지 -->
         <div class="choices-grid" id="listenChoices"></div>
       </div>
 
@@ -407,20 +405,19 @@
   <script>
     // -----------------------------
     // 1. 예시 단어 데이터 (지금은 1-1만)
-    //    실제로는 여기다 1-2, 1-3, ... 계속 추가하면 됨
     // -----------------------------
     const WORD_DATA = {
       "1-1": [
-        { word: "at",    meaning: "~에",                 sentenceEn: "at 7 o'clock",       sentenceKo: "7시 정각에" },
-        { word: "bat",   meaning: "야구방망이, 박쥐",     sentenceEn: "She has two bats.",  sentenceKo: "그녀는 두 개의 배트를 가지고 있어." },
-        { word: "fat",   meaning: "뚱뚱한, 살찐",        sentenceEn: "The cat is fat.",    sentenceKo: "그 고양이는 뚱뚱해." },
-        { word: "hat",   meaning: "모자",                sentenceEn: "She has a hat.",     sentenceKo: "그녀는 모자를 가지고 있어." },
-        { word: "chat",  meaning: "이야기하다, 수다 떨다", sentenceEn: "I like to chat.",    sentenceKo: "나는 수다 떠는 것을 좋아해." },
-        { word: "act",   meaning: "행동하다, 연기하다",   sentenceEn: "She acts like a kid.", sentenceKo: "그녀는 아이처럼 행동해." },
-        { word: "fact",  meaning: "사실",                sentenceEn: "In fact, I like him.", sentenceKo: "사실, 나는 그를 좋아해." },
-        { word: "fan",   meaning: "팬, 선풍기",          sentenceEn: "They're fans.",      sentenceKo: "그것들은 선풍기야." },
-        { word: "man",   meaning: "남자, 사람",          sentenceEn: "He is an old man.",  sentenceKo: "그는 나이 든 남자야." },
-        { word: "pants", meaning: "바지",                sentenceEn: "How much are the pants?", sentenceKo: "그 바지는 얼마야?" }
+        { word: "at",    meaning: "~에",                 sentenceEn: "I get up at 7 o'clock.",       sentenceKo: "나는 7시 정각에 일어나." },
+        { word: "bat",   meaning: "야구방망이, 박쥐",     sentenceEn: "She has two bats.",            sentenceKo: "그녀는 두 개의 배트를 가지고 있어." },
+        { word: "fat",   meaning: "뚱뚱한, 살찐",        sentenceEn: "The cat is fat.",              sentenceKo: "그 고양이는 뚱뚱해." },
+        { word: "hat",   meaning: "모자",                sentenceEn: "She has a hat.",               sentenceKo: "그녀는 모자를 가지고 있어." },
+        { word: "chat",  meaning: "이야기하다, 수다 떨다", sentenceEn: "I like to chat with my family.", sentenceKo: "나는 가족과 이야기하는 걸 좋아해." },
+        { word: "act",   meaning: "행동하다, 연기하다",   sentenceEn: "She acts like a kid.",         sentenceKo: "그녀는 아이처럼 행동해." },
+        { word: "fact",  meaning: "사실",                sentenceEn: "In fact, I like him.",         sentenceKo: "사실, 나는 그를 좋아해." },
+        { word: "fan",   meaning: "팬, 선풍기",          sentenceEn: "They're fans.",                sentenceKo: "그것들은 선풍기야." },
+        { word: "man",   meaning: "남자, 사람",          sentenceEn: "He is an old man.",            sentenceKo: "그는 나이 든 남자야." },
+        { word: "pants", meaning: "바지",                sentenceEn: "How much are the pants?",      sentenceKo: "그 바지는 얼마야?" }
       ]
     };
 
@@ -502,7 +499,7 @@
       window.speechSynthesis.speak(utter);
     }
 
-    // 어휘 학습/듣기에서 2번 읽기 (2초 간격)
+    // 어휘 학습/듣기에서 2번 읽기 (1.5초 간격)
     function speakWordTwice(word) {
       if (!("speechSynthesis" in window) || !word) return;
       window.speechSynthesis.cancel();
@@ -514,7 +511,7 @@
       };
 
       speakOnce();
-      setTimeout(speakOnce, 2000);
+      setTimeout(speakOnce, 1500); // 1.5초 후 다시
     }
 
     function shuffle(array) {
@@ -544,7 +541,6 @@
       if (!w) {
         progressText.textContent = `0 / ${allWords.length}`;
       } else {
-        // idx는 전체 유닛 내에서의 번호, 0부터 시작 → +1
         progressText.textContent = `${w.idx + 1} / ${allWords.length}`;
       }
     }
@@ -675,7 +671,6 @@
       const w = getCurrentWord();
       if (!w) return;
 
-      // 문장 속 단어를 ____로 바꾸기
       const re = new RegExp(w.word, "gi");
       const blankSentence = w.sentenceEn.replace(re, "____");
       sentenceEnEl.textContent = blankSentence;
@@ -756,8 +751,16 @@
       const w = getCurrentWord();
       if (!w) return;
 
-      const user = (sentenceInput.value || "").trim().toLowerCase();
+      const raw = sentenceInput.value || "";
+      const user = raw.trim().toLowerCase();
       const correct = w.word.toLowerCase();
+
+      if (!user) {
+        sentenceFeedback.textContent = "정답을 먼저 써 보세요.";
+        sentenceFeedback.classList.remove("correct");
+        sentenceFeedback.classList.add("wrong");
+        return;
+      }
 
       if (user === correct) {
         sentenceFeedback.textContent = "정답이에요! 👍";
@@ -805,17 +808,26 @@
 
       if (currentIndex > 0) {
         currentIndex--;
-      } else {
-        currentIndex = 0;
+        renderCurrentQuestion();
       }
-      renderCurrentQuestion();
     });
 
     nextBtn.addEventListener("click", () => {
       if (currentMode === "sentence") {
+        // 문장 빈칸은 정답 확인
         checkSentenceAnswer();
+      } else if (currentMode === "study") {
+        // 어휘 학습은 자유 이동 허용
+        if (allWords.length === 0) return;
+        finished = false;
+        resultMessage.classList.add("hidden");
+        if (currentIndex < currentPool.length - 1) {
+          currentIndex++;
+          renderCurrentQuestion();
+        }
       } else {
-        moveToNextQuestion();
+        // 객관식 모드에서는 정답을 선택하지 않고는 넘어갈 수 없음
+        alert("먼저 정답을 골라 주세요!");
       }
     });
 
