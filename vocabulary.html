@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Blossom English - 어휘 학습 단계 선택</title>
+  <title>어휘 학습 단계 선택</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
@@ -12,60 +12,84 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont,
         "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
+
     body {
       background: #f3f4f6;
-      color: #111827;
       min-height: 100vh;
+      color: #111827;
     }
+
     .page {
       max-width: 900px;
       margin: 0 auto;
-      padding: 40px 16px 60px;
+      padding: 32px 16px 48px;
     }
-    h1 {
-      font-size: 30px;
+
+    .title {
+      font-size: 28px;
       font-weight: 800;
       margin-bottom: 6px;
     }
+
     .subtitle {
       font-size: 15px;
       color: #6b7280;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
-    .level-list {
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .stage-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      max-width: 420px;
+      gap: 14px;
+      margin-top: 4px;
     }
-    .level-card {
+
+    .stage-item {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 20px;
-      border-radius: 18px;
+      cursor: pointer;
       text-decoration: none;
-      background: #ffffff;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-      border: 1px solid #e5e7eb;
-      color: #111827;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      color: inherit;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
-    .level-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.14);
-      background: #f9fafb;
+
+    .stage-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
     }
-    .level-name {
+
+    .stage-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stage-title {
       font-size: 18px;
       font-weight: 700;
     }
-    .level-desc {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-top: 3px;
+
+    .stage-desc {
+      font-size: 14px;
+      color: #6b7280;
     }
-    .level-right {
+
+    .stage-arrow {
       font-size: 18px;
       color: #9ca3af;
     }
@@ -73,40 +97,46 @@
 </head>
 <body>
 <div class="page">
-  <h1>어휘 학습</h1>
+  <div class="title">어휘 학습</div>
   <div class="subtitle">학습할 단계를 선택하세요.</div>
 
-  <div class="level-list">
-    <a class="level-card" href="units.html?stage=1">
-      <div>
-        <div class="level-name">1단계</div>
-        <div class="level-desc">파닉스 + 기초 단어</div>
+  <a href="index.html" class="back-link">◀ 홈으로</a>
+
+  <div class="stage-list">
+    <!-- 1단계 -->
+    <a class="stage-item" href="units.html?stage=1">
+      <div class="stage-left">
+        <div class="stage-title">1단계</div>
+        <div class="stage-desc">파닉스 + 기초 단어</div>
       </div>
-      <div class="level-right">›</div>
+      <div class="stage-arrow">›</div>
     </a>
 
-    <a class="level-card" href="units.html?stage=2">
-      <div>
-        <div class="level-name">2단계</div>
-        <div class="level-desc">기본 어휘 확장</div>
+    <!-- 2단계 -->
+    <a class="stage-item" href="units.html?stage=2">
+      <div class="stage-left">
+        <div class="stage-title">2단계</div>
+        <div class="stage-desc">기본 어휘 확장</div>
       </div>
-      <div class="level-right">›</div>
+      <div class="stage-arrow">›</div>
     </a>
 
-    <a class="level-card" href="units.html?stage=3">
-      <div>
-        <div class="level-name">3단계</div>
-        <div class="level-desc">문장 속 어휘 연습</div>
+    <!-- 3단계 -->
+    <a class="stage-item" href="units.html?stage=3">
+      <div class="stage-left">
+        <div class="stage-title">3단계</div>
+        <div class="stage-desc">문장 속 어휘 연습</div>
       </div>
-      <div class="level-right">›</div>
+      <div class="stage-arrow">›</div>
     </a>
 
-    <a class="level-card" href="units.html?stage=4">
-      <div>
-        <div class="level-name">학교 시험</div>
-        <div class="level-desc">학교 시험 대비 단어</div>
+    <!-- 학교 시험 -->
+    <a class="stage-item" href="units.html?stage=school">
+      <div class="stage-left">
+        <div class="stage-title">학교 시험</div>
+        <div class="stage-desc">학교 시험 대비 단어</div>
       </div>
-      <div class="level-right">›</div>
+      <div class="stage-arrow">›</div>
     </a>
   </div>
 </div>
