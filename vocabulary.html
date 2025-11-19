@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blossom English - 어휘 학습</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Pretendard",
+        "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    }
+
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 16px 48px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 28px;
+    }
+
+    .back-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .back-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      background: #e5e7eb;
+      color: #374151;
+      cursor: pointer;
+      display: none;
+    }
+
+    .current-stage-label {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    /* 🔥 단계 화면: 세로 리스트 */
+    .stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .stage-btn {
+      width: 100%;
+      padding: 22px 20px;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: left;
+      border-radius: 20px;
+      cursor: pointer;
+      border: none;
+      background: #ffffff;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      transition: all 0.12s ease;
+    }
+
+    .stage-btn:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.03);
+    }
+
+    .stage-blue { border-left: 10px solid #3b82f6; }
+    .stage-green { border-left: 10px solid #10b981; }
+    .stage-pink { border-left: 10px solid #f43f5e; }
+    .stage-yellow { border-left: 10px solid #f59e0b; }
+
+    /* 🔥 유닛 화면: 기존 가로 그리드 유지 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    .tile {
+      border-radius: 24px;
+      padding: 26px 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      color: #111827;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      transition: all 0.12s ease;
+    }
+
+    .tile:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.03);
+    }
+
+    .unit-blue   { background: #e0edff; }
+    .unit-green  { background: #defce9; }
+    .unit-pink   { background: #ffe4e6; }
+    .unit-yellow { background: #fef3c7; }
+
+  </style>
+</head>
+<body>
+<div class="page">
+  <h1>어휘 학습</h1>
+  <p class="subtitle" id="subtitle">학습할 단계를 선택하세요.</p>
+
+  <div class="back-row">
+    <button class="back-btn" id="backBtn">◀ 단계 선택으로</button>
+    <div class="current-stage-label" id="stageLabel"></div>
+  </div>
+
+  <div id="containerArea"></div>
+</div>
+
+<script>
+  const STAGES = [
+    { id: 1, name: "1단계", color: "stage-blue", unitColor: "unit-blue" },
+    { id: 2, name: "2단계", color: "stage-green", unitColor: "unit-green" },
+    { id: 3, name: "3단계", color: "stage-pink", unitColor: "unit-pink" },
+    { id: 4, name: "내신",  color: "stage-yellow", unitColor: "unit-yellow" }
+  ];
+
+  const container = document.getElementById("containerArea");
+  const subtitle = document.getElementById("subtitle");
+  const backBtn = document.getElementById("backBtn");
+  const stageLabel = document.getElementById("stageLabel");
+
+  let currentStage = null;
+
+  function renderStageList() {
+    container.innerHTML = "";
+    subtitle.textContent = "학습할 단계를 선택하세요.";
+    backBtn.style.display = "none";
+    stageLabel.textContent = "";
+
+    const list = document.createElement("div");
+    list.className = "stage-list";
+
+    STAGES.forEach(stage => {
+      const btn = document.createElement("button");
+      btn.className = `stage-btn ${stage.color}`;
+      btn.textContent = stage.name;
+      btn.onclick = () => renderUnits(stage);
+      list.appendChild(btn);
+    });
+
+    container.appendChild(list);
+  }
+
+  function renderUnits(stage) {
+    currentStage = stage;
+    container.innerHTML = "";
+    subtitle.textContent = `${stage.name}에서 학습할 유닛을 선택하세요.`;
+    backBtn.style.display = "inline-flex";
+    stageLabel.textContent = stage.name;
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    for (let i = 1; i <= 10; i++) {
+      const a = document.createElement("a");
+      a.className = `tile ${stage.unitColor}`;
+      a.textContent = i;
+      a.href = `quiz.html?stage=${stage.id}&unit=${stage.id}-${i}`;
+      grid.appendChild(a);
+    }
+
+    container.appendChild(grid);
+  }
+
+  backBtn.onclick = renderStageList;
+
+  // 초기 화면
+  renderStageList();
+
+</script>
+</body>
+</html>
