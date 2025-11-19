@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blossom English - 유닛 선택</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    }
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      min-height: 100vh;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 16px 60px;
+    }
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .stage-label {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4b5563;
+      text-decoration: none;
+      background: #e5e7eb;
+      padding: 8px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+      transition: background 0.12s ease, transform 0.12s ease;
+    }
+    .back-link:hover {
+      background: #d1d5db;
+      transform: translateY(-1px);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px 18px;
+      max-width: 720px;
+    }
+    .unit-tile {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      text-decoration: none;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e5e7eb;
+      transition: transform 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease, border-color 0.12s ease;
+    }
+    .unit-tile:hover {
+      transform: translateY(-2px);
+      background: #eef2ff;
+      border-color: #bfdbfe;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+    }
+    @media (max-width: 640px) {
+      .page { padding-top: 28px; }
+      h1 { font-size: 24px; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="top-row">
+    <h1>어휘 학습</h1>
+    <div class="stage-label" id="stageLabel"></div>
+  </div>
+
+  <div class="subtitle" id="subtitle"></div>
+
+  <a class="back-link" href="vocabulary.html">
+    <span>◀</span> 단계 선택으로
+  </a>
+
+  <div class="grid" id="unitGrid"></div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const stage = params.get("stage") || "1";   // 1,2,3,4
+
+  const stageNames = {
+    "1": "1단계",
+    "2": "2단계",
+    "3": "3단계",
+    "4": "학교 시험",
+  };
+
+  const stageLabel = document.getElementById("stageLabel");
+  const subtitle = document.getElementById("subtitle");
+  const grid = document.getElementById("unitGrid");
+
+  const stageName = stageNames[stage] || "1단계";
+
+  stageLabel.textContent = stageName;
+  subtitle.textContent = `${stageName}의 유닛을 선택하세요.`;
+
+  const UNIT_COUNT = 10;
+
+  for (let i = 1; i <= UNIT_COUNT; i++) {
+    const a = document.createElement("a");
+    a.className = "unit-tile";
+    a.textContent = `Unit ${i}`;
+    // 🔗 이 유닛 안에 1-1 ~ 1-60으로 들어가는 페이지
+    a.href = `units-detail.html?stage=${stage}&unit=${i}`;
+    grid.appendChild(a);
+  }
+</script>
+</body>
+</html>
