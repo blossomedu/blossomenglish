@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>어휘 학습 - 유닛 선택</title>
+  <title>세트 선택</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
@@ -17,15 +17,17 @@
 
     body {
       background: #f4f6fb;
+      margin: 0;
       padding: 30px 0 60px;
     }
 
     .page {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 0 20px 40px;
+      padding: 0 20px;
     }
 
+    /* 상단: 세트 번호만 크게 표시 */
     .page-header {
       margin-bottom: 24px;
     }
@@ -33,31 +35,26 @@
     .page-title {
       font-size: 32px;
       font-weight: 900;
-      margin-bottom: 4px;
     }
 
-    .page-subtitle {
-      font-size: 16px;
-      color: #6b7280;
-    }
-
+    /* 카드 영역 */
     .set-area {
       background: #f1f3fb;
       border-radius: 28px;
-      padding: 26px 24px 30px;
+      padding: 30px 24px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
 
     .set-card {
       background: #ffffff;
-      border-radius: 18px;
-      height: 54px;
+      border-radius: 20px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       color: #111827;
       cursor: pointer;
@@ -67,30 +64,26 @@
 
     .set-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
     }
 
+    /* 에러 메시지 */
     .error-box {
-      margin-top: 40px;
+      margin-top: 32px;
       padding: 18px 20px;
       border-radius: 18px;
       background: #fee2e2;
       color: #b91c1c;
+      font-size: 16px;
     }
 
     @media (max-width: 900px) {
-      .set-area {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    @media (max-width: 700px) {
       .set-area {
         grid-template-columns: repeat(3, 1fr);
       }
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 700px) {
       .set-area {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -101,67 +94,60 @@
 
 <div class="page">
   <header class="page-header">
-    <div class="page-title" id="page-title">세트 선택</div>
-    <div class="page-subtitle" id="page-subtitle"></div>
+    <!-- 여기 숫자(세트 번호)만 표시됨 -->
+    <div class="page-title" id="page-title">세트</div>
   </header>
 
   <section class="set-area" id="set-area">
-    <!-- JS로 유닛 버튼 생성 -->
+    <!-- JS로 1~60 유닛 카드 생성 -->
   </section>
 
-  <div id="error-box" class="error-box" style="display:none;"></div>
+  <!-- 에러 메시지 들어갈 자리 -->
+  <div id="error-container"></div>
 </div>
 
 <script>
+  // URL 파라미터 읽기
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage");        // "1", "2", "3" (학교 시험은 나중에)
-  // set 또는 group 둘 중 하나를 받아서 사용
-  let setParam = params.get("group");
-  if (!setParam) setParam = params.get("set");
+  const stage = params.get("stage");        // "1", "2", "3" (필수)
+  const rawSet = params.get("set");         // 세트 번호 (1~27 중 일부)
 
-  const titleEl = document.getElementById("page-title");
-  const subtitleEl = document.getElementById("page-subtitle");
-  const areaEl = document.getElementById("set-area");
-  const errorBox = document.getElementById("error-box");
+  const titleEl   = document.getElementById("page-title");
+  const areaEl    = document.getElementById("set-area");
+  const errorWrap = document.getElementById("error-container");
 
-  // ----- 기본 검증 -----
-  const setIndex = Number(setParam); // 1~9 (단계 화면에서 보이는 숫자)
-  const validStage = stage === "1" || stage === "2" || stage === "3";
-  const validSetIndex = Number.isInteger(setIndex) && setIndex >= 1 && setIndex <= 9;
+  const setNumber = Number(rawSet);
 
-  if (!validStage || !validSetIndex) {
-    areaEl.style.display = "none";
-    errorBox.style.display = "block";
-    errorBox.textContent = "세트 정보가 올바르지 않습니다.";
+  let isValid = false;
+
+  // 단계별 허용 세트 범위
+  if (stage === "1" && setNumber >= 1  && setNumber <= 9)   isValid = true;
+  if (stage === "2" && setNumber >= 10 && setNumber <= 18)  isValid = true;
+  if (stage === "3" && setNumber >= 19 && setNumber <= 27)  isValid = true;
+
+  // stage 또는 set 이 이상하면 에러 처리
+  if (!stage || !rawSet || Number.isNaN(setNumber) || !isValid) {
+    areaEl.innerHTML = "";
+    const msg = document.createElement("div");
+    msg.className = "error-box";
+    msg.textContent = "세트 정보가 올바르지 않습니다.";
+    errorWrap.appendChild(msg);
   } else {
-    // ----- 실제 세트 번호 계산 -----
-    // 1단계 : 1~9
-    // 2단계 : 10~18  (이전 단계까지 9개였으니 +9)
-    // 3단계 : 19~27  (앞의 18개 + setIndex)
-    let realSetNumber;
-    if (stage === "1") {
-      realSetNumber = setIndex;
-    } else if (stage === "2") {
-      realSetNumber = 9 + setIndex;    // 10~18
-    } else {
-      realSetNumber = 18 + setIndex;   // 19~27
-    }
+    // 상단에 세트 번호만 표시 (예: 1, 10, 19 ...)
+    titleEl.textContent = String(setNumber);
 
-    titleEl.textContent = `${realSetNumber} 세트`;
-    subtitleEl.textContent = `${realSetNumber}-1 ~ ${realSetNumber}-60 중에서 학습할 유닛을 선택하세요.`;
-
-    // ----- 유닛 카드 생성 (1~60) -----
+    // 1~60 유닛 카드 생성
+    areaEl.innerHTML = "";
     for (let i = 1; i <= 60; i++) {
-      const unitLabel = `${realSetNumber}-${i}`;
+      const unitId = `${setNumber}-${i}`;  // 예: "1-1", "10-1", "19-1" ...
 
       const card = document.createElement("div");
       card.className = "set-card";
-      card.textContent = unitLabel;
+      card.textContent = unitId;
 
       card.onclick = () => {
-        // quiz.html 로 이동
-        // unit 값만 제대로 맞으면 quiz 쪽 WORD_SETS[unit] 만 맞춰 주면 된다.
-        location.href = `quiz.html?stage=${stage}&unit=${unitLabel}`;
+        // quiz.html 로 이동 (기존 규칙 그대로)
+        location.href = `quiz.html?stage=${stage}&unit=${unitId}`;
       };
 
       areaEl.appendChild(card);
