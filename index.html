@@ -31,14 +31,12 @@
     margin-bottom: 35px;
   }
 
-  /* 카드 전체 레이아웃 */
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 28px;
   }
 
-  /* 개별 카드 */
   .card {
     background: #fff;
     border-radius: 26px;
@@ -66,64 +64,53 @@
     font-size: 24px;
     font-weight: 700;
   }
-
-  @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 600px) {
-    .grid {
-      grid-template-columns: repeat(1, 1fr);
-    }
-  }
 </style>
-
 </head>
+
 <body>
 
 <div class="container">
+
   <h1>블라썸잉글리쉬</h1>
   <div class="subtitle">미래를 꽃 피우는 영어 교육</div>
 
   <div class="grid">
 
- <!-- 반별 게시판 -->
-<div class="card" onclick="location.href='#'">
-  <img src="board.png" alt="반별 게시판" />
-  <div class="card-title">반별 게시판</div>
-</div>
+    <!-- 반별 게시판 -->
+    <div class="card" onclick="location.href='#'">
+      <img src="board.png" alt="반별 게시판">
+      <div class="card-title">반별 게시판</div>
+    </div>
 
-<!-- 어휘 학습 -->
-<div class="card" onclick="location.href='vocabulary.html'">
-  <img src="vocab-book.png" alt="어휘 학습" />
-  <div class="card-title">어휘 학습</div>
-</div>
+    <!-- 어휘 학습 -->
+    <div class="card" onclick="location.href='vocabulary.html'">
+      <img src="vocab-book.png" alt="어휘 학습">
+      <div class="card-title">어휘 학습</div>
+    </div>
 
-<!-- 문장 학습 -->
-<div class="card" onclick="location.href='#'">
-  <img src="pencil.png" alt="문장 학습" />
-  <div class="card-title">문장 학습</div>
-</div>
+    <!-- 문장 학습 -->
+    <div class="card" onclick="location.href='#'">
+      <img src="pencil.png" alt="문장 학습">
+      <div class="card-title">문장 학습</div>
+    </div>
 
-<!-- Blossom 소개 (교체 X) -->
-<div class="card" onclick="location.href='#'">
-  <img src="blossom-logo.png" alt="Blossom 소개" />
-  <div class="card-title">Blossom 소개</div>
-</div>
+    <!-- Blossom 소개 -->
+    <div class="card" onclick="location.href='#'">
+      <img src="blossom-logo.png" alt="Blossom 소개">
+      <div class="card-title">Blossom 소개</div>
+    </div>
 
-<!-- 온라인서점 -->
-<div class="card" onclick="location.href='#'">
-  <img src="store.png" alt="온라인서점" />
-  <div class="card-title">온라인서점</div>
-</div>
+    <!-- 온라인서점 -->
+    <div class="card" onclick="location.href='#'">
+      <img src="store.png" alt="온라인서점">
+      <div class="card-title">온라인서점</div>
+    </div>
 
-<!-- 교육뉴스 -->
-<div class="card" onclick="location.href='#'">
-  <img src="news.png" alt="교육뉴스" />
-  <div class="card-title">교육뉴스</div>
-</div>   
+    <!-- 교육뉴스 -->
+    <div class="card" onclick="location.href='#'">
+      <img src="news.png" alt="교육뉴스">
+      <div class="card-title">교육뉴스</div>
+    </div>
 
   </div>
 </div>
