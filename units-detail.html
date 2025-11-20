@@ -2,15 +2,16 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>세트 선택 - BLOSSOM ENGLISH</title>
+  <title>어휘 학습 - 세트 선택</title>
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: "Pretendard Variable", sans-serif;
+      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+        system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
 
     body {
@@ -23,7 +24,7 @@
       padding: 0 20px 40px;
     }
 
-    .title {
+    .page-title {
       font-size: 30px;
       font-weight: 900;
       margin-bottom: 24px;
@@ -39,9 +40,9 @@
     }
 
     .set-card {
-      background: white;
-      height: 74px;
+      background: #ffffff;
       border-radius: 18px;
+      height: 70px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -50,7 +51,8 @@
       color: #1f2937;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(0,0,0,0.06);
-      transition: 0.15s;
+      transition: 0.15s ease;
+      text-align: center;
     }
 
     .set-card:hover {
@@ -58,139 +60,101 @@
       box-shadow: 0 14px 30px rgba(0,0,0,0.1);
     }
 
-    @media(max-width:700px){
-      .set-area { grid-template-columns: repeat(2,1fr); }
+    @media (max-width: 700px) {
+      .set-area {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
-    @media(max-width:500px){
-      .set-area { grid-template-columns: repeat(1,1fr); }
+    @media (max-width: 500px) {
+      .set-area {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
 <div class="page">
-
-  <div class="title" id="pageTitle"></div>
-  <div class="set-area" id="setArea"></div>
-
+  <div class="page-title" id="page-title"></div>
+  <section class="set-area" id="set-area">
+    <!-- JS로 세트/유닛 카드 생성 -->
+  </section>
 </div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage");           // 1, 2, 3, school, group, school-set
-  const value = params.get("value");           // 그룹 번호
-  const school = params.get("school");         // 학교명
-  const grade = params.get("grade");           // 1~3
+  const stage  = params.get("stage");     // "1", "2", "3", "school"
+  const set    = params.get("set");       // 1~9 (1·2·3단계용)
+  const school = params.get("school");    // "잠신중", "신천중", "잠신고"
+  const grade  = params.get("grade");     // "1"~"3"
 
-  const setArea = document.getElementById("setArea");
-  const title = document.getElementById("pageTitle");
+  const titleEl = document.getElementById("page-title");
+  const areaEl  = document.getElementById("set-area");
 
-  /* -------------------------------
-      1~3단계 → 그룹 생성
-  -------------------------------- */
-  function makeStageGroups(start, end) {
-    for (let num = start; num <= end; num++) {
-      const card = document.createElement("div");
-      card.className = "set-card";
-      card.textContent = `${num}단계`;
-
-      card.onclick = () => {
-        location.href = `units-detail.html?stage=group&value=${num}`;
-      };
-
-      setArea.appendChild(card);
-    }
+  // 공통 카드 생성 함수
+  function createCard(label, onClick) {
+    const card = document.createElement("div");
+    card.className = "set-card";
+    card.textContent = label;
+    card.onclick = onClick;
+    areaEl.appendChild(card);
   }
 
-  /* -------------------------------
-      그룹 클릭 → 세트 1~60 생성
-  -------------------------------- */
-  function makeGroupSets(groupNumber) {
-    title.textContent = `${groupNumber}단계`;
+  // 1,2,3단계 → set(1~9)로 들어온 경우: 그룹 번호 계산 → 그룹-1 ~ 그룹-60
+  function renderRegularStage(stageNum, setNum) {
+    // 1단계: 그룹 1~9
+    // 2단계: 그룹 10~18
+    // 3단계: 그룹 19~27
+    const baseOffset = (stageNum - 1) * 9;       // 0, 9, 18
+    const groupNumber = baseOffset + setNum;     // 실제 그룹 번호 (1~9,10~18,19~27)
 
+    titleEl.textContent = `${groupNumber}단계 세트`;
+
+    // 그룹-1 ~ 그룹-60
     for (let i = 1; i <= 60; i++) {
-      const label = `${groupNumber}-${i}`;
+      const unitCode = `${groupNumber}-${i}`;    // 예: "1-1", "10-27", "22-60"
 
-      const card = document.createElement("div");
-      card.className = "set-card";
-      card.textContent = label;
-
-      card.onclick = () => {
-        location.href = `quiz.html?unit=${label}`;
-      };
-
-      setArea.appendChild(card);
-    }
-  }
-
-  /* -------------------------------
-      학교 시험 → 학교/학년 선택
-  -------------------------------- */
-  function makeSchoolMain() {
-    title.textContent = "학교 시험";
-
-    const schoolList = ["잠신중", "신천중", "잠신고"];
-
-    for (let grade = 1; grade <= 3; grade++) {
-      schoolList.forEach(school => {
-        const card = document.createElement("div");
-        card.className = "set-card";
-        card.textContent = `${school} ${grade}`;
-
-        card.onclick = () => {
-          location.href = `units-detail.html?stage=school-set&school=${school}&grade=${grade}`;
-        };
-
-        setArea.appendChild(card);
+      createCard(unitCode, () => {
+        // quiz.html로 이동 (stage는 참고용으로 같이 보냄)
+        location.href = `quiz.html?stage=${encodeURIComponent(stageNum)}&unit=${encodeURIComponent(unitCode)}`;
       });
     }
   }
 
-  /* -------------------------------
-      학교 시험 → 세트 1~10 생성
-  -------------------------------- */
-  function makeSchoolSets(school, grade) {
-    title.textContent = `${school} ${grade}`;
+  // 학교 시험: 학교+학년 선택 후 → "학교 학년-1 ~ 학교 학년-10"
+  function renderSchoolStageSets(schoolName, gradeStr) {
+    titleEl.textContent = `${schoolName} ${gradeStr} 세트`;
 
     for (let i = 1; i <= 10; i++) {
-      const label = `${school} ${grade}-${i}`;
+      const unitCode = `${schoolName} ${gradeStr}-${i}`; // 예: "잠신중 1-1"
 
-      const card = document.createElement("div");
-      card.className = "set-card";
-      card.textContent = label;
-
-      card.onclick = () => {
-        location.href = `quiz.html?unit=${label}`;
-      };
-
-      setArea.appendChild(card);
+      createCard(unitCode, () => {
+        location.href = `quiz.html?stage=school&unit=${encodeURIComponent(unitCode)}`;
+      });
     }
   }
 
-  /* -------------------------------
-      실행 분기
-  -------------------------------- */
-  if (stage === "1") {
-    title.textContent = "1단계";
-    makeStageGroups(1, 9);
+  // -------- 분기 로직 --------
+  if (stage === "1" || stage === "2" || stage === "3") {
+    const stageNum = parseInt(stage, 10);
+    const setNum   = parseInt(set, 10);
 
-  } else if (stage === "2") {
-    title.textContent = "2단계";
-    makeStageGroups(10, 18);
-
-  } else if (stage === "3") {
-    title.textContent = "3단계";
-    makeStageGroups(19, 27);
-
-  } else if (stage === "group") {
-    makeGroupSets(value);
+    if (!setNum || setNum < 1 || setNum > 9) {
+      titleEl.textContent = "세트 정보가 올바르지 않습니다.";
+    } else {
+      renderRegularStage(stageNum, setNum);
+    }
 
   } else if (stage === "school") {
-    makeSchoolMain();
+    if (!school || !grade) {
+      titleEl.textContent = "학교/학년 정보가 올바르지 않습니다.";
+    } else {
+      renderSchoolStageSets(school, grade);
+    }
 
-  } else if (stage === "school-set") {
-    makeSchoolSets(school, grade);
+  } else {
+    titleEl.textContent = "잘못된 접근입니다.";
   }
 </script>
 
