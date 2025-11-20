@@ -119,16 +119,11 @@
       color: #6b7280;
     }
 
+    /* 여기 폰트 크기가 뜻찾기/영어찾기/듣고찾기 제목에 공통으로 쓰이는 부분 */
     .question-title {
       font-size: 30px;
       font-weight: 800;
-      margin-bottom: 14px;
-    }
-
-    .question-sub {
-      font-size: 15px;
-      color: #6b7280;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .choices-grid {
@@ -324,14 +319,21 @@
   const backToUnitsBtn = document.getElementById("backToUnitsBtn");
 
   let currentMode = "study";
-  let currentIndex = 0;
+  let currentIndex = 0;  // study / sentence 용 인덱스
 
-  // 어휘 학습용 간격 (ms)
-  const STUDY_GAP_BETWEEN_READS = 1200;  // 1차 발음 ↔ 2차 발음 사이
-  const STUDY_GAP_AFTER_SECOND  = 3200;  // 2차 발음 후 → 다음 단어까지 대기
+  const AUTO_QUIZ_MODES = ["meaning", "english", "listening"];
 
-  function updateProgress(idx) {
-    progressText.textContent = `${idx + 1} / ${wordCount}`;
+  // 객관식 모드용 큐
+  let quizQueue = [];       // 현재 라운드에서 풀어야 할 단어 인덱스들
+  let quizPos = 0;          // quizQueue 안에서의 위치
+  let nextRoundQueue = [];  // 오답 모아두는 큐
+  let quizFinished = false;
+  let answerTimer = null;
+
+  // ------------ 공통 유틸 ------------
+
+  function setProgress(current, total) {
+    progressText.textContent = `${current} / ${total}`;
   }
 
   function stopSpeech() {
@@ -341,7 +343,69 @@
     }
   }
 
-  // ---------- 발음 2번 + 간격 조절 ----------
+  function resetQuizFlow() {
+    if (!AUTO_QUIZ_MODES.includes(currentMode) || !wordCount) {
+      quizQueue = [];
+      nextRoundQueue = [];
+      quizPos = 0;
+      quizFinished = false;
+      return;
+    }
+    quizQueue = [];
+    for (let i = 0; i < wordCount; i++) {
+      quizQueue.push(i);
+    }
+    nextRoundQueue = [];
+    quizPos = 0;
+    quizFinished = false;
+  }
+
+  function showQuizFinished() {
+    stopSpeech();
+    audioBadge.style.display = "none";
+    centerArea.innerHTML = `
+      <div class="question-title">모든 문제를 다 풀었어요!</div>
+      <div style="margin-top:10px;font-size:22px;color:#16a34a;font-weight:700;">
+        100점 🎉
+      </div>
+      <div style="margin-top:12px;font-size:14px;color:#6b7280;">
+        다시 연습하려면 &quot;다시 시작&quot;을 눌러주세요.
+      </div>
+    `;
+    setProgress(wordCount, wordCount);
+  }
+
+  function goNextQuestion(wrongIndexOrNull) {
+    if (!AUTO_QUIZ_MODES.includes(currentMode)) return;
+
+    if (wrongIndexOrNull !== null && wrongIndexOrNull !== undefined) {
+      nextRoundQueue.push(wrongIndexOrNull);
+    }
+
+    quizPos++;
+
+    if (quizPos >= quizQueue.length) {
+      // 한 라운드 끝
+      if (nextRoundQueue.length > 0) {
+        // 오답 다시 풀기 라운드
+        quizQueue = nextRoundQueue;
+        nextRoundQueue = [];
+        quizPos = 0;
+        renderCurrent();
+      } else {
+        quizFinished = true;
+        showQuizFinished();
+      }
+    } else {
+      renderCurrent();
+    }
+  }
+
+  // ------------ 발음 (학습 / 듣기퀴즈) ------------
+
+  const STUDY_GAP_BETWEEN_READS = 1200;  // 1차 ↔ 2차
+  const STUDY_GAP_AFTER_SECOND  = 3200;  // 2차 후 다음 단어까지
+
   function speakWordTwice(word, afterSecondDone) {
     const synth = window.speechSynthesis;
     if (!synth) {
@@ -360,7 +424,7 @@
     u1.pitch = 1.1;
     u2.pitch = 1.1;
 
-    // 여자 목소리 추정 voice 선택
+    // 여성 음성 추정
     const voices = synth.getVoices();
     const female = voices.find(v =>
       v.lang.startsWith("en") &&
@@ -384,15 +448,19 @@
     synth.speak(u1);
   }
 
-  // ---------- 모드별 렌더링 ----------
+  // ------------ 학습 모드 ------------
 
   function renderStudy() {
     stopSpeech();
+    if (answerTimer) {
+      clearTimeout(answerTimer);
+      answerTimer = null;
+    }
 
     if (!words.length) {
       centerArea.textContent = "이 유닛에는 아직 단어가 등록되지 않았어요.";
       audioBadge.style.display = "none";
-      progressText.textContent = "0 / 0";
+      setProgress(0, 0);
       return;
     }
 
@@ -409,7 +477,7 @@
         단어와 예문을 보고 듣고, 자동으로 다음 단어로 넘어갑니다.
       </div>
     `;
-    updateProgress(currentIndex);
+    setProgress(currentIndex + 1, wordCount);
 
     speakWordTwice(item.word, () => {
       if (currentMode !== "study") return;
@@ -418,15 +486,19 @@
     });
   }
 
-  function makeChoices(correctIndex) {
+  // ------------ 객관식 공통 (뜻찾기 / 영어찾기 / 듣고찾기) ------------
+
+  function makeChoices(correctIdx) {
     const indices = [...Array(wordCount).keys()];
-    const others = indices.filter(i => i !== correctIndex);
+    const others = indices.filter(i => i !== correctIdx);
+    // 섞기
     for (let i = others.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [others[i], others[j]] = [others[j], others[i]];
     }
     const pick = others.slice(0, 3);
-    const all = [correctIndex, ...pick];
+    const all = [correctIdx, ...pick];
+    // 다시 섞기
     for (let i = all.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [all[i], all[j]] = [all[j], all[i]];
@@ -434,137 +506,214 @@
     return all;
   }
 
-  function renderMeaningQuiz() {
+  function prepareQuizQuestionBase() {
     stopSpeech();
-    audioBadge.style.display = "none";
-
-    if (!words.length) {
-      centerArea.textContent = "이 유닛에는 아직 단어가 등록되지 않았어요.";
-      progressText.textContent = "0 / 0";
-      return;
+    if (answerTimer) {
+      clearTimeout(answerTimer);
+      answerTimer = null;
     }
-
-    const item = words[currentIndex];
-
-    centerArea.innerHTML = `
-      <div class="question-title">${item.word}</div>
-      <div class="question-sub">영어 단어를 보고 알맞은 한글 뜻을 골라요.</div>
-    `;
-
-    const grid = document.createElement("div");
-    grid.className = "choices-grid";
-
-    makeChoices(currentIndex).forEach(idx => {
-      const choice = words[idx];
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = choice.meaning;
-      btn.onclick = () => {
-        if (btn.classList.contains("correct") || btn.classList.contains("wrong")) return;
-        if (idx === currentIndex) {
-          btn.classList.add("correct");
-        } else {
-          btn.classList.add("wrong");
-        }
-      };
-      grid.appendChild(btn);
-    });
-
-    centerArea.appendChild(grid);
-    updateProgress(currentIndex);
-  }
-
-  function renderEnglishQuiz() {
-    stopSpeech();
-    audioBadge.style.display = "none";
-
-    if (!words.length) {
-      centerArea.textContent = "이 유닛에는 아직 단어가 등록되지 않았어요.";
-      progressText.textContent = "0 / 0";
-      return;
-    }
-
-    const item = words[currentIndex];
-
-    centerArea.innerHTML = `
-      <div class="question-title">${item.meaning}</div>
-      <div class="question-sub">한글 뜻을 보고 알맞은 영어를 골라요.</div>
-    `;
-
-    const grid = document.createElement("div");
-    grid.className = "choices-grid";
-
-    makeChoices(currentIndex).forEach(idx => {
-      const choice = words[idx];
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = choice.word;
-      btn.onclick = () => {
-        if (btn.classList.contains("correct") || btn.classList.contains("wrong")) return;
-        if (idx === currentIndex) {
-          btn.classList.add("correct");
-        } else {
-          btn.classList.add("wrong");
-        }
-      };
-      grid.appendChild(btn);
-    });
-
-    centerArea.appendChild(grid);
-    updateProgress(currentIndex);
-  }
-
-  function renderListeningQuiz() {
-    stopSpeech();
 
     if (!words.length) {
       centerArea.textContent = "이 유닛에는 아직 단어가 등록되지 않았어요.";
       audioBadge.style.display = "none";
-      progressText.textContent = "0 / 0";
-      return;
+      setProgress(0, 0);
+      return false;
     }
 
-    const item = words[currentIndex];
+    if (!AUTO_QUIZ_MODES.includes(currentMode)) return false;
+
+    if (!quizQueue.length && !quizFinished) {
+      resetQuizFlow();
+    }
+
+    if (quizFinished) {
+      showQuizFinished();
+      return false;
+    }
+
+    return true;
+  }
+
+  // ------------ 뜻 찾기 ------------
+
+  function renderMeaningQuiz() {
+    if (!prepareQuizQuestionBase()) return;
+
+    audioBadge.style.display = "none";
+
+    const qIndex = quizQueue[quizPos];
+    const item = words[qIndex];
+
+    centerArea.innerHTML = `
+      <div class="question-title">${item.word}</div>
+    `;
+
+    const grid = document.createElement("div");
+    grid.className = "choices-grid";
+    centerArea.appendChild(grid);
+
+    centerArea.dataset.answered = "false";
+
+    const choices = makeChoices(qIndex);
+    choices.forEach(idx => {
+      const choice = words[idx];
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = choice.meaning;
+      grid.appendChild(btn);
+
+      btn.onclick = () => {
+        handleQuizAnswer(qIndex, idx === qIndex, btn, grid, item.meaning);
+      };
+    });
+
+    // 진행도: 1라운드 기준으로 1~wordCount 까지만 표시
+    const baseNumber = Math.min(quizPos + 1, wordCount);
+    setProgress(baseNumber, wordCount);
+
+    // 7초 타이머
+    answerTimer = setTimeout(() => {
+      handleQuizAnswer(qIndex, false, null, grid, item.meaning);
+    }, 7000);
+  }
+
+  // ------------ 영어 찾기 ------------
+
+  function renderEnglishQuiz() {
+    if (!prepareQuizQuestionBase()) return;
+
+    audioBadge.style.display = "none";
+
+    const qIndex = quizQueue[quizPos];
+    const item = words[qIndex];
+
+    centerArea.innerHTML = `
+      <div class="question-title">${item.meaning}</div>
+    `;
+
+    const grid = document.createElement("div");
+    grid.className = "choices-grid";
+    centerArea.appendChild(grid);
+
+    centerArea.dataset.answered = "false";
+
+    const choices = makeChoices(qIndex);
+    choices.forEach(idx => {
+      const choice = words[idx];
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = choice.word;
+      grid.appendChild(btn);
+
+      btn.onclick = () => {
+        handleQuizAnswer(qIndex, idx === qIndex, btn, grid, item.word);
+      };
+    });
+
+    const baseNumber = Math.min(quizPos + 1, wordCount);
+    setProgress(baseNumber, wordCount);
+
+    answerTimer = setTimeout(() => {
+      handleQuizAnswer(qIndex, false, null, grid, item.word);
+    }, 7000);
+  }
+
+  // ------------ 듣고 찾기 ------------
+
+  function renderListeningQuiz() {
+    if (!prepareQuizQuestionBase()) return;
+
+    const qIndex = quizQueue[quizPos];
+    const item = words[qIndex];
+
     audioBadge.style.display = "inline-flex";
     audioBadge.textContent = "단어를 2번 들을 수 있어요";
 
     centerArea.innerHTML = `
       <div class="question-title">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
-      <div class="question-sub">먼저 발음을 들어보고, 알맞은 한글 뜻을 골라요.</div>
     `;
 
     const grid = document.createElement("div");
     grid.className = "choices-grid";
+    centerArea.appendChild(grid);
 
-    makeChoices(currentIndex).forEach(idx => {
+    centerArea.dataset.answered = "false";
+
+    const choices = makeChoices(qIndex);
+    choices.forEach(idx => {
       const choice = words[idx];
       const btn = document.createElement("button");
       btn.className = "choice-btn";
       btn.textContent = choice.meaning;
-      btn.onclick = () => {
-        if (btn.classList.contains("correct") || btn.classList.contains("wrong")) return;
-        if (idx === currentIndex) {
-          btn.classList.add("correct");
-        } else {
-          btn.classList.add("wrong");
-        }
-      };
       grid.appendChild(btn);
+
+      btn.onclick = () => {
+        handleQuizAnswer(qIndex, idx === qIndex, btn, grid, item.meaning);
+      };
     });
 
-    centerArea.appendChild(grid);
-    updateProgress(currentIndex);
+    const baseNumber = Math.min(quizPos + 1, wordCount);
+    setProgress(baseNumber, wordCount);
 
+    // 발음 2번 들려주기 (타이머와 상관없이)
     speakWordTwice(item.word, null);
+
+    // 7초 타이머
+    answerTimer = setTimeout(() => {
+      handleQuizAnswer(qIndex, false, null, grid, item.meaning);
+    }, 7000);
   }
+
+  // ------------ 객관식 정답 처리 공통 ------------
+
+  function handleQuizAnswer(qIndex, isCorrect, clickedBtn, grid, correctText) {
+    if (!AUTO_QUIZ_MODES.includes(currentMode)) return;
+
+    // 이미 처리된 문제면 무시
+    if (centerArea.dataset.answered === "true") return;
+    centerArea.dataset.answered = "true";
+
+    if (answerTimer) {
+      clearTimeout(answerTimer);
+      answerTimer = null;
+    }
+
+    const buttons = grid.querySelectorAll(".choice-btn");
+    buttons.forEach(btn => {
+      if (btn.textContent === correctText) {
+        btn.classList.add("correct");
+      }
+    });
+
+    if (!isCorrect && clickedBtn) {
+      clickedBtn.classList.add("wrong");
+    }
+
+    // 0.9초 후 다음 문제로 이동
+    setTimeout(() => {
+      goNextQuestion(isCorrect ? null : qIndex);
+    }, 900);
+  }
+
+  // ------------ 문장 빈칸 ------------
 
   function renderSentenceQuiz() {
     stopSpeech();
+    if (answerTimer) {
+      clearTimeout(answerTimer);
+      answerTimer = null;
+    }
     audioBadge.style.display = "none";
 
     if (!words.length) {
       centerArea.textContent = "이 유닛에는 아직 단어가 등록되지 않았어요.";
-      progressText.textContent = "0 / 0";
+      setProgress(0, 0);
+      return;
+    }
+
+    // 모든 단어를 다 풀었으면 100점 화면
+    if (currentIndex >= wordCount) {
+      showQuizFinished();
       return;
     }
 
@@ -599,7 +748,7 @@
     resultArea.className = "result-text";
     centerArea.appendChild(resultArea);
 
-    updateProgress(currentIndex);
+    setProgress(currentIndex + 1, wordCount);
 
     function checkAnswer() {
       const v = input.value.trim().toLowerCase();
@@ -612,8 +761,14 @@
         resultArea.textContent = "정답이에요! 👍";
         hintArea.textContent = "";
         setTimeout(() => {
-          currentIndex = (currentIndex + 1) % wordCount;
-          renderSentenceQuiz();
+          if (currentIndex + 1 < wordCount) {
+            currentIndex += 1;
+            renderSentenceQuiz();
+          } else {
+            // 마지막 문제까지 맞추면 100점 화면
+            currentIndex = wordCount;
+            showQuizFinished();
+          }
         }, 900);
       } else {
         input.style.background = "#fef2f2";
@@ -640,7 +795,7 @@
     input.focus();
   }
 
-  // ---------- 모드 전환 & 초기화 ----------
+  // ------------ 모드 전환 & 초기화 ------------
 
   function renderCurrent() {
     modeTabs.forEach(tab =>
@@ -650,31 +805,50 @@
     if (!wordCount) {
       centerArea.textContent = "이 유닛에는 아직 단어가 등록되지 않았어요.";
       audioBadge.style.display = "none";
-      progressText.textContent = "0 / 0";
+      setProgress(0, 0);
       return;
     }
 
-    if (currentMode === "study") renderStudy();
-    else if (currentMode === "meaning") renderMeaningQuiz();
-    else if (currentMode === "english") renderEnglishQuiz();
-    else if (currentMode === "listening") renderListeningQuiz();
-    else if (currentMode === "sentence") renderSentenceQuiz();
+    if (currentMode === "study") {
+      renderStudy();
+    } else if (currentMode === "meaning") {
+      renderMeaningQuiz();
+    } else if (currentMode === "english") {
+      renderEnglishQuiz();
+    } else if (currentMode === "listening") {
+      renderListeningQuiz();
+    } else if (currentMode === "sentence") {
+      renderSentenceQuiz();
+    }
   }
 
   modeTabs.forEach(tab => {
     tab.onclick = () => {
+      stopSpeech();
+      if (answerTimer) {
+        clearTimeout(answerTimer);
+        answerTimer = null;
+      }
       currentMode = tab.dataset.mode;
-      currentIndex = 0;
+      currentIndex = 0;      // study / sentence용
+      resetQuizFlow();       // 객관식 흐름 초기화
       renderCurrent();
     };
   });
 
   modeResetBtn.onclick = () => {
+    stopSpeech();
+    if (answerTimer) {
+      clearTimeout(answerTimer);
+      answerTimer = null;
+    }
     currentIndex = 0;
+    resetQuizFlow();
     renderCurrent();
   };
 
   backToUnitsBtn.onclick = () => {
+    // 기존 구조 유지 (단계/학교 시험 둘 다 여기서 stage로 돌아가도록)
     location.href = `units-detail.html?stage=${stage}`;
   };
 
