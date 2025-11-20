@@ -2,143 +2,126 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>어휘 학습 단계 선택</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>어휘 학습 - BLOSSOM ENGLISH</title>
+  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
+
   <style>
-    * {
-      box-sizing: border-box;
+    body {
+      font-family: "Pretendard Variable", sans-serif;
+      background: #f4f6fb;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    }
-
-    body {
-      background: #f3f4f6;
-      min-height: 100vh;
-      color: #111827;
     }
 
     .page {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 32px 16px 48px;
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
-    .title {
-      font-size: 28px;
+    /* 상단 제목 영역 */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .page-header img {
+      height: 40px;
+    }
+
+    .page-title {
+      font-size: 26px;
       font-weight: 800;
-      margin-bottom: 6px;
     }
 
-    .subtitle {
-      font-size: 15px;
-      color: #6b7280;
-      margin-bottom: 24px;
+    /* 단계 카드들 감싸는 영역 */
+    .level-area {
+      background: #f1f3fb;
+      border-radius: 28px;
+      padding: 40px 30px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 26px;
     }
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 14px;
-      color: #6b7280;
-      text-decoration: none;
-      margin-bottom: 18px;
-    }
-
-    .stage-list {
+    .level-card {
+      background: #fff;
+      border-radius: 26px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.06);
+      height: 200px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-top: 4px;
-    }
-
-    .stage-item {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 18px 20px;
-      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
-      display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
       cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      transition: 0.18s ease;
     }
 
-    .stage-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+    .level-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.14);
     }
 
-    .stage-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .level-card img {
+      width: 70px;
+      margin-bottom: 16px;
+      filter: grayscale(100%) contrast(130%);
     }
 
-    .stage-title {
-      font-size: 18px;
+    .level-name {
+      font-size: 20px;
       font-weight: 700;
     }
 
-    .stage-desc {
-      font-size: 14px;
-      color: #6b7280;
-    }
-
-    .stage-arrow {
-      font-size: 18px;
-      color: #9ca3af;
+    @media (max-width: 700px) {
+      .level-area {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
+
 <div class="page">
-  <div class="title">어휘 학습</div>
-  <div class="subtitle">학습할 단계를 선택하세요.</div>
 
-  <a href="index.html" class="back-link">◀ 홈으로</a>
+  <!-- 상단 제목 -->
+  <header class="page-header">
+    <!-- ABC 아이콘 부분은 나중에 로고/이미지로 교체 가능 -->
+    <img src="https://img.icons8.com/color/96/abc.png" alt="어휘 학습 아이콘" />
+    <div class="page-title">어휘 학습</div>
+  </header>
 
-  <div class="stage-list">
+  <!-- 단계 선택 카드 영역 -->
+  <section class="level-area">
+
     <!-- 1단계 -->
-    <a class="stage-item" href="units.html?stage=1">
-      <div class="stage-left">
-        <div class="stage-title">1단계</div>
-        <div class="stage-desc">파닉스 + 기초 단어</div>
-      </div>
-      <div class="stage-arrow">›</div>
-    </a>
+    <div class="level-card" onclick="location.href='#'">
+      <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="1단계" />
+      <div class="level-name">1단계</div>
+    </div>
 
     <!-- 2단계 -->
-    <a class="stage-item" href="units.html?stage=2">
-      <div class="stage-left">
-        <div class="stage-title">2단계</div>
-        <div class="stage-desc">기본 어휘 확장</div>
-      </div>
-      <div class="stage-arrow">›</div>
-    </a>
+    <div class="level-card" onclick="location.href='#'">
+      <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="2단계" />
+      <div class="level-name">2단계</div>
+    </div>
 
     <!-- 3단계 -->
-    <a class="stage-item" href="units.html?stage=3">
-      <div class="stage-left">
-        <div class="stage-title">3단계</div>
-        <div class="stage-desc">문장 속 어휘 연습</div>
-      </div>
-      <div class="stage-arrow">›</div>
-    </a>
+    <div class="level-card" onclick="location.href='#'">
+      <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="3단계" />
+      <div class="level-name">3단계</div>
+    </div>
 
     <!-- 학교 시험 -->
-    <a class="stage-item" href="units.html?stage=school">
-      <div class="stage-left">
-        <div class="stage-title">학교 시험</div>
-        <div class="stage-desc">학교 시험 대비 단어</div>
-      </div>
-      <div class="stage-arrow">›</div>
-    </a>
-  </div>
+    <div class="level-card" onclick="location.href='#'">
+      <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="학교 시험" />
+      <div class="level-name">학교 시험</div>
+    </div>
+
+  </section>
 </div>
+
 </body>
 </html>

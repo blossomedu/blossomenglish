@@ -2,141 +2,115 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Blossom English - 유닛 선택</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>어휘 학습 - 1단계</title>
+  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
+
   <style>
-    * {
-      box-sizing: border-box;
+    body {
+      font-family: "Pretendard Variable", sans-serif;
+      background: #f4f6fb;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
-    body {
-      background: #f3f4f6;
-      color: #111827;
-      min-height: 100vh;
-    }
+
     .page {
       max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 16px 60px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
-    .top-row {
+
+    /* 상단 영역 */
+    .page-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 30px;
     }
-    h1 {
-      font-size: 30px;
+
+    .page-header img {
+      height: 40px;
+    }
+
+    .page-title {
+      font-size: 26px;
       font-weight: 800;
     }
-    .stage-label {
-      font-size: 14px;
-      color: #6b7280;
-    }
-    .subtitle {
-      font-size: 15px;
-      color: #6b7280;
-      margin-bottom: 20px;
-    }
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: #4b5563;
-      text-decoration: none;
-      background: #e5e7eb;
-      padding: 8px 14px;
-      border-radius: 999px;
-      margin-bottom: 18px;
-      transition: background 0.12s ease, transform 0.12s ease;
-    }
-    .back-link:hover {
-      background: #d1d5db;
-      transform: translateY(-1px);
-    }
-    .grid {
+
+    /* 숫자 카드 영역 */
+    .num-area {
+      background: #f1f3fb;
+      border-radius: 28px;
+      padding: 40px 30px;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 14px 18px;
-      max-width: 720px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
     }
-    .unit-tile {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 18px 0;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      text-decoration: none;
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-      border: 1px solid #e5e7eb;
-      transition: transform 0.12s ease, box-shadow 0.12s ease,
-        background 0.12s ease, border-color 0.12s ease;
+
+    .num-card {
+      background: #fff;
+      border-radius: 26px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.06);
+      height: 130px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.18s ease;
     }
-    .unit-tile:hover {
-      transform: translateY(-2px);
-      background: #eef2ff;
-      border-color: #bfdbfe;
-      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+
+    .num-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.14);
     }
-    @media (max-width: 640px) {
-      .page { padding-top: 28px; }
-      h1 { font-size: 24px; }
-      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .num-card span {
+      font-size: 26px;
+      font-weight: 800;
+      color: #000;
     }
+
+    @media (max-width: 700px) {
+      .num-area {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .num-area {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
+
 <div class="page">
-  <div class="top-row">
-    <h1>어휘 학습</h1>
-    <div class="stage-label" id="stageLabel"></div>
-  </div>
 
-  <div class="subtitle" id="subtitle"></div>
+  <!-- 상단 헤더 -->
+  <header class="page-header">
+    <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="1단계 아이콘" />
+    <div class="page-title">1단계</div>
+  </header>
 
-  <a class="back-link" href="vocabulary.html">
-    <span>◀</span> 단계 선택으로
-  </a>
+  <!-- 숫자 선택 카드 -->
+  <section class="num-area">
 
-  <div class="grid" id="unitGrid"></div>
+    <div class="num-card" onclick="location.href='#'"><span>1</span></div>
+    <div class="num-card" onclick="location.href='#'"><span>2</span></div>
+    <div class="num-card" onclick="location.href='#'"><span>3</span></div>
+
+    <div class="num-card" onclick="location.href='#'"><span>4</span></div>
+    <div class="num-card" onclick="location.href='#'"><span>5</span></div>
+    <div class="num-card" onclick="location.href='#'"><span>6</span></div>
+
+    <div class="num-card" onclick="location.href='#'"><span>7</span></div>
+    <div class="num-card" onclick="location.href='#'"><span>8</span></div>
+    <div class="num-card" onclick="location.href='#'"><span>9</span></div>
+
+  </section>
+
 </div>
 
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage") || "1";   // 1,2,3,4
-
-  const stageNames = {
-    "1": "1단계",
-    "2": "2단계",
-    "3": "3단계",
-    "4": "학교 시험",
-  };
-
-  const stageLabel = document.getElementById("stageLabel");
-  const subtitle = document.getElementById("subtitle");
-  const grid = document.getElementById("unitGrid");
-
-  const stageName = stageNames[stage] || "1단계";
-
-  stageLabel.textContent = stageName;
-  subtitle.textContent = `${stageName}의 유닛을 선택하세요.`;
-
-  const UNIT_COUNT = 10;
-
-  for (let i = 1; i <= UNIT_COUNT; i++) {
-    const a = document.createElement("a");
-    a.className = "unit-tile";
-    a.textContent = `Unit ${i}`;
-    // 🔗 이 유닛 안에 1-1 ~ 1-60으로 들어가는 페이지
-    a.href = `units-detail.html?stage=${stage}&unit=${i}`;
-    grid.appendChild(a);
-  }
-</script>
 </body>
 </html>

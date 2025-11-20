@@ -2,148 +2,126 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Blossom English - 소단원 선택</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>어휘 학습 - 1단계 세트</title>
+  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
+
   <style>
-    * {
-      box-sizing: border-box;
+    body {
+      font-family: "Pretendard Variable", sans-serif;
+      background: #f4f6fb;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
-    body {
-      background: #f3f4f6;
-      color: #111827;
-      min-height: 100vh;
-    }
+
     .page {
       max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 16px 60px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
-    .top-row {
+
+    /* 상단 영역 */
+    .page-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 30px;
     }
-    h1 {
-      font-size: 30px;
+
+    .page-header img {
+      height: 40px;
+    }
+
+    .page-title {
+      font-size: 26px;
       font-weight: 800;
     }
-    .stage-label {
-      font-size: 14px;
-      color: #6b7280;
-      text-align: right;
-    }
-    .subtitle {
-      font-size: 15px;
-      color: #6b7280;
-      margin-bottom: 20px;
-    }
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: #4b5563;
-      text-decoration: none;
-      background: #e5e7eb;
-      padding: 8px 14px;
-      border-radius: 999px;
-      margin-bottom: 18px;
-      transition: background 0.12s ease, transform 0.12s ease;
-    }
-    .back-link:hover {
-      background: #d1d5db;
-      transform: translateY(-1px);
-    }
-    .grid {
+
+    /* 세트 카드 영역 */
+    .set-area {
+      background: #f1f3fb;
+      border-radius: 28px;
+      padding: 30px 24px;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px 14px;
-      max-width: 800px;
+      grid-template-columns: repeat(5, 1fr);  /* 5열 */
+      gap: 18px;
     }
-    .small-tile {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 12px 0;
-      text-align: center;
-      font-size: 15px;
-      font-weight: 600;
-      color: #111827;
-      text-decoration: none;
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
-      border: 1px solid #e5e7eb;
-      transition: transform 0.12s ease, box-shadow 0.12s ease,
-        background 0.12s ease, border-color 0.12s ease;
+
+    .set-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.06);
+      height: 90px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.18s ease;
     }
-    .small-tile:hover {
-      transform: translateY(-2px);
-      background: #eef2ff;
-      border-color: #bfdbfe;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+
+    .set-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.14);
     }
-    @media (max-width: 640px) {
-      .page { padding-top: 28px; }
-      h1 { font-size: 24px; }
-      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .set-card span {
+      font-size: 20px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    @media (max-width: 900px) {
+      .set-area {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .set-area {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 <body>
+
 <div class="page">
-  <div class="top-row">
-    <h1>어휘 학습</h1>
-    <div class="stage-label" id="stageLabel"></div>
-  </div>
 
-  <div class="subtitle" id="subtitle"></div>
+  <!-- 상단 헤더 -->
+  <header class="page-header">
+    <img src="https://img.icons8.com/ios-filled/100/book-and-pencil.png" alt="어휘 아이콘" />
+    <div class="page-title">1</div>
+  </header>
 
-  <a class="back-link" id="backLink" href="#">
-    <span>◀</span> 유닛 선택으로
-  </a>
+  <!-- 세트 카드가 들어갈 영역 (JS가 채워 넣음) -->
+  <section class="set-area"></section>
 
-  <div class="grid" id="lessonGrid"></div>
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage") || "1";
-  const unit = params.get("unit") || "1";
+  // ★ 단계 번호만 바꾸면 그대로 재사용 가능 (2, 3, 4 ...)
+  const level = 1;       // 현재 단계
+  const totalSets = 60;  // 1-1 ~ 1-60
+  const area = document.querySelector('.set-area');
 
-  const stageNames = {
-    "1": "1단계",
-    "2": "2단계",
-    "3": "3단계",
-    "4": "학교 시험",
-  };
+  for (let i = 1; i <= totalSets; i++) {
+    const card = document.createElement('div');
+    card.className = 'set-card';
 
-  const stageLabel = document.getElementById("stageLabel");
-  const subtitle = document.getElementById("subtitle");
-  const backLink = document.getElementById("backLink");
-  const grid = document.getElementById("lessonGrid");
+    // 나중에 각 세트 페이지로 연결할 때 여기만 수정
+    // 예: level1-1.html, level1-2.html ...
+    card.onclick = () => {
+      // 임시로 alert, 준비되면 아래 한 줄로 교체:
+      // location.href = `level${level}-${i}.html`;
+      alert(`클릭: ${level}-${i}`);
+    };
 
-  const stageName = stageNames[stage] || "1단계";
+    const label = document.createElement('span');
+    label.textContent = `${level}-${i}`;
+    card.appendChild(label);
 
-  stageLabel.textContent = `${stageName}`;
-  subtitle.textContent = `${stageName} / Unit ${unit} 안에서 학습할 번호를 선택하세요.`;
-
-  backLink.href = `units.html?stage=${stage}`;
-
-  // 1-1 ~ 1-60
-  const LESSON_COUNT = 60;
-
-  for (let i = 1; i <= LESSON_COUNT; i++) {
-    const lessonId = `${unit}-${i}`;   // 예: unit=1 → 1-1, 1-2, ...
-    const a = document.createElement("a");
-    a.className = "small-tile";
-    a.textContent = lessonId;
-    // 학습 화면으로 이동 (나중에 이 페이지에서 단어 데이터를 불러올 때 key로 사용)
-    a.href = `learning-mode.html?stage=${stage}&unit=${unit}&lesson=${lessonId}`;
-    grid.appendChild(a);
+    area.appendChild(card);
   }
 </script>
+
 </body>
 </html>
