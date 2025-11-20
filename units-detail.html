@@ -26,20 +26,21 @@
       padding: 0 20px 40px;
     }
 
-    /* 상단 제목 */
+    /* 상단 제목 — 블라썸잉글리쉬 / 어휘학습 / 1단계랑 같은 느낌 */
     .page-header {
       margin-bottom: 28px;
     }
 
     .page-title {
-      font-size: 28px;
+      font-size: 34px;
       font-weight: 800;
       margin-bottom: 4px;
+      color: #111827;
     }
 
+    /* 부제목은 안 쓸 거라 숨김 */
     .page-subtitle {
-      font-size: 16px;
-      color: #6b7280;
+      display: none;
     }
 
     /* 세트 카드 영역 */
@@ -95,45 +96,39 @@
 
 <div class="page">
   <header class="page-header">
-    <div class="page-title" id="page-title">1단계 세트</div>
-    <div class="page-subtitle" id="page-subtitle">
-      1단계 1~60 세트 중에서 학습할 유닛을 선택하세요.
-    </div>
+    <div class="page-title" id="page-title">1</div>
+    <div class="page-subtitle" id="page-subtitle"></div>
   </header>
 
   <section class="set-area" id="set-area">
-    <!-- JS로 1-1 ~ 1-60 카드 생성 -->
+    <!-- JS로 1-1 ~ (set)-60 카드 생성 -->
   </section>
 </div>
 
 <script>
-  // URL에서 stage 값 읽기 (예: units-detail.html?stage=1)
+  // URL에서 stage/set 값 읽기 (예: units-detail.html?stage=1&set=3)
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage") || "1";
+  const stage = params.get("stage") || "1"; // 필요하면 나중에 쓸 용도
+  const set   = params.get("set")   || "1";
 
-  // 상단 제목/부제목 세팅
-  const titleEl = document.getElementById("page-title");
+  // 상단 제목은 '세트 번호'만 크게 표시
+  const titleEl    = document.getElementById("page-title");
   const subtitleEl = document.getElementById("page-subtitle");
 
-  if (stage === "school") {
-    titleEl.textContent = "학교 시험 세트";
-    subtitleEl.textContent = "학교 시험용 세트 중에서 학습할 유닛을 선택하세요.";
-  } else {
-    titleEl.textContent = `${stage}단계 세트`;
-    subtitleEl.textContent = `학습할 유닛을 선택하세요.`;
-  }
+  titleEl.textContent = set; // 1, 2, 3 ... 이렇게만 보이게
+  subtitleEl.textContent = ""; // 안 쓰지만 혹시 몰라 초기화
 
   const area = document.getElementById("set-area");
 
-  // 1 ~ 60 세트 카드 생성
+  // 1 ~ 60 유닛 카드 생성
   for (let i = 1; i <= 60; i++) {
-    const label = `${stage}-${i}`;
+    const label = `${set}-${i}`;   // 🔥 앞 숫자는 set, 뒤 숫자는 유닛 번호
 
     const card = document.createElement("div");
     card.className = "set-card";
     card.textContent = label;
 
-    // ★ 여기서 quiz.html로 이동하게 변경
+    // 퀴즈 페이지로 이동
     card.onclick = () => {
       location.href = `quiz.html?stage=${stage}&unit=${label}`;
     };
