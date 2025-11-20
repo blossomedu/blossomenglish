@@ -19,24 +19,30 @@
       padding: 0 20px;
     }
 
-    /* 상단 제목 영역 */
+    /* 상단 제목 영역 (메인 h1 스타일과 맞춤) */
     .page-header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       margin-bottom: 30px;
     }
 
     .page-header img {
-      height: 40px;
+      height: 52px;      /* 아이콘 크게 */
     }
 
-    .page-title {
-      font-size: 26px;
+    .title-main {
+      font-size: 34px;   /* 메인 h1과 같은 느낌 */
       font-weight: 800;
+      margin-bottom: 4px;
     }
 
-    /* 단계 카드들 감싸는 영역 */
+    .title-sub {
+      font-size: 18px;
+      color: #777;
+    }
+
+    /* 단계 카드 영역 */
     .level-area {
       background: #f1f3fb;
       border-radius: 28px;
@@ -65,13 +71,12 @@
     }
 
     .level-card img {
-      width: 70px;
+      width: 80px;      /* 단계 아이콘도 조금 키움 */
       margin-bottom: 16px;
-      filter: grayscale(100%) contrast(130%);
     }
 
     .level-name {
-      font-size: 20px;
+      font-size: 24px;  /* 메인 카드 제목(반별 게시판)과 동일 */
       font-weight: 700;
     }
 
@@ -86,39 +91,42 @@
 
 <div class="page">
 
-  <!-- 상단 제목 -->
+  <!-- 상단 제목 영역 -->
   <header class="page-header">
-    <!-- ABC 아이콘 부분은 나중에 로고/이미지로 교체 가능 -->
-    <img src="vocab-book.png" alt="어휘 학습 아이콘" />
-    <div class="page-title">어휘 학습</div>
+    <!-- 어휘 학습 상단 아이콘 (너가 만든 큰 Aa 아이콘으로 교체) -->
+    <img src="vocab-main.png" alt="어휘 학습 아이콘" />
+    <div>
+      <div class="title-main">어휘 학습</div>
+      <div class="title-sub">단계별로 어휘를 차근차근 반복 학습해요</div>
+    </div>
   </header>
 
   <!-- 단계 선택 카드 영역 -->
   <section class="level-area">
 
-  <!-- 1단계 -->
-<div class="level-card" onclick="location.href='units.html?stage=1'">
-  <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="1단계" />
-  <div class="level-name">1단계</div>
-</div>
+    <!-- 1단계 -->
+    <div class="level-card" onclick="location.href='units.html?stage=1'">
+      <img src="vocab-level1.png" alt="1단계 아이콘" />
+      <div class="level-name">1단계</div>
+    </div>
 
-<!-- 2단계 -->
-<div class="level-card" onclick="location.href='units.html?stage=2'">
-  <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="2단계" />
-  <div class="level-name">2단계</div>
-</div>
+    <!-- 2단계 -->
+    <div class="level-card" onclick="location.href='units.html?stage=2'">
+      <img src="vocab-level2.png" alt="2단계 아이콘" />
+      <div class="level-name">2단계</div>
+    </div>
 
-<!-- 3단계 -->
-<div class="level-card" onclick="location.href='units.html?stage=3'">
-  <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="3단계" />
-  <div class="level-name">3단계</div>
-</div>
+    <!-- 3단계 -->
+    <div class="level-card" onclick="location.href='units.html?stage=3'">
+      <img src="vocab-level3.png" alt="3단계 아이콘" />
+      <div class="level-name">3단계</div>
+    </div>
 
-<!-- 학교 시험 -->
-<div class="level-card" onclick="location.href='units.html?stage=school'">
-  <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="학교 시험" />
-  <div class="level-name">학교 시험</div>
-</div>
+    <!-- 학교 시험 -->
+    <div class="level-card" onclick="location.href='units.html?stage=school'">
+      <img src="vocab-school.png" alt="학교 시험 아이콘" />
+      <div class="level-name">학교 시험</div>
+    </div>
 
   </section>
 </div>
