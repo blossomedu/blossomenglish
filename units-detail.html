@@ -24,9 +24,9 @@
     }
 
     .title {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 20px;
+      font-size: 30px;
+      font-weight: 900;
+      margin-bottom: 24px;
     }
 
     .set-area {
@@ -40,7 +40,7 @@
 
     .set-card {
       background: white;
-      height: 70px;
+      height: 74px;
       border-radius: 18px;
       display: flex;
       align-items: center;
@@ -70,28 +70,33 @@
 <body>
 
 <div class="page">
-  <div class="title" id="pageTitle"></div>
 
-  <section class="set-area" id="setArea"></section>
+  <div class="title" id="pageTitle"></div>
+  <div class="set-area" id="setArea"></div>
+
 </div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage");   // 1, 2, 3, school
+  const stage = params.get("stage");           // 1, 2, 3, school, group, school-set
+  const value = params.get("value");           // 그룹 번호
+  const school = params.get("school");         // 학교명
+  const grade = params.get("grade");           // 1~3
+
   const setArea = document.getElementById("setArea");
   const title = document.getElementById("pageTitle");
 
   /* -------------------------------
-      1단계 / 2단계 / 3단계
+      1~3단계 → 그룹 생성
   -------------------------------- */
-  function makeRegularStage(start, end) {
-    for (let group = start; group <= end; group++) {
+  function makeStageGroups(start, end) {
+    for (let num = start; num <= end; num++) {
       const card = document.createElement("div");
       card.className = "set-card";
-      card.textContent = `${group}단계`;
+      card.textContent = `${num}단계`;
 
       card.onclick = () => {
-        location.href = `units-detail.html?stage=group&value=${group}`;
+        location.href = `units-detail.html?stage=group&value=${num}`;
       };
 
       setArea.appendChild(card);
@@ -99,13 +104,14 @@
   }
 
   /* -------------------------------
-      그룹 선택 후 → 세트 1~60 생성
+      그룹 클릭 → 세트 1~60 생성
   -------------------------------- */
   function makeGroupSets(groupNumber) {
-    title.textContent = `${groupNumber}단계 세트`;
+    title.textContent = `${groupNumber}단계`;
 
     for (let i = 1; i <= 60; i++) {
       const label = `${groupNumber}-${i}`;
+
       const card = document.createElement("div");
       card.className = "set-card";
       card.textContent = label;
@@ -119,15 +125,15 @@
   }
 
   /* -------------------------------
-      학교 시험
+      학교 시험 → 학교/학년 선택
   -------------------------------- */
-  function makeSchoolStage() {
-    title.textContent = `학교 시험`;
+  function makeSchoolMain() {
+    title.textContent = "학교 시험";
 
-    const schools = ["잠신중", "신천중", "잠신고"];
+    const schoolList = ["잠신중", "신천중", "잠신고"];
 
-    schools.forEach(school => {
-      for (let grade = 1; grade <= 3; grade++) {
+    for (let grade = 1; grade <= 3; grade++) {
+      schoolList.forEach(school => {
         const card = document.createElement("div");
         card.className = "set-card";
         card.textContent = `${school} ${grade}`;
@@ -137,18 +143,19 @@
         };
 
         setArea.appendChild(card);
-      }
-    });
+      });
+    }
   }
 
   /* -------------------------------
-      학교 시험 → 학년 세트 1~10
+      학교 시험 → 세트 1~10 생성
   -------------------------------- */
   function makeSchoolSets(school, grade) {
-    title.textContent = `${school} ${grade} 세트`;
+    title.textContent = `${school} ${grade}`;
 
     for (let i = 1; i <= 10; i++) {
       const label = `${school} ${grade}-${i}`;
+
       const card = document.createElement("div");
       card.className = "set-card";
       card.textContent = label;
@@ -166,26 +173,23 @@
   -------------------------------- */
   if (stage === "1") {
     title.textContent = "1단계";
-    makeRegularStage(1, 9);
+    makeStageGroups(1, 9);
 
   } else if (stage === "2") {
     title.textContent = "2단계";
-    makeRegularStage(10, 18);
+    makeStageGroups(10, 18);
 
   } else if (stage === "3") {
     title.textContent = "3단계";
-    makeRegularStage(19, 27);
+    makeStageGroups(19, 27);
 
   } else if (stage === "group") {
-    const groupNumber = params.get("value");
-    makeGroupSets(groupNumber);
+    makeGroupSets(value);
 
   } else if (stage === "school") {
-    makeSchoolStage();
+    makeSchoolMain();
 
   } else if (stage === "school-set") {
-    const school = params.get("school");
-    const grade = params.get("grade");
     makeSchoolSets(school, grade);
   }
 </script>
