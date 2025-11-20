@@ -1,116 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>유닛 선택</title>
+  <meta charset="UTF-8" />
+  <title>세트 선택</title>
+  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #f4f6fb;
-            font-family: "Pretendard", sans-serif;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+        system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            margin: auto;
-            padding: 40px 20px;
-        }
+    body {
+      background: #f4f6fb;
+      margin: 0;
+      padding: 0;
+    }
 
-        #page-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+    .page {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+    }
 
-        #page-subtitle {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 40px;
-        }
+    /* 상단 제목 */
+    .page-header {
+      margin-bottom: 28px;
+    }
 
-        .set-area {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 18px;
-        }
+    .page-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
 
-        .set-card {
-            background: white;
-            border-radius: 16px;
-            padding: 22px 0;
-            font-size: 20px;
-            text-align: center;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.07);
-        }
+    .page-subtitle {
+      font-size: 16px;
+      color: #6b7280;
+      min-height: 22px; /* 공간 유지 */
+    }
 
-        .set-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-        }
-    </style>
+    /* 세트 카드 영역 */
+    .set-area {
+      background: #f1f3fb;
+      border-radius: 28px;
+      padding: 32px 26px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+    }
+
+    .set-card {
+      background: #ffffff;
+      border-radius: 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .set-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+    }
+
+    @media (max-width: 900px) {
+      .set-area {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .set-area {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .set-area {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
-    <div id="page-title"></div>
-    <div id="page-subtitle"></div>
-    <div id="set-area" class="set-area"></div>
+
+<div class="page">
+  <header class="page-header">
+    <div class="page-title" id="page-title"></div>
+    <div class="page-subtitle" id="page-subtitle"></div>
+  </header>
+
+  <section class="set-area" id="set-area">
+    <!-- JS로 유닛 자동 생성 -->
+  </section>
 </div>
 
 <script>
-    const params = new URLSearchParams(location.search);
-    const stage = Number(params.get("stage") || 1);
-    const set = Number(params.get("set") || 1);
+  // URL 예: units-detail.html?stage=1&set=2
+  const params = new URLSearchParams(window.location.search);
+  const stage = params.get("stage") || "1";
+  const set = params.get("set") || "1";
 
-    const titleEl = document.getElementById("page-title");
-    const subtitleEl = document.getElementById("page-subtitle");
-    const area = document.getElementById("set-area");
+  const titleEl = document.getElementById("page-title");
+  const subtitleEl = document.getElementById("page-subtitle");
 
-    // -----------------------------
-    // 1) 제목 설정 ("1단계 세트")
-    // -----------------------------
-    titleEl.textContent = `${stage}단계 세트`;
+  // 🔹 제목 = 세트 번호 (ex: 1, 2, 3)
+  titleEl.textContent = set;
 
-    // -----------------------------
-    // 2) 서브타이틀 제거
-    // -----------------------------
-    subtitleEl.style.display = "none";
+  // 🔹 부제목 삭제
+  subtitleEl.textContent = "";
 
-    // -----------------------------
-    // 3) 단계별 시작 번호 설정
-    // -----------------------------
-    let baseStart = 1;
+  const area = document.getElementById("set-area");
 
-    if (stage === 1) baseStart = 1;      // 1단계 → 1~9
-    if (stage === 2) baseStart = 10;     // 2단계 → 10~18
-    if (stage === 3) baseStart = 19;     // 3단계 → 19~27
+  // 🔹 유닛 숫자 60개 자동 생성
+  for (let i = 1; i <= 60; i++) {
+    const label = `${set}-${i}`;
 
-    // 현재 세트 번호 계산 (예: stage=2, set=1 → 10-1)
-    const realSet = baseStart + (set - 1);
+    const card = document.createElement("div");
+    card.className = "set-card";
+    card.textContent = label;
 
-    // -----------------------------
-    // 4) 60개의 유닛 생성
-    // -----------------------------
-    for (let i = 1; i <= 60; i++) {
-        const label = `${realSet}-${i}`;
-        
-        const card = document.createElement("div");
-        card.className = "set-card";
-        card.textContent = label;
+    // 🔹 클릭하면 quiz.html 이동
+    card.onclick = () => {
+      location.href = `quiz.html?stage=${stage}&unit=${label}`;
+    };
 
-        card.onclick = () => {
-            location.href = `quiz.html?stage=${stage}&unit=${label}`;
-        };
-
-        area.append(card);
-    }
+    area.appendChild(card);
+  }
 </script>
+
 </body>
 </html>
