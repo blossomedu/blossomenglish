@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>학교 시험 단원</title>
+  <title>학교 시험 세트</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
@@ -11,7 +11,8 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: "Pretendard Variable", sans-serif;
+      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+        system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
 
     body {
@@ -25,78 +26,133 @@
       padding: 0 20px;
     }
 
-    .title-big {
-      font-size: 30px;
-      font-weight: 900;
+    .page-header {
       margin-bottom: 24px;
     }
 
+    .page-title {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 15px;
+      color: #6b7280;
+    }
+
     .unit-area {
-      background: #eef2ff;
-      border-radius: 26px;
-      padding: 26px;
+      background: #f1f3fb;
+      border-radius: 28px;
+      padding: 30px 24px;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
 
     .unit-card {
-      background: #fff;
+      background: #ffffff;
       border-radius: 20px;
-      padding: 20px 0;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 700;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.06);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
       cursor: pointer;
-      transition: 0.2s;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .unit-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 14px 30px rgba(15,23,42,0.1);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
+    .error-box {
+      margin-top: 32px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .unit-area {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .unit-area {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
-
 <body>
 
 <div class="page">
-  <div id="title" class="title-big"></div>
+  <header class="page-header">
+    <div class="page-title" id="page-title">학교 시험</div>
+    <div class="page-subtitle" id="page-subtitle">세트를 선택하세요.</div>
+  </header>
 
-  <div class="unit-area" id="unit-area"></div>
+  <section class="unit-area" id="unit-area">
+    <!-- JS로 카드 생성 -->
+  </section>
+
+  <div id="error-container"></div>
 </div>
 
 <script>
-  const params = new URLSearchParams(location.search);
-  const school = params.get("school"); // 예: 잠신중, 잠신고, 신천중
-  const grade  = params.get("grade");  // 예: "1", "2", "3"
+  const params = new URLSearchParams(window.location.search);
+  const school = params.get("school");   // 잠신중, 신천중, 잠신고
+  const grade  = params.get("grade");    // "1", "2", "3"
 
-  const titleEl = document.getElementById("title");
-  const areaEl  = document.getElementById("unit-area");
+  const titleEl   = document.getElementById("page-title");
+  const subEl     = document.getElementById("page-subtitle");
+  const areaEl    = document.getElementById("unit-area");
+  const errorWrap = document.getElementById("error-container");
 
-  // 상단 제목: 잠신중 1학년
-  titleEl.textContent = `${school} ${grade}학년`;
+  const validSchools = ["잠신중", "신천중", "잠신고"];
+  const validGrades  = ["1", "2", "3"];
 
-  // 단원 1~10 생성
-  for (let i = 1; i <= 10; i++) {
-    // 👉 quiz.html 로 넘길 unitKey 규칙 (나중에 WORD_SETS에서 이 키랑 맞춰주면 됨)
-    const unitKey = `${school}-${grade}-${i}`; // 예: "잠신중-1-1"
+  const isValid =
+    validSchools.includes(school || "") &&
+    validGrades.includes(grade || "");
 
-    const link = document.createElement("a");
-    link.href = `quiz.html?stage=school&unit=${encodeURIComponent(unitKey)}`;
+  if (!isValid) {
+    areaEl.innerHTML = "";
+    const msg = document.createElement("div");
+    msg.className = "error-box";
+    msg.textContent = "학교 / 학년 정보가 올바르지 않습니다.";
+    errorWrap.appendChild(msg);
+  } else {
+    titleEl.textContent = `${school} ${grade}`;
+    subEl.textContent = "학습할 세트를 선택하세요.";
 
-    const card = document.createElement("div");
-    card.className = "unit-card";
-    card.textContent = `${school} ${grade}-${i}`;  // 화면에 보이는 글자
+    areaEl.innerHTML = "";
 
-    link.appendChild(card);
-    areaEl.appendChild(link);
+    // 각 학교·학년마다 1~10 유닛: 예) 잠신중 1-1 ~ 1-10
+    for (let i = 1; i <= 10; i++) {
+      const unitLabel = `${school} ${grade}-${i}`;       // 화면에 보이는 글자
+      const unitKey   = `${school}-${grade}-${i}`;       // quiz.html로 넘길 값
+
+      const card = document.createElement("div");
+      card.className = "unit-card";
+      card.textContent = unitLabel;
+
+      card.onclick = () => {
+        // 같은 quiz.html 사용, stage=school 로 구분
+        const encodedUnit = encodeURIComponent(unitKey);
+        location.href = `quiz.html?stage=school&unit=${encodedUnit}`;
+      };
+
+      areaEl.appendChild(card);
+    }
   }
 </script>
 
