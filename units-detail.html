@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>어휘 학습 - 1단계 세트</title>
+  <title>어휘 학습 - 유닛 선택</title>
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
   <style>
@@ -19,64 +19,65 @@
       padding: 0 20px;
     }
 
-    /* 상단 영역 */
+    /* 상단 텍스트 */
     .page-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       margin-bottom: 30px;
     }
 
-    .page-header img {
-      height: 40px;
-    }
-
-    .page-title {
-      font-size: 26px;
+    .title-main {
+      font-size: 34px;
       font-weight: 800;
+      margin-bottom: 4px;
     }
 
-    /* 세트 카드 영역 */
-    .set-area {
+    .title-sub {
+      font-size: 18px;
+      color: #777;
+    }
+
+    /* 유닛 카드 영역 */
+    .unit-area {
       background: #f1f3fb;
       border-radius: 28px;
-      padding: 30px 24px;
+      padding: 40px 30px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);  /* 5열 */
-      gap: 18px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 22px;
     }
 
-    .set-card {
+    .unit-card {
       background: #fff;
-      border-radius: 20px;
-      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.06);
-      height: 90px;
+      border-radius: 22px;
+      box-shadow: 0px 8px 25px rgba(0,0,0,0.06);
+      height: 85px;
       display: flex;
       justify-content: center;
       align-items: center;
+      font-size: 22px;
+      font-weight: 700;
       cursor: pointer;
       transition: 0.18s ease;
     }
 
-    .set-card:hover {
+    .unit-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.14);
-    }
-
-    .set-card span {
-      font-size: 20px;
-      font-weight: 700;
-      color: #000;
+      box-shadow: 0px 12px 30px rgba(0,0,0,0.12);
     }
 
     @media (max-width: 900px) {
-      .set-area {
+      .unit-area {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .unit-area {
         grid-template-columns: repeat(3, 1fr);
       }
     }
 
-    @media (max-width: 600px) {
-      .set-area {
+    @media (max-width: 500px) {
+      .unit-area {
         grid-template-columns: repeat(2, 1fr);
       }
     }
@@ -86,38 +87,44 @@
 
 <div class="page">
 
-  <!-- 상단 헤더 -->
+  <!-- 상단 텍스트 -->
   <header class="page-header">
-    <img src="https://img.icons8.com/ios-filled/100/book-and-pencil.png" alt="어휘 아이콘" />
-    <div class="page-title">1</div>
+    <div class="title-main" id="title-main">1단계</div>
+    <div class="title-sub">학습할 유닛을 선택하세요.</div>
   </header>
 
-  <!-- 세트 카드가 들어갈 영역 (JS가 채워 넣음) -->
-  <section class="set-area"></section>
-
+  <!-- 유닛 카드들 -->
+  <section class="unit-area" id="unit-area">
+    <!-- JS에서 자동 생성 -->
+  </section>
 </div>
 
 <script>
-  // ★ 단계 번호만 바꾸면 그대로 재사용 가능 (2, 3, 4 ...)
-  const level = 1;       // 현재 단계
-  const totalSets = 60;  // 1-1 ~ 1-60
-  const area = document.querySelector('.set-area');
+  // URL 파라미터 읽기
+  const params = new URLSearchParams(window.location.search);
+  const stage = params.get('stage') || '1';
+  const set   = params.get('set')   || '1';  // 1~9 중 선택한 세트 (필요하면 나중에 사용)
 
-  for (let i = 1; i <= totalSets; i++) {
+  // 상단 제목 설정
+  const title = (stage === 'school') ? '학교 시험' : `${stage}단계`;
+  document.getElementById('title-main').textContent = title;
+
+  // 유닛 개수 (필요에 따라 35 → 60으로 바꿔도 됨)
+  const TOTAL_UNITS = 35;
+
+  const area = document.getElementById('unit-area');
+
+  for (let i = 1; i <= TOTAL_UNITS; i++) {
     const card = document.createElement('div');
-    card.className = 'set-card';
+    card.className = 'unit-card';
 
-    // 나중에 각 세트 페이지로 연결할 때 여기만 수정
-    // 예: level1-1.html, level1-2.html ...
+    // 표시되는 텍스트: 1-1, 1-2 …
+    card.textContent = `${stage}-${i}`;
+
     card.onclick = () => {
-      // 임시로 alert, 준비되면 아래 한 줄로 교체:
-      // location.href = `level${level}-${i}.html`;
-      alert(`클릭: ${level}-${i}`);
+      // 실제 학습 페이지(learning.html)로 이동
+      location.href = `learning.html?stage=${stage}&unit=${i}`;
     };
-
-    const label = document.createElement('span');
-    label.textContent = `${level}-${i}`;
-    card.appendChild(label);
 
     area.appendChild(card);
   }

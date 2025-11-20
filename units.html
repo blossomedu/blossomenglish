@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>단계 선택 - BLOSSOM ENGLISH</title>
+  <title>어휘 학습 - 세트 선택</title>
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
   <style>
@@ -19,24 +19,23 @@
       padding: 0 20px;
     }
 
-    /* 상단 제목 영역 (vocabulary와 동일 스타일) */
+    /* 상단 텍스트 (메인 / vocabulary와 통일) */
     .page-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
       margin-bottom: 30px;
     }
 
-    .page-header img {
-      height: 52px;  /* 아이콘 크게 */
-    }
-
-    .page-title {
-      font-size: 34px;   /* vocabulary 페이지와 동일 */
+    .title-main {
+      font-size: 34px;
       font-weight: 800;
+      margin-bottom: 4px;
     }
 
-    /* 숫자 카드 영역 */
+    .title-sub {
+      font-size: 18px;
+      color: #777;
+    }
+
+    /* 번호 카드 영역 */
     .num-area {
       background: #f1f3fb;
       border-radius: 28px;
@@ -64,7 +63,7 @@
     }
 
     .num-card span {
-      font-size: 24px;   /* 1~9 숫자 크기 */
+      font-size: 26px;
       font-weight: 800;
       color: #000;
     }
@@ -86,42 +85,43 @@
 
 <div class="page">
 
-  <!-- 상단 제목 -->
+  <!-- 상단 텍스트 -->
   <header class="page-header">
-    <!-- 네가 만들 새 아이콘 파일 이름: vocab-level-icon.png -->
-    <img src="vocab-level-icon.png" alt="단계 아이콘" />
-    <div class="page-title" id="page-title">1단계</div>
+    <div class="title-main" id="title-main">1단계</div>
+    <div class="title-sub">학습할 세트를 선택하세요.</div>
   </header>
 
-  <!-- 숫자 카드 영역 -->
+  <!-- 1~9 카드 -->
   <section class="num-area" id="num-area">
-    <!-- JS로 1~9 생성 -->
+    <!-- JS에서 1~9 생성 -->
   </section>
 </div>
 
 <script>
-  // URL에서 stage 값 읽기
+  // URL에서 stage 값 읽기 (예: units.html?stage=1)
   const params = new URLSearchParams(window.location.search);
   const stage = params.get('stage') || '1';
 
-  // 단계 이름 설정
-  const title = stage === 'school' ? '학교 시험' : `${stage}단계`;
-  document.getElementById('page-title').textContent = title;
+  // 상단 제목
+  const title = (stage === 'school') ? '학교 시험' : `${stage}단계`;
+  document.getElementById('title-main').textContent = title;
 
-  // 숫자 카드 생성
+  // 1~9 카드 생성
   const area = document.getElementById('num-area');
+
   for (let i = 1; i <= 9; i++) {
     const card = document.createElement('div');
     card.className = 'num-card';
 
     card.onclick = () => {
-      location.href = `units-detail.html?stage=${stage}&unit=${i}`;
+      // 상세 유닛 목록 페이지로 이동
+      location.href = `units-detail.html?stage=${stage}&set=${i}`;
     };
 
     const span = document.createElement('span');
     span.textContent = i;
-    card.appendChild(span);
 
+    card.appendChild(span);
     area.appendChild(card);
   }
 </script>
