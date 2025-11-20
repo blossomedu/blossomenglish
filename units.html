@@ -5,6 +5,7 @@
   <title>세트 선택</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -16,7 +17,6 @@
 
     body {
       background: #f4f6fb;
-      margin: 0;
       padding: 30px 0 60px;
     }
 
@@ -54,18 +54,19 @@
       font-size: 22px;
       font-weight: 700;
       color: #111827;
-      cursor: pointer;
       box-shadow: 0 15px 32px rgba(15, 23, 42, 0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      text-align: center;
     }
 
     .set-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
       box-shadow: 0 22px 40px rgba(15, 23, 42, 0.12);
     }
 
     .error-box {
-      margin-top: 32px;
+      margin-top: 24px;
       padding: 18px 20px;
       border-radius: 18px;
       background: #fee2e2;
@@ -75,48 +76,57 @@
   </style>
 </head>
 <body>
+
 <div class="page">
-  <div class="title-big" id="page-title">단계</div>
-  <div class="subtitle" id="page-subtitle">학습할 세트를 선택하세요.</div>
+  <div class="title-big" id="page-title">세트 선택</div>
+  <div class="subtitle">학습할 세트를 선택하세요.</div>
 
-  <div class="grid" id="set-area">
-    <!-- JS로 1~9 세트 카드 생성 -->
-  </div>
-
+  <div class="grid" id="set-grid"></div>
   <div id="error-container"></div>
 </div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage");  // "1", "2", "3"
+  const stage = params.get("stage");   // "1", "2", "3"
 
-  const titleEl   = document.getElementById("page-title");
-  const subtitleEl= document.getElementById("page-subtitle");
-  const areaEl    = document.getElementById("set-area");
-  const errorWrap = document.getElementById("error-container");
+  const titleEl = document.getElementById("page-title");
+  const gridEl  = document.getElementById("set-grid");
+  const errorEl = document.getElementById("error-container");
 
-  if (stage !== "1" && stage !== "2" && stage !== "3") {
-    areaEl.innerHTML = "";
+  // 단계별 세트 범위
+  let startSet, endSet;
+
+  if (stage === "1") {
+    startSet = 1;
+    endSet   = 9;
+  } else if (stage === "2") {
+    startSet = 10;
+    endSet   = 18;
+  } else if (stage === "3") {
+    startSet = 19;
+    endSet   = 27;
+  }
+
+  // stage가 이상하면 에러
+  if (!startSet || !endSet) {
     const msg = document.createElement("div");
     msg.className = "error-box";
     msg.textContent = "단계 정보가 올바르지 않습니다.";
-    errorWrap.appendChild(msg);
+    errorEl.appendChild(msg);
   } else {
+    // 상단 제목: 1단계 / 2단계 / 3단계
     titleEl.textContent = `${stage}단계`;
-    subtitleEl.textContent = "학습할 세트를 선택하세요.";
 
-    areaEl.innerHTML = "";
-    for (let i = 1; i <= 9; i++) {
+    // 세트 카드 생성
+    for (let n = startSet; n <= endSet; n++) {
       const card = document.createElement("div");
       card.className = "set-card";
-      card.textContent = i; // 1~9
-
+      card.textContent = n;     // 카드에 보이는 숫자
       card.onclick = () => {
-        // 여기서는 아직 1~9까지만 보내고, 실제 세트 번호 계산은 units-detail에서 함
-        location.href = `units-detail.html?stage=${stage}&set=${i}`;
+        // 👉 units-detail.html 로 set=n 그대로 넘김
+        location.href = `units-detail.html?stage=${stage}&set=${n}`;
       };
-
-      areaEl.appendChild(card);
+      gridEl.appendChild(card);
     }
   }
 </script>
