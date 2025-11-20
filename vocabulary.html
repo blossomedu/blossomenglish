@@ -38,69 +38,54 @@
       margin-bottom: 32px;
     }
 
+    /* index와 동일한 2×2 카드 레이아웃 */
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      gap: 22px;
     }
 
-    .level-card {
+    .menu-card {
       background: #ffffff;
       border-radius: 26px;
-      padding: 28px 32px;
+      height: 180px;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
+      text-align: center;
       box-shadow: 0 15px 32px rgba(15, 23, 42, 0.08);
       transition: all 0.2s ease;
       cursor: pointer;
     }
 
-    .level-card:hover {
+    .menu-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 22px 40px rgba(15, 23, 42, 0.12);
     }
 
-    .level-icon-wrap {
-      width: 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 22px;
-    }
-
-    .level-icon {
-      width: 70px;      /* 아이콘 크기 */
-      height: 70px;
+    .menu-icon {
+      width: 87px;
+      height: 87px;
+      margin-bottom: 16px;
       object-fit: contain;
       display: block;
     }
 
-    .level-text-main {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 4px;
+    .menu-text {
+      font-size: 20px;
+      font-weight: 700;
       color: #111827;
-    }
-
-    .level-text-sub {
-      font-size: 15px;
-      color: #6b7280;
     }
 
     a {
       text-decoration: none;
       color: inherit;
     }
-
-    @media (max-width: 800px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
 </head>
-<body>
 
+<body>
 <div class="page">
   <div class="title-big">어휘 학습</div>
   <div class="subtitle">학습할 단계를 선택하세요.</div>
@@ -109,55 +94,37 @@
 
     <!-- 1단계 -->
     <a href="units.html?stage=1">
-      <div class="level-card">
-        <div class="level-icon-wrap">
-          <img src="vocab-level1.png" alt="1단계 아이콘" class="level-icon" />
-        </div>
-        <div>
-          <div class="level-text-main">1단계</div>
-        </div>
+      <div class="menu-card">
+        <img src="vocab-level1.png" alt="1단계" class="menu-icon" />
+        <div class="menu-text">1단계</div>
       </div>
     </a>
 
     <!-- 2단계 -->
     <a href="units.html?stage=2">
-      <div class="level-card">
-        <div class="level-icon-wrap">
-          <img src="vocab-level2.png" alt="2단계 아이콘" class="level-icon" />
-        </div>
-        <div>
-          <div class="level-text-main">2단계</div>
-        </div>
+      <div class="menu-card">
+        <img src="vocab-level2.png" alt="2단계" class="menu-icon" />
+        <div class="menu-text">2단계</div>
       </div>
     </a>
 
     <!-- 3단계 -->
     <a href="units.html?stage=3">
-      <div class="level-card">
-        <div class="level-icon-wrap">
-          <img src="vocab-level3.png" alt="3단계 아이콘" class="level-icon" />
-        </div>
-        <div>
-          <div class="level-text-main">3단계</div>
-        </div>
+      <div class="menu-card">
+        <img src="vocab-level3.png" alt="3단계" class="menu-icon" />
+        <div class="menu-text">3단계</div>
       </div>
     </a>
 
     <!-- 학교 시험 -->
     <a href="vocabulary-school.html">
-      <!-- 이 파일 이름은 네가 실제로 쓰는 학교 시험 페이지 이름에 맞게 바꿔도 돼 -->
-      <div class="level-card">
-        <div class="level-icon-wrap">
-          <img src="vocab-school.png" alt="학교 시험 아이콘" class="level-icon" />
-        </div>
-        <div>
-          <div class="level-text-main">학교 시험</div>
-        </div>
+      <div class="menu-card">
+        <img src="vocab-school.png" alt="학교 시험" class="menu-icon" />
+        <div class="menu-text">학교 시험</div>
       </div>
     </a>
 
   </div>
 </div>
-
 </body>
 </html>
