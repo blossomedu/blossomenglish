@@ -82,6 +82,7 @@
       background: #e5edff;
       font-size: 12px;
       color: #1d4ed8;
+      display: none; /* 지금은 뱃지 숨김 */
     }
 
     .center-area {
@@ -119,7 +120,7 @@
       color: #6b7280;
     }
 
-    /* 여기 폰트 크기가 뜻찾기/영어찾기/듣고찾기 제목에 공통으로 쓰이는 부분 */
+    /* 뜻찾기 / 영어찾기 / 듣고찾기 제목 공통 */
     .question-title {
       font-size: 30px;
       font-weight: 800;
@@ -277,7 +278,7 @@
   </div>
 
   <div class="card">
-    <div class="audio-badge" id="audioBadge">자동으로 2번 들려줘요</div>
+    <div class="audio-badge" id="audioBadge"></div>
     <div class="center-area" id="centerArea"></div>
 
     <div class="bottom-bar">
@@ -319,16 +320,20 @@
   const backToUnitsBtn = document.getElementById("backToUnitsBtn");
 
   let currentMode = "study";
-  let currentIndex = 0;  // study / sentence 용 인덱스
+  let currentIndex = 0;        // 학습 모드용 인덱스
 
   const AUTO_QUIZ_MODES = ["meaning", "english", "listening"];
 
   // 객관식 모드용 큐
-  let quizQueue = [];       // 현재 라운드에서 풀어야 할 단어 인덱스들
+  let quizQueue = [];       // 현재 라운드에서 풀어야 할 단어 인덱스들(랜덤)
   let quizPos = 0;          // quizQueue 안에서의 위치
   let nextRoundQueue = [];  // 오답 모아두는 큐
   let quizFinished = false;
   let answerTimer = null;
+
+  // 문장 빈칸용 랜덤 순서
+  let sentenceOrder = [];
+  let sentencePos = 0;
 
   // ------------ 공통 유틸 ------------
 
@@ -343,6 +348,15 @@
     }
   }
 
+  function shuffleArray(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   function resetQuizFlow() {
     if (!AUTO_QUIZ_MODES.includes(currentMode) || !wordCount) {
       quizQueue = [];
@@ -351,13 +365,24 @@
       quizFinished = false;
       return;
     }
-    quizQueue = [];
-    for (let i = 0; i < wordCount; i++) {
-      quizQueue.push(i);
-    }
+    const base = [];
+    for (let i = 0; i < wordCount; i++) base.push(i);
+    quizQueue = shuffleArray(base);  // 🔁 랜덤 순서
     nextRoundQueue = [];
     quizPos = 0;
     quizFinished = false;
+  }
+
+  function resetSentenceFlow() {
+    if (!wordCount) {
+      sentenceOrder = [];
+      sentencePos = 0;
+      return;
+    }
+    const base = [];
+    for (let i = 0; i < wordCount; i++) base.push(i);
+    sentenceOrder = shuffleArray(base);  // 🔁 랜덤 순서
+    sentencePos = 0;
   }
 
   function showQuizFinished() {
@@ -387,7 +412,6 @@
     if (quizPos >= quizQueue.length) {
       // 한 라운드 끝
       if (nextRoundQueue.length > 0) {
-        // 오답 다시 풀기 라운드
         quizQueue = nextRoundQueue;
         nextRoundQueue = [];
         quizPos = 0;
@@ -403,8 +427,8 @@
 
   // ------------ 발음 (학습 / 듣기퀴즈) ------------
 
-  const STUDY_GAP_BETWEEN_READS = 1200;  // 1차 ↔ 2차
-  const STUDY_GAP_AFTER_SECOND  = 3200;  // 2차 후 다음 단어까지
+  const STUDY_GAP_BETWEEN_READS = 1000;  // 1차 ↔ 2차 (조금 짧게)
+  const STUDY_GAP_AFTER_SECOND  = 2600;  // 2차 후 → 다음 단어 (조금 짧게)
 
   function speakWordTwice(word, afterSecondDone) {
     const synth = window.speechSynthesis;
@@ -465,17 +489,13 @@
     }
 
     const item = words[currentIndex];
-    audioBadge.style.display = "inline-flex";
-    audioBadge.textContent = "자동으로 2번 들려줘요";
+    audioBadge.style.display = "none"; // 안내 뱃지는 숨김
 
     centerArea.innerHTML = `
       <div class="word-big">${item.word}</div>
       <div class="meaning-big">${item.meaning}</div>
       <div class="example-en">${item.exampleEn}</div>
       <div class="example-ko">${item.exampleKo}</div>
-      <div style="margin-top:20px;font-size:14px;color:#6b7280;">
-        단어와 예문을 보고 듣고, 자동으로 다음 단어로 넘어갑니다.
-      </div>
     `;
     setProgress(currentIndex + 1, wordCount);
 
@@ -491,14 +511,12 @@
   function makeChoices(correctIdx) {
     const indices = [...Array(wordCount).keys()];
     const others = indices.filter(i => i !== correctIdx);
-    // 섞기
     for (let i = others.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [others[i], others[j]] = [others[j], others[i]];
     }
     const pick = others.slice(0, 3);
     const all = [correctIdx, ...pick];
-    // 다시 섞기
     for (let i = all.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [all[i], all[j]] = [all[j], all[i]];
@@ -567,7 +585,6 @@
       };
     });
 
-    // 진행도: 1라운드 기준으로 1~wordCount 까지만 표시
     const baseNumber = Math.min(quizPos + 1, wordCount);
     setProgress(baseNumber, wordCount);
 
@@ -626,8 +643,7 @@
     const qIndex = quizQueue[quizPos];
     const item = words[qIndex];
 
-    audioBadge.style.display = "inline-flex";
-    audioBadge.textContent = "단어를 2번 들을 수 있어요";
+    audioBadge.style.display = "none";
 
     centerArea.innerHTML = `
       <div class="question-title">발음을 듣고 어떤 단어인지 맞혀 보아요.</div>
@@ -655,7 +671,7 @@
     const baseNumber = Math.min(quizPos + 1, wordCount);
     setProgress(baseNumber, wordCount);
 
-    // 발음 2번 들려주기 (타이머와 상관없이)
+    // 발음 2번 들려주기
     speakWordTwice(item.word, null);
 
     // 7초 타이머
@@ -669,7 +685,6 @@
   function handleQuizAnswer(qIndex, isCorrect, clickedBtn, grid, correctText) {
     if (!AUTO_QUIZ_MODES.includes(currentMode)) return;
 
-    // 이미 처리된 문제면 무시
     if (centerArea.dataset.answered === "true") return;
     centerArea.dataset.answered = "true";
 
@@ -689,7 +704,6 @@
       clickedBtn.classList.add("wrong");
     }
 
-    // 0.9초 후 다음 문제로 이동
     setTimeout(() => {
       goNextQuestion(isCorrect ? null : qIndex);
     }, 900);
@@ -711,19 +725,23 @@
       return;
     }
 
-    // 모든 단어를 다 풀었으면 100점 화면
-    if (currentIndex >= wordCount) {
+    if (!sentenceOrder.length) {
+      resetSentenceFlow();
+    }
+
+    if (sentencePos >= wordCount) {
       showQuizFinished();
       return;
     }
 
-    const item = words[currentIndex];
+    const wordIndex = sentenceOrder[sentencePos];
+    const item = words[wordIndex];
     const blanked = item.exampleEn.replace(new RegExp(item.word, "i"), "____");
 
     centerArea.innerHTML = `
       <div class="sentence-en">${blanked}</div>
       <div class="sentence-ko">${item.exampleKo}</div>
-    `;
+   `;
 
     const row = document.createElement("div");
     row.className = "sentence-row";
@@ -748,7 +766,7 @@
     resultArea.className = "result-text";
     centerArea.appendChild(resultArea);
 
-    setProgress(currentIndex + 1, wordCount);
+    setProgress(sentencePos + 1, wordCount);
 
     function checkAnswer() {
       const v = input.value.trim().toLowerCase();
@@ -761,12 +779,11 @@
         resultArea.textContent = "정답이에요! 👍";
         hintArea.textContent = "";
         setTimeout(() => {
-          if (currentIndex + 1 < wordCount) {
-            currentIndex += 1;
+          if (sentencePos + 1 < wordCount) {
+            sentencePos += 1;
             renderSentenceQuiz();
           } else {
-            // 마지막 문제까지 맞추면 100점 화면
-            currentIndex = wordCount;
+            sentencePos = wordCount;
             showQuizFinished();
           }
         }, 900);
@@ -830,8 +847,15 @@
         answerTimer = null;
       }
       currentMode = tab.dataset.mode;
-      currentIndex = 0;      // study / sentence용
-      resetQuizFlow();       // 객관식 흐름 초기화
+      currentIndex = 0;      // 학습 모드 인덱스 초기화
+
+      if (AUTO_QUIZ_MODES.includes(currentMode)) {
+        resetQuizFlow();
+      }
+      if (currentMode === "sentence") {
+        resetSentenceFlow();
+      }
+
       renderCurrent();
     };
   });
@@ -844,12 +868,13 @@
     }
     currentIndex = 0;
     resetQuizFlow();
+    resetSentenceFlow();
     renderCurrent();
   };
 
   backToUnitsBtn.onclick = () => {
-    // 기존 구조 유지 (단계/학교 시험 둘 다 여기서 stage로 돌아가도록)
-    location.href = `units-detail.html?stage=${stage}`;
+    // 그냥 이전 페이지로 돌아가기 (404 방지)
+    window.history.back();
   };
 
   // 최초 렌더링
