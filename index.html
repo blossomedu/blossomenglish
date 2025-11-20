@@ -38,9 +38,10 @@
       margin-bottom: 32px;
     }
 
+    /* ⭐ 2열 × 2행 레이아웃 */
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 22px;
     }
 
@@ -80,21 +81,13 @@
     }
   </style>
 </head>
-<body>
 
+<body>
 <div class="page">
   <div class="title-big">블라썸잉글리쉬</div>
   <div class="subtitle">미래를 꽃 피우는 영어 교육</div>
 
   <div class="grid">
-
-    <!-- 반별 게시판 -->
-    <a href="board.html">
-      <div class="menu-card">
-        <img src="board.png" class="menu-icon" alt="반별 게시판" />
-        <div class="menu-text">반별 게시판</div>
-      </div>
-    </a>
 
     <!-- 어휘 학습 -->
     <a href="vocabulary.html">
@@ -112,15 +105,15 @@
       </div>
     </a>
 
-    <!-- Blossom 소개 -->
-    <a href="https://blog.naver.com/gosumury/223958581059" target="_blank">
+    <!-- 반별 게시판 -->
+    <a href="board.html">
       <div class="menu-card">
-        <img src="blossom-logo.png" class="menu-icon" alt="Blossom 소개" />
-        <div class="menu-text">Blossom 소개</div>
+        <img src="board.png" class="menu-icon" alt="반별 게시판" />
+        <div class="menu-text">반별 게시판</div>
       </div>
     </a>
 
-    <!-- 온라인서점 -->
+    <!-- 온라인 서점 -->
     <a href="https://search.kyobobook.co.kr/search?keyword=%EC%B4%88%EB%B0%94%EC%98%81&gbCode=TOT&target=total"
        target="_blank">
       <div class="menu-card">
@@ -129,16 +122,7 @@
       </div>
     </a>
 
-    <!-- 교육뉴스 -->
-    <a href="news.html">
-      <div class="menu-card">
-        <img src="news.png" class="menu-icon" alt="교육 뉴스" />
-        <div class="menu-text">교육 뉴스</div>
-      </div>
-    </a>
-
   </div>
 </div>
-
 </body>
 </html>
