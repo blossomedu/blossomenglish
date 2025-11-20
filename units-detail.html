@@ -27,16 +27,17 @@
       padding: 0 20px;
     }
 
+    /* 상단: 세트 번호만 크게 표시 */
     .page-header {
       margin-bottom: 24px;
     }
 
-    /* 위에 세트 번호만 크게 표시 */
     .page-title {
       font-size: 32px;
       font-weight: 900;
     }
 
+    /* 카드 영역 */
     .set-area {
       background: #f1f3fb;
       border-radius: 28px;
@@ -66,6 +67,7 @@
       box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
     }
 
+    /* 에러 메시지 */
     .error-box {
       margin-top: 32px;
       padding: 18px 20px;
@@ -89,55 +91,48 @@
   </style>
 </head>
 <body>
+
 <div class="page">
   <header class="page-header">
+    <!-- 여기 숫자(세트 번호)만 표시됨 -->
     <div class="page-title" id="page-title">세트</div>
   </header>
 
   <section class="set-area" id="set-area">
-    <!-- JS로 유닛 카드 생성 -->
+    <!-- JS로 1~60 유닛 카드 생성 -->
   </section>
 
+  <!-- 에러 메시지 들어갈 자리 -->
   <div id="error-container"></div>
 </div>
 
 <script>
+  // URL 파라미터 읽기
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get("stage");   // "1","2","3"
-  const rawSet = params.get("set");    // 1~9
+  const stage = params.get("stage");   // 1,2,3, school 등
+  const rawSet = params.get("set");    // 세트 번호 (1,2,3,10,19...)
 
   const titleEl   = document.getElementById("page-title");
   const areaEl    = document.getElementById("set-area");
   const errorWrap = document.getElementById("error-container");
 
-  const setIndex = Number(rawSet);     // 1~9
-  const validStage = stage === "1" || stage === "2" || stage === "3";
-  const validIndex = Number.isInteger(setIndex) && setIndex >= 1 && setIndex <= 9;
+  const setNumber = Number(rawSet);
 
-  if (!validStage || !validIndex) {
+  // stage 또는 set 이 아예 없거나 숫자가 아니면만 에러
+  if (!stage || !rawSet || Number.isNaN(setNumber)) {
     areaEl.innerHTML = "";
     const msg = document.createElement("div");
     msg.className = "error-box";
     msg.textContent = "세트 정보가 올바르지 않습니다.";
     errorWrap.appendChild(msg);
   } else {
-    // 여기서 실제 세트 번호 계산
-    let realSet;
-    if (stage === "1") {
-      realSet = setIndex;          // 1~9
-    } else if (stage === "2") {
-      realSet = 9 + setIndex;      // 10~18
-    } else {
-      realSet = 18 + setIndex;     // 19~27
-    }
+    // 상단에 세트 번호만 표시 (예: 1, 10, 19 ...)
+    titleEl.textContent = String(setNumber);
 
-    // 상단에 숫자만 표시
-    titleEl.textContent = String(realSet);
-
-    // 1~60 유닛 카드 생성 (예: 10-1 ~ 10-60)
+    // 1~60 유닛 카드 생성
     areaEl.innerHTML = "";
     for (let i = 1; i <= 60; i++) {
-      const unitId = `${realSet}-${i}`;
+      const unitId = `${setNumber}-${i}`;  // 예: "1-1", "10-1", "19-1" ...
 
       const card = document.createElement("div");
       card.className = "set-card";
@@ -152,5 +147,6 @@
     }
   }
 </script>
+
 </body>
 </html>

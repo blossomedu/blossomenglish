@@ -1,123 +1,50 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>어휘 학습 - 단계 선택</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont,
-        system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    }
+<div class="grid">
+  <!-- 반별 게시판 -->
+  <a href="board.html">
+    <div class="menu-card">
+      <img src="board.png" class="menu-icon" alt="반별 게시판" />
+      <div class="menu-text">반별 게시판</div>
+    </div>
+  </a>
 
-    body {
-      background: #f4f6fb;
-      margin: 0;
-      padding: 30px 0 60px;
-    }
+  <!-- 어휘 학습 -->
+  <a href="vocabulary.html">
+    <div class="menu-card">
+      <img src="vocab-book.png" class="menu-icon" alt="어휘 학습" />
+      <div class="menu-text">어휘 학습</div>
+    </div>
+  </a>
 
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+  <!-- 문장 학습 -->
+  <a href="sentence.html">
+    <div class="menu-card">
+      <img src="pencil.png" class="menu-icon" alt="문장 학습" />
+      <div class="menu-text">문장 학습</div>
+    </div>
+  </a>
 
-    .title-big {
-      font-size: 34px;
-      font-weight: 900;
-      margin-bottom: 6px;
-    }
+  <!-- Blossom 소개 (아이콘 있으면 파일명 맞춰서 넣고, 없으면 텍스트만) -->
+  <a href="https://blog.naver.com/gosumury/223958581059" target="_blank">
+    <div class="menu-card">
+      <!-- 예: <img src="blossom-logo.png" class="menu-icon" alt="Blossom 소개" /> -->
+      <div class="menu-text">Blossom 소개</div>
+    </div>
+  </a>
 
-    .subtitle {
-      font-size: 16px;
-      color: #6b7280;
-      margin-bottom: 32px;
-    }
+  <!-- 온라인 서점 -->
+  <a href="https://search.kyobobook.co.kr/search?keyword=%EC%B4%88%EB%B0%94%EC%98%81&gbCode=TOT&target=total"
+     target="_blank">
+    <div class="menu-card">
+      <img src="store.png" class="menu-icon" alt="온라인 서점" />
+      <div class="menu-text">온라인 서점</div>
+    </div>
+  </a>
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 22px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 26px;
-      height: 180px;
-      box-shadow: 0 15px 32px rgba(15, 23, 42, 0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.12);
-    }
-
-    .card-title {
-      font-size: 24px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .card-desc {
-      font-size: 15px;
-      color: #6b7280;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-  </style>
-</head>
-<body>
-<div class="page">
-  <div class="title-big">어휘 학습</div>
-  <div class="subtitle">학습할 단계를 선택하세요.</div>
-
-  <div class="grid">
-    <!-- 1단계 -->
-    <a href="units.html?stage=1">
-      <div class="card">
-        <div class="card-title">1단계</div>
-        <div class="card-desc">기초 파닉스 · 초등 저학년</div>
-      </div>
-    </a>
-
-    <!-- 2단계 -->
-    <a href="units.html?stage=2">
-      <div class="card">
-        <div class="card-title">2단계</div>
-        <div class="card-desc">기본 어휘 · 초등 중학년</div>
-      </div>
-    </a>
-
-    <!-- 3단계 -->
-    <a href="units.html?stage=3">
-      <div class="card">
-        <div class="card-title">3단계</div>
-        <div class="card-desc">확장 어휘 · 초등 고학년</div>
-      </div>
-    </a>
-
-    <!-- 학교 시험 -->
-    <a href="school.html">
-      <div class="card">
-        <div class="card-title">학교 시험</div>
-        <div class="card-desc">잠신 · 신천중 · 잠신고 내신 대비</div>
-      </div>
-    </a>
-  </div>
+  <!-- 교육 뉴스 (아이콘 있으면 news.png) -->
+  <a href="news.html">
+    <div class="menu-card">
+      <!-- 예: <img src="news.png" class="menu-icon" alt="교육 뉴스" /> -->
+      <div class="menu-text">교육 뉴스</div>
+    </div>
+  </a>
 </div>
-</body>
-</html>
