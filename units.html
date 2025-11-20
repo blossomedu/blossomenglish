@@ -16,66 +16,62 @@
     .page {
       max-width: 1100px;
       margin: 40px auto;
-      padding: 0 20px;
+      padding: 0 20px 40px;
     }
 
-    /* 상단 텍스트 (메인 / vocabulary와 통일) */
     .page-header {
-      margin-bottom: 30px;
+      margin-bottom: 28px;
     }
 
-    .title-main {
+    .page-title {
       font-size: 34px;
       font-weight: 800;
       margin-bottom: 4px;
     }
 
-    .title-sub {
-      font-size: 18px;
-      color: #777;
+    .page-subtitle {
+      font-size: 16px;
+      color: #6b7280;
     }
 
-    /* 번호 카드 영역 */
-    .num-area {
+    .level-area {
       background: #f1f3fb;
       border-radius: 28px;
-      padding: 40px 30px;
+      padding: 32px 26px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 26px;
+      gap: 18px;
     }
 
-    .num-card {
-      background: #fff;
-      border-radius: 26px;
-      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.06);
-      height: 130px;
+    .level-card {
+      background: #ffffff;
+      border-radius: 22px;
+      height: 110px;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
       cursor: pointer;
-      transition: 0.18s ease;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-align: center;
     }
 
-    .num-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.14);
+    .level-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
     }
 
-    .num-card span {
-      font-size: 26px;
-      font-weight: 800;
-      color: #000;
-    }
-
-    @media (max-width: 700px) {
-      .num-area {
-        grid-template-columns: 1fr 1fr;
+    @media (max-width: 800px) {
+      .level-area {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 500px) {
-      .num-area {
+    @media (max-width: 520px) {
+      .level-area {
         grid-template-columns: 1fr;
       }
     }
@@ -84,45 +80,69 @@
 <body>
 
 <div class="page">
-
-  <!-- 상단 텍스트 -->
   <header class="page-header">
-    <div class="title-main" id="title-main">1단계</div>
-    <div class="title-sub">학습할 세트를 선택하세요.</div>
+    <div class="page-title" id="page-title">세트 선택</div>
+    <div class="page-subtitle" id="page-subtitle"></div>
   </header>
 
-  <!-- 1~9 카드 -->
-  <section class="num-area" id="num-area">
-    <!-- JS에서 1~9 생성 -->
+  <section class="level-area" id="level-area">
+    <!-- JS로 카드 생성 -->
   </section>
 </div>
 
 <script>
-  // URL에서 stage 값 읽기 (예: units.html?stage=1)
   const params = new URLSearchParams(window.location.search);
-  const stage = params.get('stage') || '1';
+  const stage = params.get("stage") || "1";
+  const titleEl = document.getElementById("page-title");
+  const subtitleEl = document.getElementById("page-subtitle");
+  const area = document.getElementById("level-area");
 
-  // 상단 제목
-  const title = (stage === 'school') ? '학교 시험' : `${stage}단계`;
-  document.getElementById('title-main').textContent = title;
+  function createCard(label, onClick) {
+    const div = document.createElement("div");
+    div.className = "level-card";
+    div.textContent = label;
+    div.onclick = onClick;
+    area.appendChild(div);
+  }
 
-  // 1~9 카드 생성
-  const area = document.getElementById('num-area');
+  if (stage === "school") {
+    // 🔹 학교 시험용 세트 선택
+    titleEl.textContent = "학교 시험";
+    subtitleEl.textContent = "학교와 학년을 선택하세요.";
 
-  for (let i = 1; i <= 9; i++) {
-    const card = document.createElement('div');
-    card.className = 'num-card';
+    const SCHOOL_ITEMS = [
+      { label: "잠신중 1", school: "잠신중", grade: "1" },
+      { label: "신천중 1", school: "신천중", grade: "1" },
+      { label: "잠신고 1", school: "잠신고", grade: "1" },
+      { label: "잠신중 2", school: "잠신중", grade: "2" },
+      { label: "신천중 2", school: "신천중", grade: "2" },
+      { label: "잠신고 2", school: "잠신고", grade: "2" },
+      { label: "잠신중 3", school: "잠신중", grade: "3" },
+      { label: "신천중 3", school: "신천중", grade: "3" },
+      { label: "잠신고 3", school: "잠신고", grade: "3" },
+    ];
 
-    card.onclick = () => {
-      // 상세 유닛 목록 페이지로 이동
-      location.href = `units-detail.html?stage=${stage}&set=${i}`;
-    };
+    SCHOOL_ITEMS.forEach(item => {
+      createCard(item.label, () => {
+        // 👉 학교 시험용 유닛 선택 화면으로 이동
+        location.href = `units-detail.html?stage=school&school=${encodeURIComponent(item.school)}&grade=${item.grade}`;
+      });
+    });
 
-    const span = document.createElement('span');
-    span.textContent = i;
+  } else {
+    // 🔹 1 / 2 / 3 단계 세트 선택
+    const stageNum = parseInt(stage, 10);
+    titleEl.textContent = `${stageNum}단계`;
+    subtitleEl.textContent = "학습할 세트를 선택하세요.";
 
-    card.appendChild(span);
-    area.appendChild(card);
+    // 세트 1~9
+    for (let i = 1; i <= 9; i++) {
+      const label = `${i}`;
+      createCard(label, () => {
+        // 👉 세트 상세(유닛) 화면으로 이동
+        location.href = `units-detail.html?stage=${stageNum}&set=${i}`;
+      });
+    }
   }
 </script>
 

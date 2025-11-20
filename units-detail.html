@@ -31,7 +31,7 @@
     }
 
     .page-title {
-      font-size: 28px;
+      font-size: 34px;
       font-weight: 800;
       margin-bottom: 4px;
     }
@@ -39,6 +39,7 @@
     .page-subtitle {
       font-size: 16px;
       color: #6b7280;
+      margin-bottom: 10px;
     }
 
     .set-area {
@@ -46,7 +47,7 @@
       border-radius: 28px;
       padding: 32px 26px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
 
@@ -57,12 +58,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
       color: #111827;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-align: center;
     }
 
     .set-card:hover {
@@ -72,19 +74,13 @@
 
     @media (max-width: 900px) {
       .set-area {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    @media (max-width: 700px) {
-      .set-area {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 500px) {
-      .set-area {
         grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .set-area {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -94,7 +90,7 @@
 <div class="page">
   <header class="page-header">
     <div class="page-title" id="page-title">유닛 선택</div>
-    <div class="page-subtitle" id="page-subtitle"></div>
+    <div class="page-subtitle" id="page-subtitle">학습할 유닛을 선택하세요.</div>
   </header>
 
   <section class="set-area" id="set-area">
@@ -104,66 +100,57 @@
 
 <script>
   const params = new URLSearchParams(window.location.search);
-
-  const stage = params.get("stage") || "1";   // 1,2,3 또는 "school"
-  const set   = params.get("set") || "1";     // 1~9 (단계별 세트 번호)
-  const area  = document.getElementById("set-area");
+  const stage = params.get("stage") || "1"; // 1,2,3 또는 "school"
+  const set   = params.get("set") || "1";
   const titleEl = document.getElementById("page-title");
   const subtitleEl = document.getElementById("page-subtitle");
+  const area = document.getElementById("set-area");
 
   function createUnitCard(label, unitKey) {
     const card = document.createElement("div");
     card.className = "set-card";
     card.textContent = label;
     card.onclick = () => {
-      // quiz.html 로 이동 (stage와 unitKey를 같이 넘김)
+      // 👉 여기서 quiz로 이동
       location.href = `quiz.html?stage=${encodeURIComponent(stage)}&unit=${encodeURIComponent(unitKey)}`;
     };
     area.appendChild(card);
   }
 
   if (stage === "school") {
-    // -------------------------
-    //  학교 시험용 유닛 화면
-    //  예) units-detail.html?stage=school&school=잠신중&grade=1
-    // -------------------------
+    // 🔹 학교 시험 모드
     const school = params.get("school") || "잠신중";
     const grade  = params.get("grade")  || "1";
 
     titleEl.textContent = `${school} ${grade}학년`;
     subtitleEl.textContent = "학습할 유닛을 선택하세요.";
 
-    // 1~9 :  잠신중 1-1, 잠신중 1-2, ...
+    // 잠신중 1-1 ~ 1-9 이런 식
     for (let i = 1; i <= 9; i++) {
       const label = `${school} ${grade}-${i}`;
-      const unitKey = `${school} ${grade}-${i}`;  // quiz.js 에서 이 키로 단어 찾게 만들면 됨
+      const unitKey = label; // quiz.js WORD_SETS["잠신중 1-1"] 이런 식으로 맞추면 됨
       createUnitCard(label, unitKey);
     }
 
   } else {
-    // -------------------------
-    //  1단계 / 2단계 / 3단계 일반 유닛 화면
-    // -------------------------
-    const stageNum = parseInt(stage, 10);   // 1,2,3
-    const setNum   = parseInt(set, 10);     // 1~9
+    // 🔹 1 / 2 / 3 단계 일반 모드
+    const stageNum = parseInt(stage, 10);
+    const setNum   = parseInt(set, 10);
 
-    // 단계 제목
     titleEl.textContent = `${stageNum}단계`;
     subtitleEl.textContent = "학습할 유닛을 선택하세요.";
 
-    // 유닛 번호 계산
-    // 1단계 :  1~9
-    // 2단계 : 10~18
-    // 3단계 : 19~27
-    const baseOffset = (stageNum - 1) * 9;   // 0, 9, 18
-    const unitGroupNumber = baseOffset + setNum; // 세트에 해당하는 앞번호
+    // 1단계: 1~9
+    // 2단계: 10~18
+    // 3단계: 19~27
+    const baseOffset = (stageNum - 1) * 9;      // 0, 9, 18
+    const unitGroupNumber = baseOffset + setNum; // 1~9, 10~18, 19~27
 
-    // 1~9 : 1-1 ~ 1-9, 10-1 ~ 10-9, ...
+    // 예: 3-1, 3-2, ... / 10-1 ~ 10-9 / 19-1 ~ 19-9
     for (let i = 1; i <= 9; i++) {
-      const code = `${unitGroupNumber}-${i}`;     // 예: "3-1", "10-4", "21-9"
-      const label = code;                         // 화면에 그대로 보여줌
-      const unitKey = code;                       // quiz.js 의 WORD_SETS 키
-      createUnitCard(label, unitKey);
+      const code = `${unitGroupNumber}-${i}`;
+      const unitKey = code; // quiz.js WORD_SETS["3-1"] 이런 식으로 사용
+      createUnitCard(code, unitKey);
     }
   }
 </script>
