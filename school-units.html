@@ -7,7 +7,12 @@
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Pretendard Variable", sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard Variable", sans-serif;
+    }
 
     body {
       background: #f4f6fb;
@@ -52,7 +57,10 @@
       box-shadow: 0 14px 30px rgba(15,23,42,0.1);
     }
 
-    a { text-decoration: none; color: inherit; }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
   </style>
 </head>
 
@@ -66,20 +74,29 @@
 
 <script>
   const params = new URLSearchParams(location.search);
-  const school = params.get("school");
-  const grade = params.get("grade");
+  const school = params.get("school"); // 예: 잠신중, 잠신고, 신천중
+  const grade  = params.get("grade");  // 예: "1", "2", "3"
 
   const titleEl = document.getElementById("title");
   const areaEl  = document.getElementById("unit-area");
 
+  // 상단 제목: 잠신중 1학년
   titleEl.textContent = `${school} ${grade}학년`;
 
   // 단원 1~10 생성
   for (let i = 1; i <= 10; i++) {
-    const card = document.createElement("a");
-    card.href = `school-detail.html?school=${school}&grade=${grade}&unit=${i}`;
-    card.innerHTML = `<div class="unit-card">${school} ${grade}-${i}</div>`;
-    areaEl.appendChild(card);
+    // 👉 quiz.html 로 넘길 unitKey 규칙 (나중에 WORD_SETS에서 이 키랑 맞춰주면 됨)
+    const unitKey = `${school}-${grade}-${i}`; // 예: "잠신중-1-1"
+
+    const link = document.createElement("a");
+    link.href = `quiz.html?stage=school&unit=${encodeURIComponent(unitKey)}`;
+
+    const card = document.createElement("div");
+    card.className = "unit-card";
+    card.textContent = `${school} ${grade}-${i}`;  // 화면에 보이는 글자
+
+    link.appendChild(card);
+    areaEl.appendChild(link);
   }
 </script>
 
