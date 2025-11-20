@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>어휘 학습 - 유닛 선택</title>
+  <title>단계 선택 - BLOSSOM ENGLISH</title>
   <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
 
   <style>
@@ -19,22 +19,24 @@
       padding: 0 20px;
     }
 
+    /* 상단 제목 영역 (vocabulary와 동일 스타일) */
     .page-header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       margin-bottom: 30px;
     }
 
     .page-header img {
-      height: 40px;
+      height: 52px;  /* 아이콘 크게 */
     }
 
     .page-title {
-      font-size: 26px;
+      font-size: 34px;   /* vocabulary 페이지와 동일 */
       font-weight: 800;
     }
 
+    /* 숫자 카드 영역 */
     .num-area {
       background: #f1f3fb;
       border-radius: 28px;
@@ -62,7 +64,7 @@
     }
 
     .num-card span {
-      font-size: 26px;
+      font-size: 24px;   /* 1~9 숫자 크기 */
       font-weight: 800;
       color: #000;
     }
@@ -84,42 +86,35 @@
 
 <div class="page">
 
+  <!-- 상단 제목 -->
   <header class="page-header">
-    <img src="https://img.icons8.com/ios-filled/100/open-book.png" alt="단계 아이콘" />
+    <!-- 네가 만들 새 아이콘 파일 이름: vocab-level-icon.png -->
+    <img src="vocab-level-icon.png" alt="단계 아이콘" />
     <div class="page-title" id="page-title">1단계</div>
   </header>
 
+  <!-- 숫자 카드 영역 -->
   <section class="num-area" id="num-area">
-    <!-- JS가 1~9 카드 생성 -->
+    <!-- JS로 1~9 생성 -->
   </section>
-
 </div>
 
 <script>
-  // URL에서 stage 값 읽기 (예: units.html?stage=1)
+  // URL에서 stage 값 읽기
   const params = new URLSearchParams(window.location.search);
   const stage = params.get('stage') || '1';
 
-  // 화면에 보여줄 단계 이름
-  let stageLabel;
-  if (stage === 'school') {
-    stageLabel = '학교 시험';
-  } else {
-    stageLabel = stage + '단계';
-  }
+  // 단계 이름 설정
+  const title = stage === 'school' ? '학교 시험' : `${stage}단계`;
+  document.getElementById('page-title').textContent = title;
 
-  // 상단 제목에 넣기
-  document.getElementById('page-title').textContent = stageLabel;
-
+  // 숫자 카드 생성
   const area = document.getElementById('num-area');
-
-  // 1 ~ 9 카드 생성
   for (let i = 1; i <= 9; i++) {
     const card = document.createElement('div');
     card.className = 'num-card';
 
     card.onclick = () => {
-      // ▶ 4번 페이지로 이동
       location.href = `units-detail.html?stage=${stage}&unit=${i}`;
     };
 
