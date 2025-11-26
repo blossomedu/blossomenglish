@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>학생 회원가입 - 블라썸잉글리쉬</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f4f6fb;
+      font-family: "Pretendard Variable", sans-serif;
+      padding: 40px 0;
+    }
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px 28px;
+      border-radius: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 22px;
+    }
+    .input-box {
+      margin-bottom: 18px;
+    }
+    .input-label {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .msg {
+      margin-top: 16px;
+      font-size: 14px;
+      text-align: center;
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="title">학생 회원가입</div>
+  <div class="subtitle">아이디는 영어+숫자 조합 7자 이상이 좋습니다.</div>
+
+  <div class="input-box">
+    <div class="input-label">학생 아이디</div>
+    <input id="loginId" placeholder="예: blossom01" />
+  </div>
+
+  <div class="input-box">
+    <div class="input-label">학생 이름</div>
+    <input id="studentName" placeholder="예: 홍길동" />
+  </div>
+
+  <button id="signupBtn" class="btn">회원가입 완료</button>
+
+  <div id="msg" class="msg"></div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2.48.0/dist/umd/supabase.js"></script>
+<script>
+  const client = supabase.createClient(
+    "https://bpdisxjhhibrgfpvtlmv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwZGlzeGpoaGlicmdmcHZ0bG12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NTkxODQsImV4cCI6MjA3OTUzNTE4NH0.jDZ6BGirOPuWUnt4ykjhng4PLft2ZjBuYAFzApUnlYU"
+  );
+
+  document.getElementById("signupBtn").onclick = async () => {
+    const id = document.getElementById("loginId").value.trim();
+    const name = document.getElementById("studentName").value.trim();
+    const msg = document.getElementById("msg");
+
+    if (id.length < 7) {
+      msg.textContent = "아이디는 7자 이상이어야 합니다.";
+      return;
+    }
+    if (!name) {
+      msg.textContent = "이름을 입력하세요.";
+      return;
+    }
+
+    const { data: exist } = await client
+      .from("students")
+      .select("login_id")
+      .eq("login_id", id)
+      .maybeSingle();
+
+    if (exist) {
+      msg.textContent = "이미 존재하는 아이디입니다.";
+      return;
+    }
+
+    const { error } = await client.from("students").insert({
+      login_id: id,
+      name: name,
+    });
+
+    if (error) {
+      msg.textContent = "오류가 발생했습니다.";
+      return;
+    }
+
+    msg.style.color = "#16a34a";
+    msg.textContent = "회원가입 완료! 로그인 화면으로 이동합니다.";
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1200);
+  };
+</script>
+
+</body>
+</html>
