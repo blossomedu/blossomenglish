@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>로그인 - 블라썸잉글리쉬</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+        system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    }
+
+    :root {
+      --pink: #FF6FB5;
+      --blue: #00AEEF;
+      --mint: #9AD7A0;
+    }
+
+    body {
+      background: #f4f6fb;
+      padding: 40px 0 60px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    h1.title {
+      font-size: 34px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .subtitle-main {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .login-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 26px;
+      padding: 24px 26px 26px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .badge-role {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-teacher {
+      background: #ffe1f0;
+      color: var(--pink);
+    }
+
+    .badge-student {
+      background: #e8f9ee;
+      color: #15803d;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 4px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      outline: none;
+      background: #f9fafb;
+    }
+
+    .field-row {
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    /* 버튼 색상 */
+    #teacherLoginBtn {
+      background: var(--pink);
+      color: white;
+    }
+
+    #googleLoginBtn {
+      background: white;
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+    #googleLoginBtn:hover {
+      background: #eaf7ff;
+    }
+
+    #studentLoginBtn {
+      background: var(--mint);
+      color: white;
+    }
+
+    #studentSignupBtn {
+      background: var(--blue);
+      color: white;
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 2px;
+      margin-bottom: 10px;
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    .status-text.error {
+      color: #b91c1c;
+    }
+
+    .status-text.success {
+      color: #15803d;
+    }
+
+    .small-footnote {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .login-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="page">
+  <h1 class="title">로그인</h1>
+  <div class="subtitle-main">선생님 / 학생 계정으로 로그인하고 숙제를 관리해요.</div>
+
+  <div class="login-grid">
+
+    <!-- 선생님 로그인 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="badge-role badge-teacher">Teacher</span>
+        <div class="card-title">선생님 로그인</div>
+      </div>
+
+      <div class="card-desc">
+        구글 계정 또는 이메일로 로그인하면<br />
+        온라인 숙제와 반별 게시판을 관리할 수 있어요.
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">이메일</div>
+        <input id="teacherEmail" class="input" type="email" placeholder="예: blossomteacher@gmail.com" />
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">비밀번호</div>
+        <input id="teacherPassword" class="input" type="password" placeholder="Supabase에 등록된 비밀번호" />
+      </div>
+
+      <button id="teacherLoginBtn" class="btn" style="margin-top:10px;">
+        선생님 이메일로 로그인
+      </button>
+
+      <button id="googleLoginBtn" class="btn btn-sub">
+        🔑 구글 계정으로 로그인
+      </button>
+
+      <div id="teacherStatus" class="status-text"></div>
+    </div>
+
+    <!-- 학생 로그인 / 가입 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="badge-role badge-student">Student</span>
+        <div class="card-title">학생 로그인 / 가입</div>
+      </div>
+
+      <div class="card-desc">
+        학원에서 받은 아이디와 비밀번호로 로그인하거나,<br />
+        아직 계정이 없다면 아래에서 새로 만들 수 있어요.
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">학생 아이디</div>
+        <input id="studentLoginId" class="input" type="text" placeholder="예: blossom001" />
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">비밀번호</div>
+        <input id="studentLoginPw" class="input" type="password" placeholder="영어+숫자 조합 7자 이상" />
+      </div>
+
+      <button id="studentLoginBtn" class="btn" style="margin-top:10px;">
+        👦 학생으로 로그인
+      </button>
+
+      <div class="field-row" style="margin-top:18px;">
+        <div class="field-label">이름</div>
+        <input id="studentSignupName" class="input" type="text" placeholder="예: 홍길동" />
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">새 학생 아이디</div>
+        <input id="studentSignupId" class="input" type="text" placeholder="예: blossom001" />
+        <div class="helper-text">영어+숫자 조합 7자 이상 (예: blossom001)</div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">비밀번호</div>
+        <input id="studentSignupPw" class="input" type="password" placeholder="영어+숫자 조합 7자 이상" />
+      </div>
+
+      <div class="field-row">
+        <div class="field-label">부모님 전화번호</div>
+        <input id="studentSignupPhone" class="input" type="text" placeholder="예: 01012345678" />
+      </div>
+
+      <button id="studentSignupBtn" class="btn" style="margin-top:6px;">
+        ✨ 학생 계정 만들기
+      </button>
+
+      <div id="studentStatus" class="status-text"></div>
+      <div class="small-footnote">※ 학생 계정은 이 브라우저(localStorage)에만 저장돼요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://unpkg.com/@supabase/supabase-js@2.48.0/dist/umd/supabase.js"></script>
+
+<script>
+  const supa = supabase.createClient(
+    "https://bpdisxjhhibrgfpvtlmv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwZGlzeGpoaGlicmdmcHZ0bG12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5NTkxODQsImV4cCI6MjA3OTUzNTE4NH0.jDZ6BGirOPuWUnt4ykjhng4PLft2ZjBuYAFzApUnlYU"
+  );
+
+  const teacherEmail = document.getElementById("teacherEmail");
+  const teacherPassword = document.getElementById("teacherPassword");
+  const teacherLoginBtn = document.getElementById("teacherLoginBtn");
+  const teacherStatus = document.getElementById("teacherStatus");
+
+  const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+  const studentLoginId = document.getElementById("studentLoginId");
+  const studentLoginPw = document.getElementById("studentLoginPw");
+  const studentLoginBtn = document.getElementById("studentLoginBtn");
+
+  const studentSignupName = document.getElementById("studentSignupName");
+  const studentSignupId = document.getElementById("studentSignupId");
+  const studentSignupPw = document.getElementById("studentSignupPw");
+  const studentSignupPhone = document.getElementById("studentSignupPhone");
+  const studentSignupBtn = document.getElementById("studentSignupBtn");
+
+  const studentStatus = document.getElementById("studentStatus");
+
+
+  /* -----------------------------
+      1) 선생님 이메일 로그인
+  ------------------------------ */
+  teacherLoginBtn.onclick = async () => {
+    teacherStatus.textContent = "로그인 중...";
+    teacherStatus.className = "status-text";
+
+    const email = teacherEmail.value.trim();
+    const pw = teacherPassword.value.trim();
+
+    if (!email || !pw) {
+      teacherStatus.textContent = "이메일과 비밀번호를 입력해 주세요.";
+      teacherStatus.classList.add("error");
+      return;
+    }
+
+    const { error } = await supa.auth.signInWithPassword({
+      email,
+      password: pw,
+    });
+
+    if (error) {
+      teacherStatus.textContent = "로그인 실패! 이메일/비밀번호를 확인해주세요.";
+      teacherStatus.classList.add("error");
+      return;
+    }
+
+    teacherStatus.textContent = "로그인 성공!";
+    teacherStatus.classList.add("success");
+    setTimeout(() => (location.href = "index.html"), 600);
+  };
+
+
+  /* -----------------------------
+      2) 구글 로그인
+  ------------------------------ */
+  googleLoginBtn.onclick = async () => {
+    const { error } = await supa.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "https://blossomedu.github.io/newblossomenglish/login.html",
+      },
+    });
+
+    if (error) alert("구글 로그인 오류");
+  };
+
+
+  /* -----------------------------
+      3) 학생 로그인
+  ------------------------------ */
+  studentLoginBtn.onclick = () => {
+    const id = studentLoginId.value.trim();
+    const pw = studentLoginPw.value.trim();
+
+    if (!id || !pw) {
+      studentStatus.textContent = "아이디와 비밀번호를 입력하세요.";
+      studentStatus.classList.add("error");
+      return;
+    }
+
+    const saved = localStorage.getItem("blossom_student");
+    if (!saved) {
+      studentStatus.textContent = "해당 학생 계정이 없습니다.";
+      studentStatus.classList.add("error");
+      return;
+    }
+
+    const stu = JSON.parse(saved);
+
+    if (stu.login_id === id && stu.password === pw) {
+      studentStatus.textContent = "학생 로그인 성공!";
+      studentStatus.classList.add("success");
+      setTimeout(() => (location.href = "index.html"), 600);
+    } else {
+      studentStatus.textContent = "아이디 또는 비밀번호가 틀렸습니다.";
+      studentStatus.classList.add("error");
+    }
+  };
+
+
+  /* -----------------------------
+      4) 학생 회원가입
+  ------------------------------ */
+  studentSignupBtn.onclick = () => {
+    const name = studentSignupName.value.trim();
+    const id = studentSignupId.value.trim();
+    const pw = studentSignupPw.value.trim();
+    const phone = studentSignupPhone.value.trim();
+
+    if (!name || !id || !pw) {
+      studentStatus.textContent = "모든 항목을 입력하세요.";
+      studentStatus.classList.add("error");
+      return;
+    }
+
+    if (id.length < 7 || pw.length < 7) {
+      studentStatus.textContent = "아이디/비밀번호는 7자 이상이어야 해요.";
+      studentStatus.classList.add("error");
+      return;
+    }
+
+    const studentObj = {
+      name,
+      login_id: id,
+      password: pw,
+      phone,
+    };
+
+    localStorage.setItem("blossom_student", JSON.stringify(studentObj));
+
+    studentStatus.textContent = "학생 계정이 생성되었습니다!";
+    studentStatus.classList.add("success");
+  };
+</script>
+
+</body>
+</html>
